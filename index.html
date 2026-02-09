@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Tập Đa Môn - Pro Mode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10b981',
+                        primaryDark: '#059669',
+                        accent: '#8b5cf6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300">
+
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <h1 id="app-title" class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    Ôn Tập Pro Mode
+                </h1>
+
+<!-- Modal Chỉnh sửa hồ sơ -->
+<div id="modal-display-name" class="fixed inset-0 bg-black/70 flex items-center justify-center z-[200] backdrop-blur-sm hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 w-full max-w-lg mx-4 relative">
+        <h3 class="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            Chỉnh sửa hồ sơ
+        </h3>
+
+        <div id="edit-error" class="text-red-600 mb-4 text-center min-h-[24px]"></div>
+
+        <!-- Tên hiển thị -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tên hiển thị</label>
+            <input id="modal-display-name" type="text" placeholder="Ví dụ: Tiến Minh" class="w-full p-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
+        </div>
+
+        <!-- Avatar URL -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Link ảnh đại diện (URL)</label>
+            <input id="modal-avatar-url" type="url" placeholder="https://example.com/avatar.jpg" class="w-full p-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Dán link ảnh từ Imgur, Google Drive, hoặc bất kỳ đâu (khuyến nghị ảnh vuông)</p>
+        </div>
+
+        <!-- Preview avatar -->
+        <div class="mb-8 text-center">
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Xem trước ảnh đại diện:</p>
+            <div id="avatar-preview" class="w-24 h-24 mx-auto rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden border-4 border-primary">
+                <span id="preview-initial" class="text-3xl font-bold text-gray-600 dark:text-gray-400"></span>
+                <img id="preview-img" class="hidden w-full h-full object-cover" alt="Avatar preview">
+            </div>
+        </div>
+
+        <!-- Nút hành động -->
+        <div class="flex gap-4">
+            <button onclick="saveProfileChanges()" class="flex-1 py-4 bg-primary hover:bg-primaryDark text-white font-bold rounded-xl transition">
+                Lưu thay đổi
+            </button>
+            <button onclick="closeEditProfileModal()" class="flex-1 py-4 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold rounded-xl transition">
+                Hủy
+            </button>
+        </div>
+
+        <button onclick="closeEditProfileModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl">×</button>
+    </div>
+</div>
+
+                <div id="user-greeting" class="text-lg font-medium text-gray-700 dark:text-gray-300 hidden">
+                    Chào <span id="user-name-display">bạn</span>
+                </div>
+                <button id="back-to-subjects" onclick="backToSubjectSelect()" class="hidden px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm font-medium">
+                    ← Chọn môn khác
+                </button>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="dark-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition text-xl">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <div id="coins" class="text-sm font-medium px-3 py-1 bg-primary/10 dark:bg-primary/20 rounded-full text-primary">Brain Coins: 0</div>
+                <div id="streak" class="text-sm font-medium px-3 py-1 bg-accent/10 dark:bg-accent/20 rounded-full text-accent">Chuỗi: 0 ngày</div>
+                <button id="logout-btn" class="hidden px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition">Đăng xuất</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-24 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <nav class="flex flex-wrap justify-center gap-3 mb-10 hidden" id="main-nav">
+            <button onclick="showSection('home')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Trang Chủ</button>
+            <button onclick="showSection('fill-blank')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Ôn Điền Khuyết</button>
+            <button onclick="showSection('test-sets')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Ôn Theo Bộ Đề</button>
+            <button onclick="showSection('mock-test')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Thi Thử</button>
+            <button onclick="showSection('shop')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Cửa Hàng</button>
+            <button onclick="showSection('inventory')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Kho Đồ</button>
+            <button onclick="showSection('profile')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Hồ sơ</button>
+                     </nav>
+
+        <!-- Chọn môn -->
+        <section id="subject-select" class="section text-center max-w-4xl mx-auto pt-20">
+            <h2 class="text-4xl font-bold mb-10">Chọn môn bạn muốn ôn</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <button onclick="selectSubject('lao')" class="p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all border-2 border-primary">
+                    <h3 class="text-2xl font-bold text-primary mb-2">Lao</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Mã: TCDY035</p>
+                </button>
+                <button onclick="selectSubject('tt-lao')" class="p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all border-2 border-accent">
+                    <h3 class="text-2xl font-bold text-accent mb-2">TT. Lao</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Mã: TCDY036</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- Trang chủ -->
+        <section id="home" class="section hidden text-center max-w-3xl mx-auto">
+            <h2 class="text-4xl font-bold mb-6">Chào mừng bạn đến với nền tảng ôn tập</h2>
+            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                Bạn đang ôn môn: <span id="current-subject-display" class="font-bold text-primary">Chưa chọn môn</span>
+            </p>
+            <button onclick="showSection('fill-blank')" class="inline-block px-8 py-4 bg-gradient-to-r from-primary to-primaryDark text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                Bắt đầu ôn ngay
+            </button>
+        </section>
+
+        <!-- Ôn điền khuyết -->
+        <section id="fill-blank" class="section hidden">
+            <h2 class="text-3xl font-bold mb-6 text-center">Ôn Điền Khuyết</h2>
+            <input type="text" id="search" placeholder="Tìm kiếm câu hỏi..." class="w-full max-w-xl mx-auto block p-4 mb-6 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary" oninput="searchQuestions()">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div class="lg:col-span-1 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 max-h-[70vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
+                    <ul id="question-list" class="space-y-2"></ul>
+                </div>
+                <div id="question-container" class="lg:col-span-3 hidden bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
+                    <div id="difficulty" class="inline-block px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium mb-4"></div>
+                    <div id="bet-options" class="flex flex-wrap gap-3 mb-6"></div>
+                    <div id="question" class="text-xl leading-relaxed mb-6"></div>
+                    <input type="text" id="answer-input" placeholder="Nhập đáp án của bạn..." class="w-full p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-primary mb-6">
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="checkAnswer()" class="flex-1 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">Kiểm Tra</button>
+                        <button onclick="showAnswer()" class="flex-1 py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700 transition">Hiện Đáp Án</button>
+                        <button onclick="prevQuestion()" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Trước</button>
+                        <button onclick="nextQuestion()" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Sau</button>
+                    </div>
+                    <div id="result" class="mt-6 text-lg font-bold"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ôn theo bộ đề -->
+        <section id="test-sets" class="section hidden">
+            <h2 class="text-3xl font-bold mb-6 text-center">Ôn Theo Bộ Đề</h2>
+            <div class="text-center mb-6">
+                <select id="set-select" class="p-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"></select>
+                <button onclick="loadSet()" class="ml-4 px-6 py-3 bg-primary text-white rounded-xl hover:bg-primaryDark transition">Tải Bộ Đề</button>
+            </div>
+            <div id="set-question-container" class="hidden bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700 max-w-3xl mx-auto">
+                <div id="set-difficulty" class="inline-block px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium mb-4"></div>
+                <div id="set-bet-options" class="flex flex-wrap gap-3 mb-6"></div>
+                <div id="set-progress" class="text-xl font-bold text-primary mb-4 text-center"></div>
+                <div id="set-question" class="text-xl leading-relaxed mb-6"></div>
+                <input type="text" id="set-answer-input" placeholder="Nhập đáp án..." class="w-full p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-primary mb-6">
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="checkAnswer('set')" class="flex-1 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">Kiểm Tra</button>
+                    <button onclick="showAnswer('set')" class="flex-1 py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700 transition">Hiện Đáp Án</button>
+                    <button onclick="prevQuestion('set')" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Trước</button>
+                    <button onclick="nextQuestion('set')" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Sau</button>
+                </div>
+                <div id="set-result" class="mt-6 text-lg font-bold"></div>
+            </div>
+        </section>
+
+        <!-- Thi thử -->
+        <section id="mock-test" class="section hidden">
+            <h2 class="text-3xl font-bold mb-6 text-center">Thi Thử</h2>
+            <button onclick="startMockTest()" class="inline-block px-8 py-4 bg-gradient-to-r from-primary to-primaryDark text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">Bắt Đầu Thi Thử</button>
+            <div id="test-container" class="hidden mt-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700 max-w-4xl mx-auto">
+                <div id="timer" class="text-3xl font-bold text-red-600 mb-4 text-center"></div>
+                <div id="test-progress" class="text-xl font-bold text-primary mb-4 text-center"></div>
+                <div id="test-difficulty" class="inline-block px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium mb-4"></div>
+                <div id="test-bet-options" class="flex flex-wrap gap-3 mb-6 justify-center"></div>
+                <div id="test-question" class="text-xl leading-relaxed mb-6"></div>
+                <input type="text" id="test-answer-input" placeholder="Nhập đáp án..." class="w-full p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-primary mb-6">
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <button onclick="checkAnswer('test')" class="px-8 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">Kiểm Tra</button>
+                    <button onclick="showAnswer('test')" class="px-8 py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700 transition">Hiện Đáp Án</button>
+                    <button onclick="prevQuestion('test')" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Trước</button>
+                    <button onclick="nextQuestion('test')" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Sau</button>
+                    <button onclick="submitTest()" class="px-8 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition">Nộp Bài</button>
+                </div>
+                <div id="test-result" class="mt-6 text-lg font-bold text-center"></div>
+            </div>
+            <div id="score" class="mt-8 text-2xl font-bold text-center"></div>
+            <div id="review-container" class="hidden mt-10 max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700"></div>
+        </section>
+
+        <!-- Cửa hàng -->
+        <section id="shop" class="section hidden">
+            <h2 class="text-3xl font-bold mb-8 text-center">Cửa Hàng</h2>
+            <p class="text-center text-gray-600 dark:text-gray-400 mb-10">Dùng Brain Coins để mua các vật phẩm sưu tầm đẹp mắt!</p>
+            <div id="shop-items" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+        </section>
+
+        <!-- Kho đồ -->
+        <section id="inventory" class="section hidden">
+            <h2 class="text-3xl font-bold mb-8 text-center">Kho Đồ Của Bạn</h2>
+            <p class="text-center text-gray-600 dark:text-gray-400 mb-10">Các vật phẩm bạn đã sở hữu</p>
+            <div id="inventory-items" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+        </section>
+
+        <!-- Hồ sơ cá nhân - Nâng cấp với chỉnh sửa inline -->
+<section id="profile" class="section hidden max-w-4xl mx-auto pt-10">
+    <h2 class="text-4xl font-bold mb-10 text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+        Hồ sơ cá nhân
+    </h2>
+    
+    <div class="bg-white dark:bg-gray-800/90 rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700 backdrop-blur-sm">
+        <!-- Header profile -->
+        <div class="bg-gradient-to-br from-primary/20 to-accent/20 dark:from-primary/10 dark:to-accent/10 p-10 text-center relative">
+            <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-5xl font-bold shadow-xl ring-4 ring-white dark:ring-gray-900 overflow-hidden">
+                <img id="profile-avatar-img" class="hidden w-full h-full object-cover" alt="Avatar">
+                <span id="profile-avatar-initial" class="text-5xl"></span>
+            </div>
+            
+            <h3 id="profile-display-name" class="text-3xl font-bold mb-2"></h3>
+            <p id="profile-email" class="text-lg text-gray-600 dark:text-gray-400 mb-4"></p>
+            
+            <div class="flex flex-wrap justify-center gap-4">
+                <div class="px-6 py-2 bg-white/80 dark:bg-gray-900/80 rounded-full shadow-md flex items-center gap-2">
+                    <span class="text-yellow-500 text-xl">🪙</span>
+                    <span id="profile-coins-badge" class="font-bold text-primary"></span>
+                </div>
+                <div class="px-6 py-2 bg-white/80 dark:bg-gray-900/80 rounded-full shadow-md flex items-center gap-2">
+                    <span class="text-orange-500 text-xl">🔥</span>
+                    <span id="profile-streak-badge" class="font-bold text-accent"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Body profile -->
+        <div class="p-8 sm:p-12 space-y-8">
+            <!-- View mode -->
+            <div id="profile-view" class="space-y-8">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Brain Coins</p>
+                        <p id="profile-coins" class="text-3xl font-bold text-primary"></p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Chuỗi ngày</p>
+                        <p id="profile-streak" class="text-3xl font-bold text-accent"></p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Vật phẩm</p>
+                        <p id="profile-inventory-count" class="text-3xl font-bold text-purple-600 dark:text-purple-400"></p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl">
+                    <h4 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <span class="text-2xl">📊</span> Thống kê ôn tập
+                    </h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-700 dark:text-gray-300">Tổng câu trả lời đúng ước tính:</span>
+                            <span class="font-bold text-green-600" id="profile-correct-answers">~0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700 dark:text-gray-300">Ngày ôn tập liên tục cao nhất:</span>
+                            <span class="font-bold text-accent" id="profile-max-streak">0 ngày</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="toggleEditMode()" class="flex-1 py-4 bg-gradient-to-r from-primary to-primaryDark text-white font-bold rounded-xl hover:shadow-lg transition transform hover:-translate-y-1">
+                        Chỉnh sửa hồ sơ
+                    </button>
+                    <button onclick="signOut(auth)" class="flex-1 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition transform hover:-translate-y-1">
+                        Đăng xuất
+                    </button>
+                </div>
+            </div>
+
+            <!-- Edit mode (ẩn mặc định) -->
+            <div id="profile-edit" class="hidden space-y-8">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tên hiển thị</label>
+                        <input id="inline-display-name" type="text" placeholder="Ví dụ: Tiến Minh" class="w-full p-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Link ảnh đại diện (URL)</label>
+                        <input id="inline-avatar-url" type="url" placeholder="https://example.com/avatar.jpg" class="w-full p-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Dán link ảnh vuông (jpg/png/gif/webp) từ Imgur hoặc bất kỳ đâu</p>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Xem trước ảnh đại diện:</p>
+                        <div class="w-24 h-24 mx-auto rounded-full overflow-hidden border-4 border-primary">
+                            <img id="edit-preview-img" class="hidden w-full h-full object-cover" alt="Preview">
+                            <span id="edit-preview-initial" class="text-3xl font-bold text-gray-600 dark:text-gray-400 flex items-center justify-center h-full"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 justify-center">
+                    <button onclick="saveProfileChanges()" class="flex-1 max-w-xs py-4 bg-primary hover:bg-primaryDark text-white font-bold rounded-xl transition">
+                        Lưu thay đổi
+                    </button>
+                    <button onclick="toggleEditMode()" class="flex-1 max-w-xs py-4 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold rounded-xl transition">
+                        Hủy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // ────────────────────────────────────────────────
+        // Firebase Imports
+        // ────────────────────────────────────────────────
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            onAuthStateChanged, 
+            signOut,
+            sendPasswordResetEmail
+        } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        
+        import { 
+            getDatabase, 
+            ref, 
+            set, 
+            get, 
+            update, 
+            child 
+        } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQOhMBlPUfOzBu2h0ljlaxdjVcpQJbBYw",
+            authDomain: "ontap-pro-mode.firebaseapp.com",
+            databaseURL: "https://ontap-pro-mode-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "ontap-pro-mode",
+            storageBucket: "ontap-pro-mode.firebasestorage.app",
+            messagingSenderId: "215082917090",
+            appId: "1:215082917090:web:ee378f14a65d67d9da12bb",
+            measurementId: "G-R6H6X1KTTR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // Biến toàn cục
+        let currentUser = null;
+        let userData = { coins: 0, streak: 0, lastLogin: null, inventory: [] };
+        let brainCoins = 0;
+        let streak = 0;
+        let inventory = [];
+
+        let currentSubject = null;
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let currentSet = null;
+        let testSets = [];
+        let currentBet = 1;
+        let timerInterval;
+        let timeLeft = 1200;
+        let mockTestQuestions = [];
+        let mockTestAnswers = [];
+        let mockTestSubmitted = false;
+        let mockTestStartTime = null;
+        let isJackpot = false;
+
+        const questionBank = {
+            lao: [
+                { text: "Lao nguyên phát là biểu hiện lâm sàng, sinh hóa và mô bệnh sau khi phổi tiếp xúc lần đầu với vi khuẩn lao ở cơ thể chưa có ______ và ______ đối với lao.", answer: "tăng cảm; miễn dịch", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Theo WHO năm 2012, Việt Nam đứng thứ ____ trong số ____ nước có gánh nặng bệnh lao cao trên toàn cầu.", answer: "13; 22", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Hàng năm trên toàn thế giới có gần ____ triệu ca mắc mới và ____ triệu người tử vong do lao.", answer: "9; 1,3", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Trên ____% số trường hợp mắc mới và tử vong do lao xảy ra ở các nước đang phát triển.", answer: "95", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Hàng năm có khoảng ____ trường hợp mắc mới và ____ trường hợp tử vong do lao ở trẻ em.", answer: "530.000; 74.000", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Lao nguyên phát thường gặp ở ______ và ______.", answer: "trẻ em; thiếu niên", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Hiện nay lao nguyên phát có xu hướng tăng ở người lớn cùng với đại dịch ______ kể từ năm ____.", answer: "HIV/AIDS; 1985", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Nguồn lây lao chủ yếu là trong ______, ngoài ra còn ở ______ và ______.", answer: "gia đình; trường học; xã hội", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Vi khuẩn lao chủ yếu lây truyền qua đường ______ khi người bệnh ______ hoặc ______.", answer: "hô hấp; ho; khạc nhổ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Các hạt nước bọt chứa vi khuẩn lao có thể tồn tại lâu trong không khí ở những nơi ______ và ______.", answer: "kín; chật hẹp", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Trẻ em tiếp xúc với bệnh nhân lao phổi AFB (+) có nguy cơ nhiễm lao cao hơn ____ lần so với nhóm không tiếp xúc.", answer: "9,2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Nhiễm lao qua sữa thường do vi khuẩn lao ______ khi sữa không được ______ trước khi sử dụng.", answer: "Mycobacterium bovis; đun sôi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Vi khuẩn lao có thể xâm nhập qua da khi da bị ______ hoặc ______.", answer: "đứt; dập nát", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Vị trí thường gặp nhiễm lao qua da là ______, ______ và ______.", answer: "mặt; cẳng chân; bàn chân", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Các hạt chứa vi khuẩn lao có thể đi đến vùng sâu nhất của phổi là ______.", answer: "phế nang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Trong lao nguyên phát, vi khuẩn lao bị tấn công đầu tiên bởi các ______.", answer: "đại thực bào phế nang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Khi số lượng vi khuẩn lao đạt từ ______ đến ______, cơ thể sẽ kích thích đáp ứng miễn dịch tế bào.", answer: "10.000; 100.000", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Hiện tượng miễn dịch tế bào được phát hiện bằng phản ứng ______.", answer: "lao tố", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Các lympho bào và thực bào vây kín vi khuẩn lao tạo thành ______ để ngăn sự phát triển của bệnh.", answer: "hạt lao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Vi khuẩn lao có thể tồn tại âm ỉ trong cơ thể nhiều năm và gây bệnh lao ______ khi cơ thể suy yếu.", answer: "thứ phát", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Lao tái nhiễm khác với lao thứ phát ở chỗ vi khuẩn gây bệnh là vi khuẩn ______.", answer: "mới từ ngoài xâm nhập", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Vị trí đầu tiên của nhiễm khuẩn lao ở nhu mô phổi được gọi là ______.", answer: "nốt loét sơ nhiễm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Trẻ dưới ____ tuổi, đặc biệt dưới ____ tuổi, có nguy cơ mắc lao cao hơn.", answer: "5; 2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Suy dinh dưỡng là yếu tố nguy cơ chính của lao ở các nước ______.", answer: "đang phát triển", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Trẻ chưa được tiêm phòng ______ có nguy cơ mắc lao cao hơn.", answer: "BCG", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Nhóm cơ địa liên quan nguy cơ mắc lao là ______.", answer: "HLA-II", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Trẻ tiếp xúc nguồn lây trên ____ giờ mỗi ngày và ngủ chung ______ có nguy cơ cao.", answer: "2; giường/phòng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Phức hợp nguyên thủy ở phổi gồm ____ thành phần.", answer: "3", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Nốt loét sơ nhiễm còn được gọi là ______.", answer: "Ghon focus", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Hình ảnh phức hợp nguyên thủy trên Xquang giống hình ______.", answer: "quả tạ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Tổn thương đặc hiệu của lao về vi thể là ______.", answer: "nang lao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Trung tâm nang lao là vùng ______ hóa với các tế bào khổng lồ ______.", answer: "bã đậu; Langerhans", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Các triệu chứng cơ năng thường gặp của lao nguyên phát gồm ho kéo dài, sốt về chiều và ______.", answer: "ra mồ hôi trộm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Lao ban (typho-bacillose) đặc trưng bởi sốt cao từ ____ đến ____ °C.", answer: "39; 40", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Hồng ban nút thường khu trú ở mặt ______ của ______.", answer: "trước trong; cẳng chân", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Nghe phổi có thể có ran nghẽn thì ______ do hạch to chèn ép phế quản.", answer: "hít vào", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Phản ứng Mantoux sử dụng Tuberculine ______.", answer: "PPD RT23", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Thể tích tiêm trong da khi làm TST là ____ ml.", answer: "0,1", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Kết quả TST được đọc sau ____ đến ____ giờ.", answer: "48; 72", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Ngưỡng TST dương tính ở Việt Nam là ____ mm.", answer: "10", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "TST > ____ mm gợi ý nhiều đến lao nguyên phát.", answer: "15", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Hiệu ứng Booster còn được gọi là hiệu ứng ______.", answer: "tái hoạt động", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Hình ảnh kinh điển của lao nguyên phát trên Xquang là phức hợp nguyên thủy giống hình ______.", answer: "quả tạ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Nhóm hạch khó thấy trên phim thẳng do bóng tim che khuất là hạch ______.", answer: "cạnh rốn phổi trái", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Hạch rốn phổi thường to ở bên ______.", answer: "phải", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "CT scan ngực có thể phát hiện lao nguyên phát khi ______ phổi thẳng không thấy hạch.", answer: "Xquang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Nội soi phế quản được chỉ định khi có rối loạn thông khí do ______ chèn ép.", answer: "hạch", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Công thức máu trong lao nguyên phát thường có tỉ lệ ______ tăng.", answer: "lympho", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Tốc độ lắng máu (VS) trong lao nguyên phát thường ______.", answer: "tăng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Test IGRA phát hiện sự tiết cytokine đặc biệt là ______.", answer: "IFN gamma", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Tiêu chuẩn vàng chẩn đoán lao là tìm thấy ______ trong bệnh phẩm.", answer: "vi khuẩn lao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Phác đồ điều trị lao nhạy cảm thuốc ở người lớn là ______.", answer: "2RHZE/4RHE", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Liều Rifampicin dùng điều trị lao là ____ mg/kg/ngày.", answer: "10", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Corticoid phối hợp được dùng để tránh di chứng ______.", answer: "xẹp phổi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Vắc xin BCG có khả năng bảo vệ lên tới ____% và kéo dài từ ____ đến ____ năm.", answer: "80; 5; 15", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Hóa dự phòng lao bằng Isoniazide kéo dài ____ tháng với liều ____ mg/kg/ngày.", answer: "6; 5", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Lao là một bệnh ______, lây lan chủ yếu qua đường ______ do trực khuẩn ______ gây nên.", answer: "truyền nhiễm – hô hấp – Mycobacterium tuberculosis", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thể lao thường gặp nhất là ______, chiếm khoảng ______% tổng số bệnh nhân lao.", answer: "lao phổi – 65–75", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trực khuẩn lao có thể theo đường ______ và ______ đến các cơ quan khác gây lao ngoài phổi.", answer: "máu – bạch huyết", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Các thể lao ngoài phổi thường gặp gồm lao màng ______, lao ______ khớp, lao ______ niệu, lao ______ dục và lao ______.", answer: "não – xương – tiết – sinh – ruột", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Chẩn đoán lao phải trải qua 3 bước cơ bản là ______, ______ và ______.", answer: "khám lâm sàng – chẩn đoán hình ảnh – xét nghiệm vi khuẩn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Xét nghiệm vi khuẩn trong chẩn đoán lao chủ yếu là soi tìm ______ trong ______.", answer: "AFB – đàm hoặc dịch tiết", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nhờ thuốc kháng lao đặc hiệu, tỷ lệ điều trị khỏi bệnh lao hiện nay đạt khoảng ______% nếu điều trị nghiêm túc.", answer: "95–100", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trong điều trị lao cần nhận diện ba yếu tố là ______, ______ và ______.", answer: "vi khuẩn lao – tiến triển sang thương – thuốc kháng lao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Vi khuẩn lao là vi khuẩn ______ tuyệt đối và cần đủ ______ để sinh sản.", answer: "hiếu khí – oxy", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "M. tuberculosis chỉ sinh sản một lần mỗi ______ giờ.", answer: "20", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Do sinh sản chậm nên chỉ cần dùng thuốc ______ lần mỗi ngày là đủ để ức chế vi khuẩn lao.", answer: "1", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trong 10^6 vi khuẩn lao có khoảng ______ vi khuẩn kháng Streptomycin.", answer: "40", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thuốc kháng lao có tỷ lệ đột biến kháng thấp nhất là ______.", answer: "Rifampicin", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Vi khuẩn lao kháng một thuốc vẫn còn ______ với các thuốc kháng lao khác.", answer: "nhạy cảm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tiến triển tổn thương lao trải qua ______ giai đoạn.", answer: "5", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Ở giai đoạn khởi phát, M. tuberculosis ______ tiến triển.", answer: "không", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Giai đoạn cộng sinh, vi khuẩn lao sinh sản theo kiểu ______ trong đại thực bào chưa hoạt hóa.", answer: "logarit", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Ở giai đoạn sớm hoại tử bã đậu, số lượng vi khuẩn lao bắt đầu ______.", answer: "chững lại", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Giai đoạn hóa lỏng và tạo hang là giai đoạn vi khuẩn lao ______ khỏi sự kiểm soát của cơ thể.", answer: "thoát", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Có ______ nhóm M. tuberculosis tồn tại trong cơ thể người bệnh.", answer: "3", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nhóm 1 sinh sản nhanh trong các ______ lao với môi trường ______.", answer: "hang – kiềm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nhóm 2 vi khuẩn lao tồn tại trong ______ với môi trường ______.", answer: "đại thực bào – axit", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nhóm 3 vi khuẩn lao sinh sản rất ______ trong các ổ bã đậu đặc.", answer: "chậm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thuốc kháng lao được chia thành hai nhóm là ______ và ______.", answer: "diệt khuẩn – kìm khuẩn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Rifampicin, Isoniazide, Pyrazinamide và Streptomycin thuộc nhóm thuốc ______.", answer: "diệt khuẩn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Ethambutol thuộc nhóm thuốc ______.", answer: "kìm khuẩn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Mục tiêu điều trị lao là ngăn ngừa ______ kháng thuốc và đạt được ______ trong sang thương.", answer: "chọn lọc đột biến – triệt khuẩn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Điều trị lao phải phối hợp ít nhất ______ loại thuốc kháng lao.", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nếu có Rifampicin, thời gian điều trị lao tối thiểu là ______ tháng.", answer: "6", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Giai đoạn tấn công trong điều trị lao kéo dài ______ tháng.", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Giai đoạn tấn công dùng thuốc ______, còn giai đoạn củng cố có thể dùng ______.", answer: "hằng ngày – cách ngày hoặc 2 lần mỗi tuần", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trước khi điều trị lao cần đánh giá chức năng ______ và ______.", answer: "gan – thận", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Ethambutol cần được theo dõi thường xuyên về ______.", answer: "thị lực", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Streptomycin cần theo dõi ______ và ______.", answer: "thính lực – chức năng thận", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Phác đồ I được áp dụng cho các trường hợp lao ______.", answer: "mới", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Phác đồ II áp dụng cho lao ______, ______ hoặc lao nặng.", answer: "tái phát – thất bại", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Phác đồ III áp dụng cho tất cả các thể lao ______.", answer: "trẻ em", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Chiến lược DOTS là ______ việc dùng thuốc của người bệnh.", answer: "giám sát trực tiếp", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Người bệnh được coi là khỏi khi xét nghiệm đàm ______ ít nhất ______ lần liên tiếp cuối.", answer: "âm tính – 2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Người bệnh bỏ thuốc liên tục trên ______ tháng được xếp loại ______.", answer: "2 – bỏ điều trị", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Biến chứng gần của lao phổi là ______ và ______.", answer: "ho ra máu – tràn khí màng phổi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Biện pháp phòng bệnh lao quan trọng nhất là ______ nguồn lây.", answer: "cắt đứt", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Vacxin phòng lao BCG được tiêm cho tất cả ______.", answer: "trẻ sơ sinh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lao kê (Miliary tuberculosis) là một thể lao ______ do vi khuẩn lao lan tràn theo đường ______ từ ổ lao đến phổi và các cơ quan khác.", answer: "cấp tính – máu bạch huyết", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thuật ngữ miliary tuberculosis xuất phát từ tiếng Latin ______, nghĩa là liên quan đến ______.", answer: "miliarius – hạt kê", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "John Jacob Manget là người đưa ra thuật ngữ lao kê vào năm ______.", answer: "1700", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Hình ảnh điển hình của lao kê trên Xquang phổi là các nốt mờ nhỏ kích thước ______ mm, phân bố ______ hai phổi.", answer: "1–3 – khắp", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Khoảng ______% bệnh nhân lao kê có các nốt tổn thương lớn hơn 3 mm.", answer: "10", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Chẩn đoán lao kê cần dựa vào hình ảnh tổn thương kê lan tỏa trên Xquang ngực hoặc ______ có độ phân giải cao.", answer: "CT – HRCT", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Do biểu hiện lâm sàng đa dạng và Xquang không điển hình nên lao kê thường bị ______ chẩn đoán, làm tăng tỷ lệ ______.", answer: "trì hoãn – tử vong", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+/* ================= DỊCH TỄ ================= */
+
+{ text: "Ở bệnh nhân có miễn dịch bình thường, lao kê chiếm dưới ______% tổng số các ca lao.", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trước thời kỳ kháng sinh, lao kê thường gặp ở ______, hiện nay chủ yếu gặp ở ______.", answer: "trẻ em – người lớn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Những yếu tố góp phần làm thay đổi dịch tễ lao kê hiện nay gồm HIV/AIDS, thuốc ức chế miễn dịch và hiệu quả của ______.", answer: "vắc xin BCG", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tỷ lệ nam giới mắc lao kê cao hơn nữ giới, có thể do nữ giới có ______ và ______ dịch vụ y tế tốt hơn.", answer: "nhận thức – sử dụng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+/* ================= SINH BỆNH HỌC ================= */
+
+{ text: "Lao kê có thể xuất hiện trong giai đoạn ______ lao hoặc giai đoạn ______ của ổ lao tiềm ẩn.", answer: "sơ nhiễm – tái hoạt", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Cơ chế sinh bệnh lao kê là do vi khuẩn lao lan tràn theo đường ______ gây thuyên tắc ______ của nhiều cơ quan.", answer: "máu bạch huyết – giường mạch", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Ở trẻ sơ sinh, lao kê có thể xảy ra do vi khuẩn lao lan tràn từ ______ hoặc do hít, nuốt ______ nhiễm lao.", answer: "nhau thai – nước ối", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lao kê là biểu hiện ______ gặp trong lao bẩm sinh.", answer: "thường", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+/* ================= YẾU TỐ NGUY CƠ ================= */
+
+{ text: "Những tình trạng liên quan đến lao kê gồm HIV/AIDS, suy thận mạn, đái tháo đường và ______.", answer: "suy dinh dưỡng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Các thuốc làm tăng nguy cơ lao kê gồm corticosteroids, thuốc ức chế miễn dịch và thuốc ______.", answer: "gây độc tế bào", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+/* ================= LÂM SÀNG ================= */
+
+{ text: "Triệu chứng toàn thân thường gặp ở lao kê là sốt kéo dài, mệt mỏi, ăn uống kém và ______.", answer: "sụt cân", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Do tổn thương đa cơ quan, lao kê có thể gây triệu chứng ở nhiều ______ khác nhau.", answer: "hệ cơ quan", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Ho ra máu trong lao kê có thể xuất hiện ______ và không phải lúc nào cũng nặng.", answer: "sớm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tổn thương da dạng dát sẩn hồng ban có giá trị lớn trong chẩn đoán ______.", answer: "lao kê da", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lao võng mạc thường tổn thương ______ bên và hay gặp ở ______.", answer: "hai – trẻ em", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trong viêm màng não lao, khoảng ______% bệnh nhân có lao kê kèm theo.", answer: "10–30", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Suy thượng thận kiểu Addison có thể xuất hiện ở bệnh nhân lao kê trong ______ điều trị.", answer: "quá trình", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+/* ================= CẬN LÂM SÀNG ================= */
+
+{ text: "Phản ứng lao tố (TST) ở bệnh nhân lao kê thường cho kết quả ______.", answer: "âm tính", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "IGRAs không phân biệt được lao tiềm ẩn hay lao hoạt động nhưng IGRAs ______ có thể loại trừ lao.", answer: "âm tính", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trong xét nghiệm huyết học lao kê thường gặp thiếu máu và tăng ______.", answer: "CRP", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Sinh hóa máu trong lao kê thường có giảm Na, Albumin và tăng ______.", answer: "canxi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "HRCT có thể phát hiện tổn thương nốt kích thước khoảng ______ mm mà Xquang khó thấy.", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nội soi phế quản với BAL giúp lấy mẫu xét nghiệm, tỷ lệ soi và cấy dương tính khoảng ______%.", answer: "46,8", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "WHO khuyến cáo không sử dụng các xét nghiệm ______ để chẩn đoán lao.", answer: "huyết thanh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "ADA trong dịch não tủy có độ nhạy cao trong chẩn đoán ______.", answer: "lao màng não", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+/* ================= ĐIỀU TRỊ ================= */
+
+{ text: "Lao kê được xếp vào nhóm ______ và điều trị theo chương trình chống lao quốc gia.", answer: "lao nặng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Phác đồ điều trị lao kê ở người lớn được khuyến cáo là ______.", answer: "2SRHEZ/1RHEZ/5RHE", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Ở trẻ em, lao kê thường điều trị theo phác đồ ______.", answer: "III", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Khi có tổn thương màng não, thời gian điều trị lao kê được khuyến cáo kéo dài ______ tháng.", answer: "12", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Corticoid có lợi trong lao kê có viêm màng não, ARDS và ______.", answer: "tràn dịch màng tim", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+/* ================= TIÊN LƯỢNG – DỰ PHÒNG ================= */
+
+{ text: "Tỷ lệ tử vong do lao kê ở người lớn khoảng ______%.", answer: "20–30", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Yếu tố quan trọng nhất làm tăng tỷ lệ tử vong trong lao kê là ______ chẩn đoán.", answer: "chậm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tiêm vắc xin BCG giúp giảm suất độ lao kê, đặc biệt là ở ______.", answer: "trẻ em", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Viêm phổi lao là một thể lao phổi ______ tính, khu trú theo một thùy hoặc một phân thùy phổi.", answer: "cấp", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Viêm phổi lao nhanh chóng tạo hang gây ra bởi vi khuẩn lao ______.", answer: "Mycobacterium tuberculosis", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Sự phát triển của tổn thương lao trong phổi thường dẫn đến hiện tượng ______ hóa.", answer: "bã đậu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Chất bã đậu thoát ra ngoài để lại một ______ chứa không khí.", answer: "hang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Vi khuẩn lao nhân lên rất nhanh trong hang và lan theo đường ______.", answer: "phế quản", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Các tổn thương lao có thể rải rác hoặc kết hợp lại tạo nên tình trạng ______.", answer: "viêm phổi lao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+// Giải phẫu bệnh
+{ text: "Về đại thể, thùy hoặc phân thùy phổi bị viêm có màu ______.", answer: "xám vàng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Phổi bị viêm trong viêm phổi lao có hang ở giữa và có mủ ______.", answer: "bã đậu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Về vi thể, có hình ảnh viêm phế nang, tiết fibrin và ngấm ______.", answer: "bạch cầu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+// Lâm sàng khởi phát
+{ text: "Viêm phổi lao thường khởi phát đột ngột với sốt cao khoảng ______ độ C.", answer: "39-40", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Khởi phát viêm phổi lao thường kèm các cơn ______.", answer: "rét run", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trước khởi phát, bệnh nhân có thể có triệu chứng nhiễm lao như sụt cân, mệt mỏi và ______.", answer: "biếng ăn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+// Giai đoạn viêm phổi
+{ text: "Khó thở trong viêm phổi lao thường rất ______ và trầm trọng.", answer: "nặng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Đàm trong viêm phổi lao không có màu rỉ sét mà có dạng ______ hoặc mủ.", answer: "nhờn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Một triệu chứng quan trọng giúp định hướng chẩn đoán sớm viêm phổi lao là ho đàm ______.", answer: "vướng máu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Bệnh nhân viêm phổi lao thường xanh xao và toát ______.", answer: "mồ hôi lạnh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tím tái thường gặp ở môi, ngón tay và ______.", answer: "ngón chân", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lưỡi trong viêm phổi lao có đặc điểm đỏ hồng, sạch và ______.", answer: "không dơ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+// Giai đoạn hóa mềm
+{ text: "Giai đoạn hóa mềm tạo hang thường nặng lên vào ngày thứ ______.", answer: "8 hoặc 9", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Khoảng ngày 10–12, đàm trở thành mủ, màu xanh lợt và có ______.", answer: "vướng máu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trong giai đoạn hóa mềm, trong đàm có rất nhiều ______.", answer: "vi khuẩn lao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+// Xquang
+{ text: "Giai đoạn đầu Xquang phổi cho hình ảnh bóng mờ lan tỏa ______.", answer: "đồng nhất", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Giai đoạn hóa mềm trên Xquang thấy một hoặc nhiều ______ trong đám mờ.", answer: "hang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+// Xét nghiệm đàm
+{ text: "Soi AFB và cấy đàm trong viêm phổi lao thường cho kết quả ______.", answer: "dương tính cao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Giai đoạn viêm phổi không tìm được ______ trong đàm.", answer: "phế cầu khuẩn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+// Xét nghiệm khác
+{ text: "Công thức máu trong viêm phổi lao thường có bạch cầu tăng trên ______ /mm3.", answer: "10.000", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "TST có thể âm tính do ______ giảm.", answer: "sức đề kháng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+// Chẩn đoán
+{ text: "Chẩn đoán xác định viêm phổi lao dựa trên lâm sàng, Xquang và tìm thấy ______.", answer: "vi khuẩn lao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+// Diễn tiến
+{ text: "Nếu không điều trị, viêm phổi lao có thể tử vong vào tuần thứ ______.", answer: "3 hoặc 4", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+// Điều trị
+{ text: "Viêm phổi lao cần điều trị lao càng ______ càng tốt.", answer: "sớm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Corticoid thường dùng trong giai đoạn cấp là ______.", answer: "Prednison", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+// Phòng ngừa
+{ text: "Biện pháp phòng ngừa quan trọng nhất cho trẻ sơ sinh là tiêm vắc xin ______.", answer: "BCG", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Willis và Sauvages là những nhà khoa học đầu tiên nhận xét các triệu chứng ______ có liên quan đến lao.", answer: "thần kinh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Năm 1768, ______ mô tả tương đối đầy đủ và rõ ràng bệnh cảnh lao màng não.", answer: "Robert Whytt", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lao hệ thống thần kinh trung ương là thể lao ______, nếu không điều trị gần như hoàn toàn tử vong.", answer: "cấp tính", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Ba thể lâm sàng của lao hệ thần kinh trung ương gồm lao màng não, u lao nội sọ và ______.", answer: "viêm lao màng tủy sống", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lao màng não là dạng ______ gặp nhất trong lao hệ thần kinh trung ương.", answer: "thường", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lao hệ thần kinh trung ương chiếm khoảng ____% tổng số các trường hợp bệnh lao.", answer: "1", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tại Việt Nam, tỷ lệ lao hệ thần kinh trung ương ước tính khoảng ____% và có xu hướng tăng.", answer: "5", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Đồng nhiễm ______ làm tăng tần suất chuyển từ nhiễm lao sang bệnh lao và tăng các thể lao ngoài phổi.", answer: "HIV", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Các yếu tố nguy cơ lao màng não ở người trưởng thành gồm nhiễm HIV, nghiện rượu, đái tháo đường, bệnh ác tính và dùng ______ gần đây.", answer: "corticoid", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trong lao màng não, các chất xuất tiết nhầy đặc trải dài trên trục não từ ______ và các dây thần kinh sọ.", answer: "cầu não", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tổn thương nhu mô và ______ não lý giải cho các dấu hiệu thần kinh khu trú.", answer: "nhồi máu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "U lao não thường được bao bọc bởi lớp vỏ ______ cứng và có thể hoại tử trung tâm.", answer: "u hạt", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Khởi phát của lao màng não thường ______, triệu chứng đa dạng và mơ hồ.", answer: "âm ỉ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Giai đoạn tiền triệu của lao màng não thường kéo dài khoảng ______ tuần.", answer: "2-3", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Dấu hiệu Kernig và Brudzinski thường xuất hiện rõ trong giai đoạn ______ của lao màng não.", answer: "màng não", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nếu không điều trị, hầu hết bệnh nhân lao màng não tử vong trong vòng ______ tuần sau khởi bệnh.", answer: "5-8", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Liệt dây thần kinh sọ được ghi nhận trong khoảng ____% trường hợp lao màng não.", answer: "30", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Hạ natri máu ảnh hưởng trên ____% bệnh nhân lao màng não.", answer: "50", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Khoảng ______ bệnh nhân lao màng não có kèm theo lao kê.", answer: "một phần ba", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Giai đoạn lâm sàng I của lao màng não đặc trưng bởi tỉnh táo, không dấu thần kinh khu trú và không có ______.", answer: "não úng thủy", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trong dịch não tủy lao màng não, protein thường nằm trong khoảng ______ mg/dl.", answer: "100-500", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Glucose dịch não tủy thường dưới ______ mg/dl trong 80% trường hợp lao màng não.", answer: "45", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "ADA dịch não tủy tăng cao trong lao màng não nhưng thiếu tính ______.", answer: "đặc hiệu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nhuộm tìm trực khuẩn kháng acid cồn trong dịch não tủy lần thứ tư có thể phát hiện tới ____% trường hợp.", answer: "87", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "CT scan não cho thấy tăng đậm độ nền não kèm não úng thủy là dấu hiệu tiên lượng ______.", answer: "xấu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thời gian điều trị lao hệ thần kinh trung ương thông thường kéo dài ______ tháng nếu vi khuẩn nhạy thuốc.", answer: "9-12", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "BCG giúp ngăn chặn lao hệ thần kinh trung ương với hiệu quả bảo vệ khoảng ______%.", answer: "75-85", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trong Y học cổ, Hippocrate xem lao màng phổi là bệnh lý gây ______.", answer: "đau ngực", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Đầu thế kỷ XIX, Laennec ghi nhận tràn dịch màng phổi có kèm tổn thương ______ qua giải phẫu tử thi.", answer: "lao phổi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Năm 1880, Landouzy chứng minh đa số tràn dịch màng phổi sau một thời gian sẽ xuất hiện ______.", answer: "lao phổi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Năm 1955, De Francis, Albane và Kiosk đề xuất kỹ thuật ______ màng phổi bằng kim.", answer: "sinh thiết", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lao màng phổi là thể lao ngoài phổi nhiều thứ ____ sau lao hạch.", answer: "hai", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tỷ lệ lao màng phổi trong các thể lao ngoài phổi chiếm khoảng ____%.", answer: "24", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lao màng phổi là thể lao có đặc điểm là ______ trực khuẩn lao.", answer: "ít", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lứa tuổi thường gặp nhất của lao màng phổi là ______ tuổi.", answer: "16-30", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lao màng phổi gặp ở nữ nhiều hơn ______.", answer: "nam", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lao màng phổi là bệnh lý do trực khuẩn lao ______ gây ra.", answer: "Mycobacterium tuberculosis", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tại Mỹ, lao màng phổi chiếm khoảng ____% các thể lao ngoài phổi.", answer: "20", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tại Việt Nam, lao màng phổi chiếm khoảng ____% lao ngoài phổi.", answer: "39.2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Đại dịch ______ làm tỷ lệ lao màng phổi ngày càng gia tăng.", answer: "HIV", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lao màng phổi do lao thường là hậu quả của ổ ______ vỡ vào khoang màng phổi.", answer: "bã đậu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tế bào trung mô màng phổi phóng thích IL-1, IL-6, TNF-alpha và ______.", answer: "chemokine", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tế bào lympho T CD4 kích thích sản xuất ______ giúp biệt hóa đại thực bào.", answer: "Interferon gamma", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Phản ứng quá mẫn muộn trong lao màng phổi được điều hòa bởi lympho T giúp đỡ loại ____.", answer: "1", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Cytokine đối kháng miễn dịch Th1 chủ yếu là ______.", answer: "Interleukin-4", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "IFN gamma trong dịch màng phổi cao hơn so với ______.", answer: "huyết tương", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Cơ chế chính gây tích tụ dịch trong khoang màng phổi là tăng ______ thành mạch.", answer: "tính thấm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Lao màng phổi thường khởi phát ______ ở người trẻ.", answer: "cấp tính", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Triệu chứng cơ năng thường gặp nhất là ______.", answer: "sốt", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Sốt trong lao màng phổi hiếm khi vượt quá ____°C.", answer: "40", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Đau ngực lao màng phổi thường tăng khi ______ và hít sâu.", answer: "ho", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Khó thở xuất hiện rõ khi tràn dịch màng phổi ______.", answer: "nhiều", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Hội chứng ba giảm ở đáy phổi gồm giảm âm phế bào, rung thanh giảm và ______.", answer: "gõ đục", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tốc độ lắng máu trong lao màng phổi hiếm khi vượt quá ____ mm/giờ.", answer: "100", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "TST âm tính vẫn không loại trừ được ______.", answer: "lao màng phổi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "ESAT-6 và CFP-10 là protein đặc hiệu của ______.", answer: "Mycobacterium tuberculosis", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Đường cong giới hạn trên của TDMP trên Xquang gọi là đường cong ______.", answer: "Damoiseau", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tràn dịch màng phổi rãnh liên thùy trên phim thẳng còn gọi là ______.", answer: "u ma", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Theo tiêu chuẩn Light, LDH DMP/LDH máu > ____ được xếp là dịch tiết.", answer: "0.6", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Dịch màng phổi do lao thường có màu ______.", answer: "vàng chanh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trong DMP lao, lympho bào thường chiếm trên ____%.", answer: "50", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "pH dịch màng phổi lao thường dao động từ ____ đến ____.", answer: "7.0-7.29", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "ADA tăng cao trong lao màng phổi chủ yếu do tăng isoenzyme ______.", answer: "ADA-2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Ngưỡng ADA > ____ U/L gợi ý lao màng phổi với độ nhạy cao.", answer: "40", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nồng độ IFN gamma > ____ pg/ml gợi ý lao màng phổi.", answer: "61.7", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Sinh thiết màng phổi cho hình ảnh điển hình là u hạt và ______.", answer: "hoại tử bã đậu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Giải phẫu bệnh + cấy sinh thiết màng phổi cho kết quả dương tính khoảng ____%.", answer: "90", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Điều trị lao màng phổi phải phối hợp ít nhất ____ thuốc trong giai đoạn tấn công.", answer: "3", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Giai đoạn duy trì điều trị lao kéo dài khoảng ____ đến ____ tháng.", answer: "4-6", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Chương trình Chống lao Việt Nam quy định ____ thuốc chống lao thiết yếu.", answer: "5", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Không điều trị, 2/3 bệnh nhân lao màng phổi sẽ tái phát trong vòng ____ năm.", answer: "5", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tiêm chủng ______ là biện pháp phòng ngừa lao quan trọng ở trẻ sơ sinh.", answer: "BCG", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ho ra máu (HRM) là một biểu hiện triệu chứng ______ thường gặp trên lâm sàng.", answer: "cấp cứu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM có thể gây ______, đặc biệt trong các trường hợp HRM nặng hoặc HRM tắc nghẽn.", answer: "tử vong", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tại Viện Lao và Bệnh Phổi Trung Ương (1987–1994), HRM chiếm ______% trường hợp nhập khoa hồi sức cấp cứu.", answer: "48", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tại bệnh viện Phạm Ngọc Thạch (1985–1990), HRM chiếm trung bình ______% các trường hợp cấp cứu.", answer: "37,5", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ho ra máu là tình trạng ho khạc ra máu từ ______.", answer: "đường hô hấp", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Máu trong HRM được tống xuất ra ngoài qua đường ______ và/hoặc ______.", answer: "miệng; mũi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM nặng thường được định nghĩa khi lượng máu ho ra > ______ ml/24 giờ.", answer: "100–600", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM cần được phân biệt với ______ và ______.", answer: "ói ra máu; chảy máu cam", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một yếu tố nguy cơ gây HRM thường gặp là tình trạng ______ và ______ ở phổi.", answer: "viêm; nhiễm khuẩn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tổn thương xơ sẹo ở phổi gây co kéo mô phổi làm ______ mạch máu.", answer: "dễ vỡ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ho nhiều, lao động nặng, gắng sức làm tăng đột ngột ______ trong phế quản – phổi.", answer: "áp lực", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Đa số HRM xuất phát từ tuần hoàn ______ với áp lực cao.", answer: "động mạch phế quản", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM do động mạch phế quản thường có màu ______ và nguy cơ HRM nhiều.", answer: "đỏ tươi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM có thể do tổn thương cục bộ như ______ hoặc ______.", answer: "ung thư; viêm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phình mạch Rasmussen xảy ra ở cạnh ______ lao.", answer: "hang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một cơ chế HRM là hồng cầu thấm qua màng ______ - ______.", answer: "phế nang; mao mạch", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM xuất phát từ động mạch phế quản thường là HRM ______ và đe dọa mạng sống.", answer: "nặng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tai biến thường gặp nhất trong HRM sét đánh là ______.", answer: "tử vong", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM trung bình trở lên có thể gây ______ tim mạch.", answer: "trụy", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Xẹp phổi sau HRM thường do ______ hoặc ______ gây bít tắc phế quản.", answer: "cục máu đông; nút đàm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Sau HRM vài ngày, Xquang có thể thấy hình ảnh ______ tập trung ở rốn phổi.", answer: "hạt kê nhỏ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nguyên nhân nhiễm khuẩn gây HRM thường gặp nhất là ______.", answer: "lao phổi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM mức độ nhẹ được định nghĩa khi lượng máu < ______ ml/24 giờ.", answer: "50", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM trung bình có lượng máu từ ______ đến ______ ml/24 giờ.", answer: "50; 200", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM rất nặng thường có lượng máu mất > ______ ml/24 giờ.", answer: "1000", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM được xem là nặng nếu kéo dài trên ______ ngày.", answer: "15", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM triệu chứng thường là HRM mức độ ______.", answer: "ít", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Chẩn đoán xác định HRM cần dựa vào hỏi bệnh, khám lâm sàng và ______ phổi.", answer: "Xquang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Máu trong HRM có pH ______ và kèm ______ khí.", answer: "kiềm; bọt", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Đuôi khái huyết là hiện tượng ho khạc ra máu ______ sau khi ngưng chảy máu.", answer: "cục nâu đen", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Xét nghiệm hình ảnh đầu tiên cần làm trong HRM là ______ phổi.", answer: "Xquang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "CT scan ngực có vai trò chẩn đoán giãn phế quản và ______ phế quản.", answer: "ung thư", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nên thực hiện CT scan ngực ______ khi nội soi phế quản.", answer: "trước", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nguyên tắc điều trị HRM quan trọng nhất là điều trị ______ gây HRM.", answer: "nguyên nhân", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM nhẹ cần cho bệnh nhân nằm ______ và nghiêng về bên phổi tổn thương.", answer: "nghỉ tuyệt đối", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Morphin là thuốc cầm máu hiệu quả nhưng không dùng cho bệnh nhân có ______.", answer: "suy hô hấp", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thuốc chống tiêu sợi huyết thường dùng trong HRM là acid ______.", answer: "tranexamic", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Sandostatin có tác dụng chính là co ______ phế quản.", answer: "động mạch", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "BAE là phương pháp ______ động mạch phế quản để kiểm soát HRM.", answer: "thuyên tắc", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tỷ lệ thành công của BAE có thể đạt ______–______%.", answer: "75; 90", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HRM tái phát sau BAE chiếm khoảng ______–______%.", answer: "10; 20", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật cắt phổi chọn lọc được chỉ định khi ______ không hiệu quả.", answer: "BAE", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Bệnh lao đã được tìm thấy qua bằng chứng lao xương trong các xác ướp Ai Cập cổ đại cách đây ______ năm.", answer: "hàng ngàn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thời kỳ Hypocrate, bệnh lao được đề cập từ thế kỷ thứ ______ trước công nguyên.", answer: "V", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trong lịch sử, bệnh lao từng được gọi là “______ trắng”.", answer: "Dịch hạch", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thời kỳ trước đây, cứ 7 người chết thì có ______ người chết do lao.", answer: "1", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Danh từ Tuberculosis lần đầu tiên được Johann Schonlien đưa ra vào năm ______.", answer: "1838", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ngày 24/3/1882, Robert Koch phát hiện nguyên nhân gây bệnh lao bằng phương pháp nhuộm ______.", answer: "Ziehl-Neelsen", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tác nhân gây bệnh lao là trực khuẩn lao, viết tắt là ______.", answer: "BK", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trực khuẩn lao thuộc nhóm trực khuẩn kháng ______ và kháng ______.", answer: "cồn; toan", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Lao phổi là thể lao phổ biến nhất, chiếm khoảng ______ %.", answer: "80-85", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nguồn lây chính cho cộng đồng trong bệnh lao là ______.", answer: "lao phổi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Triệu chứng quan trọng nhất của người nghi lao phổi là ho kéo dài trên ______ tuần.", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Người nghi lao phổi có thể ho khan, ho có đàm hoặc ho ra ______.", answer: "máu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Triệu chứng toàn thân của lao phổi gồm sốt nhẹ về chiều, ra mồ hôi về ______.", answer: "đêm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nhóm nguy cơ cao mắc lao gồm người tiếp xúc nguồn lây, nhiễm HIV, nghiện ma túy và ______.", answer: "nghiện rượu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Triệu chứng thực thể trong lao phổi có thể nghe thấy ______ bệnh lý.", answer: "tiếng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tổn thương Xquang lao phổi thường gặp nhất ở ______ phổi.", answer: "đỉnh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ở người nhiễm HIV, Xquang phổi lao thường ít thấy hình ______.", answer: "hang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phản ứng Tuberculin Skin Test được coi là dương tính khi đường kính > ______ mm.", answer: "10", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Theo công văn 1789/BVPTƯ, xét nghiệm soi đàm tìm AFB áp dụng từ tháng ______ năm 2014.", answer: "01", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hiện nay xét nghiệm đàm chẩn đoán lao phổi được thực hiện với ______ mẫu tại chỗ.", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thời gian giữa mẫu đàm thứ nhất và thứ hai phải cách nhau ít nhất ______ giờ.", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Xpert MTB/RIF cho kết quả sau khoảng ______ giờ.", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Xét nghiệm Xpert được dùng để phát hiện lao và tình trạng kháng thuốc ______.", answer: "Rifampicin", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nuôi cấy vi khuẩn lao trên môi trường đặc cho kết quả dương tính sau ______ tuần.", answer: "3-4", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nuôi cấy MGIT-BACTEC cho kết quả dương tính sau khoảng ______ tuần.", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hain test là kỹ thuật sinh học phân tử cho kết quả sau ______ ngày.", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Lao phổi AFB (+) được chẩn đoán khi có ít nhất ______ tiêu bản đàm AFB (+).", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Riêng bệnh nhân HIV, chỉ cần ______ tiêu bản đàm AFB (+) là đủ chẩn đoán.", answer: "1", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Lao mới là người bệnh chưa từng dùng thuốc lao hoặc dùng thuốc dưới ______ tháng.", answer: "1", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Lao tái phát là người bệnh đã điều trị lao và được xác định là ______.", answer: "khỏi bệnh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Lao điều trị thất bại là khi bệnh nhân còn AFB (+) từ tháng thứ ______ trở đi.", answer: "5", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Đa kháng thuốc MDR-TB là kháng với Isoniazid và ______.", answer: "Rifampicin", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Siêu kháng thuốc XDR-TB là MDR-TB kháng thêm Quinolon và ít nhất một thuốc hàng 2 dạng ______.", answer: "chích", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nguyên tắc điều trị lao bao gồm phối hợp thuốc, dùng đúng liều, đều đặn và đủ ______.", answer: "thời gian", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Chiến lược DOTS là giám sát trực tiếp việc dùng từng ______ thuốc.", answer: "liều", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Mục tiêu đến năm 2015 là giảm ______ % tỷ lệ mắc và tử vong do lao so với năm 2000.", answer: "50", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Vắc-xin phòng lao được sử dụng hiện nay là ______.", answer: "BCG", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' }
+
+
+            ],
+            "tt-lao": [
+                { text: "Test IGRA phát hiện sự tiết cytokine đặc biệt là ______.", answer: "IFN gamma", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+                { text: "Tiêu chuẩn vàng chẩn đoán lao là tìm thấy ______ trong bệnh phẩm.", answer: "vi khuẩn lao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' }
+            ]
+        };
+
+        const shopItems = [ 
+ { id: 1, name: "Đồng hồ Rolex vàng", price: 5000, image: "https://media.rolex.com/image/upload/q_auto:eco/f_auto/t_v7-majesty/c_limit,w_1920/v1/catalogue/2025/upright-c/m278288rbr-0005.jpg" },
+            { id: 2, name: "Xe Lamborghini Aventador", price: 25000, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/2023_Lamborghini_Aventador_Ultimae.jpg/1280px-2023_Lamborghini_Aventador_Ultimae.jpg" },
+            { id: 3, name: "Nhà biệt thự ven biển", price: 15000, image: "https://media.vrbo.com/lodging/73000000/72930000/72921200/72921133/eaab08f5.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill" },
+            { id: 4, name: "Nhẫn kim cương 5 carat", price: 8000, image: "https://www.blissdiamond.com/cdn/shop/files/823979_source_1730313841_large.jpg?v=1749592757" },
+            { id: 5, name: "Vòng cổ Ngọc trai", price: 3000, image: "https://manssion.com/cdn/shop/files/MNS0724056.png?v=1721498245" },
+            { id: 6, name: "Tai nghe Sony WH-1000XM5", price: 1200, image: "https://cdn.shopify.com/s/files/1/0397/7166/8635/products/WH1000XM5_Silver.png?v=1761235815" },
+            { id: 7, name: "Giày Jordan 1 Retro", price: 1800, image: "https://cdn-images.farfetch-contents.com/13/15/76/97/13157697_21516295_600.jpg" },
+            { id: 8, name: "Túi xách Gucci", price: 4500, image: "https://eteft.com/cdn/shop/files/700457HUHHG8565.jpg?v=1735353907" },
+            { id: 9, name: "Túi Louis Vuitton Neverfull", price: 6000, image: "https://eu.louisvuitton.com/images/is/image/LV_M1/images/as/women/handbags/neverfull/neverfull-mm-monogram-canvas/M41107_PM2_Front%20view.png?wid=1080&hei=1080" },
+            { id: 10, name: "Đồng hồ Patek Philippe Nautilus", price: 12000, image: "https://cdn2.chrono24.com/cdn-cgi/image/f=auto,metadata=none,q=85/images/topmodels/2869-vl7x0sy3tsmthtu9lfx4mhvy-Main.png" },
+            { id: 11, name: "Siêu xe Ferrari SF90 Stradale", price: 30000, image: "https://res.cloudinary.com/unix-center/image/upload/c_limit,dpr_3.0,f_auto,fl_progressive,g_center,h_240,q_auto:good,w_385/fl7hxq9rczontkgsvvw0.jpg" },
+            { id: 12, name: "Nhẫn Cartier Love vàng trắng", price: 9000, image: "https://dsfantiquejewelry.com/cdn/shop/files/Cartier_Love_Ring_in_18K_White_Gold4.jpg?v=1752106079&width=1000" },
+            { id: 13, name: "Máy ảnh Leica Q3", price: 7000, image: "https://bizweb.dktcdn.net/100/107/650/products/leica-q3-43-20.jpg?v=1727679706187" },
+            { id: 14, name: "Áo khoác Moncler Maya", price: 4000, image: "https://cdn-images.farfetch-contents.com/20/90/37/77/20903777_50929134_600.jpg" },
+            { id: 15, name: "Du thuyền sang trọng", price: 50000, image: "https://images.northropandjohnson.com/yacht/48efItZiNi/0DBC6EA0-794E-EC11-8C62-000D3A5BCC1B/1740997405-extra-large-4.jpg?auto=format&q=65&h=1&ar=16%3A9&fit=crop" }
+        
+        ];
+
+        // Modal Đăng ký / Đăng nhập (có quên mật khẩu)
+        function showAuthModal() {
+    const modal = document.createElement('div');
+    modal.id = 'auth-modal';
+    modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[100] backdrop-blur-sm';
+    modal.innerHTML = `
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4 relative">
+            <h2 id="modal-title" class="text-2xl font-bold mb-6 text-center">Đăng nhập / Đăng ký</h2>
+            <p class="text-center text-gray-600 dark:text-gray-400 mb-6 text-sm">
+                Bạn cần đăng nhập để sử dụng đầy đủ tính năng ôn tập và lưu tiến độ.
+            </p>
+            <div id="error-msg" class="text-red-600 mb-4 text-center min-h-[24px]"></div>
+            <input id="email" type="email" placeholder="Email" class="w-full p-4 mb-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
+            <input id="password" type="password" placeholder="Mật khẩu (ít nhất 6 ký tự)" class="w-full p-4 mb-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
+            <div class="text-right mb-6">
+                <button id="forgot-password" class="text-primary hover:underline text-sm">Quên mật khẩu?</button>
+            </div>
+            <button id="submit-auth" class="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition">Đăng nhập</button>
+            <div class="text-center mt-4">
+                <button id="toggle-mode" class="text-primary hover:underline">Chưa có tài khoản? Đăng ký ngay</button>
+            </div>
+            <!-- ẨN nút × để buộc login -->
+            <!-- <button id="close-modal" class="absolute top-3 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl">×</button> -->
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    const title = modal.querySelector('#modal-title');
+    const submitBtn = modal.querySelector('#submit-auth');
+    const toggleBtn = modal.querySelector('#toggle-mode');
+    const forgotBtn = modal.querySelector('#forgot-password');
+    const errorEl = modal.querySelector('#error-msg');
+    let isLogin = true;
+
+    toggleBtn.onclick = () => {
+        isLogin = !isLogin;
+        title.textContent = isLogin ? 'Đăng nhập' : 'Đăng ký tài khoản';
+        submitBtn.textContent = isLogin ? 'Đăng nhập' : 'Tạo tài khoản';
+        toggleBtn.textContent = isLogin ? 'Chưa có tài khoản? Đăng ký ngay' : 'Đã có tài khoản? Đăng nhập';
+    };
+
+    // Quên mật khẩu
+    forgotBtn.onclick = async () => {
+        const email = modal.querySelector('#email').value.trim();
+        if (!email) {
+            errorEl.textContent = 'Vui lòng nhập email trước';
+            return;
+        }
+        try {
+            await sendPasswordResetEmail(auth, email);
+            alert('Đã gửi email đặt lại mật khẩu! Kiểm tra hộp thư (và thư rác).');
+            errorEl.textContent = '';
+        } catch (err) {
+            errorEl.textContent = 'Không thể gửi: ' + (err.message || 'Lỗi không xác định');
+        }
+    };
+
+    submitBtn.onclick = async () => {
+        const email = modal.querySelector('#email').value.trim();
+        const password = modal.querySelector('#password').value.trim();
+        if (!email || !password) {
+            errorEl.textContent = 'Vui lòng nhập đầy đủ thông tin';
+            return;
+        }
+
+        errorEl.textContent = '';
+        try {
+            let credential;
+            if (isLogin) {
+                credential = await signInWithEmailAndPassword(auth, email, password);
+            } else {
+                credential = await createUserWithEmailAndPassword(auth, email, password);
+            }
+            currentUser = credential.user;
+            await loadUserData();
+            modal.remove();
+            alert(isLogin ? 'Đăng nhập thành công!' : 'Đăng ký thành công! Bạn được tặng 100 Brain Coins.');
+        } catch (err) {
+    let msg = 'Có lỗi xảy ra. Vui lòng thử lại.';
+    
+    if (err.code === 'auth/invalid-credential') {
+        msg = 'Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại!';
+    } else if (err.code === 'auth/invalid-email') {
+        msg = 'Email không hợp lệ. Vui lòng nhập đúng định dạng.';
+    } else if (err.code === 'auth/user-disabled') {
+        msg = 'Tài khoản này đã bị khóa.';
+    } else if (err.code === 'auth/too-many-requests') {
+        msg = 'Bạn đã thử quá nhiều lần. Vui lòng chờ một lúc rồi thử lại.';
+    } else {
+        msg = err.message || 'Lỗi không xác định. Kiểm tra kết nối mạng.';
+    }
+    
+    errorEl.textContent = msg;
+}
+    };
+
+            modal.querySelector('#close-modal').onclick = () => modal.remove();
+        }
+
+        // Load & Save User Data
+       async function loadUserData() {
+    if (!currentUser) return;
+
+    const dbRef = ref(db);
+    const snapshot = await get(child(dbRef, `users/${currentUser.uid}`));
+
+    if (snapshot.exists()) {
+        userData = snapshot.val() || {};
+    } else {
+        userData = {
+            coins: 100,
+            streak: 0,
+            lastLogin: null,
+            inventory: [],           // đảm bảo luôn là mảng rỗng
+            displayName: null,
+            avatarUrl: null
+        };
+        await set(ref(db, `users/${currentUser.uid}`), userData);
+    }
+
+    // Xử lý streak
+    const today = new Date().toDateString();
+    if (userData.lastLogin !== today) {
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+        userData.streak = (userData.lastLogin === yesterday) ? (userData.streak || 0) + 1 : 1;
+        userData.lastLogin = today;
+        await update(ref(db, `users/${currentUser.uid}`), {
+            streak: userData.streak,
+            lastLogin: today
+        });
+    }
+
+    // Đảm bảo các trường an toàn
+    brainCoins = userData.coins || 0;
+    streak = userData.streak || 0;
+    inventory = Array.isArray(userData.inventory) ? userData.inventory : [];  // fix undefined.length
+    userData.displayName = userData.displayName || null;
+    userData.avatarUrl = userData.avatarUrl || null;
+
+    updateUI();
+    updateUserGreeting();
+    if (!document.getElementById('profile').classList.contains('hidden')) {
+        loadProfile();
+    }
+}
+
+        async function saveUserData(updates) {
+    if (!currentUser) {
+        console.error('Không có user đăng nhập');
+        return;
+    }
+
+    const userRef = ref(db, `users/${currentUser.uid}`);
+    console.log('Đang lưu vào path:', `users/${currentUser.uid}`);
+    console.log('Updates:', updates);
+
+    try {
+        // Lưu updates
+        await update(userRef, updates);
+        console.log('Update Firebase thành công');
+
+        // Force lấy lại dữ liệu mới nhất để xác nhận
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+            userData = snapshot.val() || {};
+            console.log('Dữ liệu mới từ Firebase:', userData);
+        } else {
+            console.warn('Node user không tồn tại sau update');
+        }
+
+        brainCoins = userData.coins || 0;
+        streak = userData.streak || 0;
+        inventory = Array.isArray(userData.inventory) ? userData.inventory : [];
+
+        updateUI();
+        updateUserGreeting();
+        loadProfile();
+    } catch (err) {
+        console.error('Lỗi khi lưu lên Firebase:', err);
+        alert('Lỗi khi lưu hồ sơ: ' + (err.message || 'Không xác định. Kiểm tra console để xem chi tiết.'));
+    }
+}
+
+        function updateUI() {
+            document.getElementById('coins').innerHTML = `Brain Coins: <span class="font-bold">${brainCoins}</span>`;
+            document.getElementById('streak').innerHTML = `Chuỗi: <span class="font-bold">${streak}</span> ngày`;
+        }
+
+
+        // Cập nhật lời chào header
+function updateUserGreeting() {
+    const greeting = document.getElementById('user-greeting');
+    const nameDisplay = document.getElementById('user-name-display');
+    if (currentUser) {
+        const name = userData.displayName || (currentUser.email?.split('@')[0] || 'bạn');
+        nameDisplay.textContent = name;
+        greeting.classList.remove('hidden');
+    } else {
+        greeting.classList.add('hidden');
+    }
+}
+
+// Mở modal chỉnh sửa
+function openEditProfileModal() {
+    const modal = document.getElementById('modal-display-name');
+    modal.classList.remove('hidden');
+
+    // Load dữ liệu hiện tại vào form
+    const currentName = userData.displayName || (currentUser.email?.split('@')[0] || '');
+    document.getElementById('modal-display-name').value = currentName;
+
+    const currentAvatar = userData.avatarUrl || '';
+    document.getElementById('modal-avatar-url').value = currentAvatar;
+
+    // Preview avatar
+    updateAvatarPreview(currentAvatar, currentName);
+}
+
+// Đóng modal
+function closeEditProfileModal() {
+    document.getElementById('modal-display-name').classList.add('hidden');
+    document.getElementById('edit-error').textContent = '';
+}
+
+// Cập nhật preview avatar khi nhập URL hoặc tên
+document.getElementById('modal-avatar-url')?.addEventListener('input', (e) => {
+    const url = e.target.value.trim();
+    const name = document.getElementById('modal-display-name').value.trim() || 'User';
+    updateAvatarPreview(url, name);
+});
+
+document.getElementById('modal-display-name')?.addEventListener('input', (e) => {
+    const name = e.target.value.trim();
+    const url = document.getElementById('modal-avatar-url').value.trim();
+    updateAvatarPreview(url, name);
+});
+
+function updateAvatarPreview(url, name) {
+    const previewImg = document.getElementById('preview-img');
+    const previewInitial = document.getElementById('preview-initial');
+    const container = document.getElementById('avatar-preview');
+
+    if (url && isValidImageUrl(url)) {
+        previewImg.src = url;
+        previewImg.classList.remove('hidden');
+        previewInitial.classList.add('hidden');
+    } else {
+        previewImg.classList.add('hidden');
+        previewInitial.classList.remove('hidden');
+        previewInitial.textContent = name.charAt(0).toUpperCase();
+    }
+}
+
+function isValidImageUrl(url) {
+    try {
+        new URL(url);
+        return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+    } catch {
+        return false;
+    }
+}
+
+// Toggle giữa view và edit mode
+function toggleEditMode() {
+    const view = document.getElementById('profile-view');
+    const edit = document.getElementById('profile-edit');
+    view.classList.toggle('hidden');
+    edit.classList.toggle('hidden');
+
+    if (!edit.classList.contains('hidden')) {
+        // Load dữ liệu hiện tại mỗi khi mở edit
+        const currentName = userData.displayName || (currentUser?.email?.split('@')[0] || '');
+        const currentAvatar = userData.avatarUrl || '';
+
+        document.getElementById('modal-display-name').value = currentName;
+        document.getElementById('modal-avatar-url').value = currentAvatar;
+
+        // Preview ngay lập tức
+        updateEditPreview(currentAvatar, currentName);
+
+        // Focus vào ô tên để dễ chỉnh
+        document.getElementById('modal-display-name').focus();
+    }
+}
+
+// Preview realtime trong edit mode
+function updateEditPreview(url, name) {
+    const img = document.getElementById('edit-preview-img');
+    const initial = document.getElementById('edit-preview-initial');
+
+    if (url && /\.(jpg|jpeg|png|gif|webp)$/i.test(url.toLowerCase())) {
+        img.src = url;
+        img.classList.remove('hidden');
+        initial.classList.add('hidden');
+    } else {
+        img.classList.add('hidden');
+        initial.classList.remove('hidden');
+        initial.textContent = (name || 'U').charAt(0).toUpperCase();
+    }
+}
+
+// Lưu thay đổi (gọi khi bấm Lưu)
+async function saveProfileChanges() {
+    if (!currentUser) {
+        alert('Bạn chưa đăng nhập!');
+        return;
+    }
+
+    // 🔥 LẤY ĐÚNG INPUT INLINE
+    const nameInput = document.getElementById('inline-display-name');
+    const avatarInput = document.getElementById('inline-avatar-url');
+
+    const newName = nameInput.value.trim();
+    const newAvatar = avatarInput.value.trim();
+
+    if (!newName) {
+        alert('Tên hiển thị không được để trống');
+        return;
+    }
+
+    await update(ref(db, `users/${currentUser.uid}`), {
+        displayName: newName,
+        avatarUrl: newAvatar
+    });
+
+    // cập nhật local
+    userData.displayName = newName;
+    userData.avatarUrl = newAvatar;
+
+    loadProfile();
+    updateUserGreeting();
+
+    alert('Cập nhật hồ sơ thành công!');
+}
+
+        // Cập nhật lại loadProfile để dùng displayName & avatar từ database
+function loadProfile() {
+    if (!currentUser) return;
+
+    const displayName = userData.displayName || (currentUser.email?.split('@')[0] || 'Bạn');
+    const avatarUrl = userData.avatarUrl || '';
+
+    // Avatar
+    const avatarImg = document.getElementById('profile-avatar-img');
+    const avatarInitial = document.getElementById('profile-avatar-initial');
+
+    if (avatarUrl) {
+        avatarImg.src = avatarUrl;
+        avatarImg.classList.remove('hidden');
+        avatarInitial.classList.add('hidden');
+        avatarImg.onerror = () => {
+            avatarImg.classList.add('hidden');
+            avatarInitial.classList.remove('hidden');
+            avatarInitial.textContent = displayName.charAt(0).toUpperCase();
+        };
+    } else {
+        avatarImg.classList.add('hidden');
+        avatarInitial.classList.remove('hidden');
+        avatarInitial.textContent = displayName.charAt(0).toUpperCase();
+    }
+
+    document.getElementById('profile-display-name').textContent = displayName;
+    document.getElementById('profile-email').textContent = currentUser.email || 'Không có';
+
+    document.getElementById('profile-coins').textContent = brainCoins.toLocaleString();
+    document.getElementById('profile-coins-badge').textContent = brainCoins.toLocaleString() + ' Coins';
+
+    document.getElementById('profile-streak').textContent = streak + ' ngày';
+    document.getElementById('profile-streak-badge').textContent = streak + ' ngày liên tục';
+
+    // Fix undefined.length
+    const invCount = Array.isArray(inventory) ? inventory.length : 0;
+    document.getElementById('profile-inventory-count').textContent = invCount;
+
+    document.getElementById('profile-correct-answers').textContent = `~${Math.floor(brainCoins / 10)}`;
+    document.getElementById('profile-max-streak').textContent = `${streak} ngày`;
+}
+
+
+        // Auth State
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            if (user) {
+                await loadUserData();
+                document.getElementById('logout-btn')?.classList.remove('hidden');
+                document.getElementById('auth-modal')?.remove();
+                updateUserGreeting();
+            } else {
+                document.getElementById('logout-btn')?.classList.add('hidden');
+                showAuthModal();
+            }
+        });
+
+        document.getElementById('logout-btn')?.addEventListener('click', () => signOut(auth));
+
+        // Dark Mode
+        document.getElementById('dark-toggle').onclick = () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        };
+
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Các hàm logic chính (giữ nguyên như cũ, chỉ thêm showSection fix profile)
+        function selectSubject(subjectKey) { 
+currentSubject = subjectKey;
+            questions = questionBank[subjectKey] || [];
+
+            document.getElementById('app-title').textContent = 
+                subjectKey === 'lao' ? 'Ôn Tập Lao - TCDY035' :
+                subjectKey === 'tt-lao' ? 'Ôn Tập TT. Lao - TCDY036' : 'Ôn Tập';
+
+            const displayEl = document.getElementById('current-subject-display');
+            if (displayEl) displayEl.textContent = 
+                subjectKey === 'lao' ? 'Lao (TCDY035)' :
+                subjectKey === 'tt-lao' ? 'TT. Lao (TCDY036)' : 'Không xác định';
+
+            document.getElementById('subject-select').classList.add('hidden');
+            document.getElementById('main-nav').classList.remove('hidden');
+            document.getElementById('back-to-subjects').classList.remove('hidden');
+
+            const numSets = 5;
+            const perSet = questions.length > 0 ? Math.ceil(questions.length / numSets) : 0;
+            testSets = Array.from({length: numSets}, (_, i) => ({
+                name: `Bộ ${i+1}`,
+                questions: questions.slice(i * perSet, (i + 1) * perSet)
+            }));
+
+            currentQuestionIndex = 0;
+            showSection('home');
+            loadQuestionList();
+            loadSetSelect();
+        
+ }
+        function backToSubjectSelect() { 
+currentSubject = null;
+            questions = [];
+            currentQuestionIndex = 0;
+            currentSet = null;
+            testSets = [];
+            mockTestQuestions = [];
+            mockTestAnswers = [];
+
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('subject-select').classList.remove('hidden');
+            document.getElementById('main-nav').classList.add('hidden');
+            document.getElementById('back-to-subjects').classList.add('hidden');
+            document.getElementById('app-title').textContent = 'Ôn Tập Pro Mode';
+ }
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            const section = document.getElementById(id);
+            if (section) {
+                section.classList.remove('hidden');
+                if (id === 'fill-blank') loadQuestionList();
+                if (id === 'test-sets') loadSetSelect();
+                if (id === 'shop') loadShop();
+                if (id === 'inventory') loadInventory();
+                if (id === 'profile') loadProfile();
+            }
+        }
+        function loadQuestionList() {
+            const list = document.getElementById('question-list');
+            if (!list) return;
+            list.innerHTML = '';
+            if (questions.length === 0) {
+                list.innerHTML = '<li class="p-3 text-gray-500">Chưa có câu hỏi cho môn này</li>';
+                return;
+            }
+            questions.forEach((q, i) => {
+                const li = document.createElement('li');
+                li.className = 'p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition text-sm';
+                li.textContent = `Câu ${i+1}: ${q.text.substring(0, 50)}...`;
+                li.onclick = () => {
+                    currentQuestionIndex = i;
+                    loadQuestion();
+                    document.getElementById('question-container').classList.remove('hidden');
+                };
+                list.appendChild(li);
+            });
+        }
+
+        function searchQuestions() {
+            const search = document.getElementById('search').value.toLowerCase();
+            document.querySelectorAll('#question-list li').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(search) ? 'block' : 'none';
+            });
+        }
+
+        function loadQuestion(mode = '') {
+            const prefix = mode ? mode + '-' : '';
+            const q = mode === 'set' ? currentSet.questions[currentQuestionIndex] :
+                      mode === 'test' ? mockTestQuestions[currentQuestionIndex] : questions[currentQuestionIndex];
+            if (!q) return;
+
+            isJackpot = Math.random() < 0.05;
+            document.getElementById(prefix + 'difficulty').textContent = `Độ khó: ${q.difficulty}${isJackpot ? ' (Jackpot)' : ''}`;
+            document.getElementById(prefix + 'bet-options').innerHTML = `
+                <button onclick="placeBet(1, '${mode}')" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition">Cược Bình Thường (x1)</button>
+                <button onclick="placeBet(2, '${mode}')" class="px-4 py-2 bg-blue-200 dark:bg-blue-700 rounded-lg hover:bg-blue-300 dark:hover:bg-blue-600 transition">Cược X2</button>
+                <button onclick="placeBet(0, '${mode}')" class="px-4 py-2 bg-red-200 dark:bg-red-700 rounded-lg hover:bg-red-300 dark:hover:bg-red-600 transition">Double or Nothing</button>
+            `;
+            document.getElementById(prefix + 'question').innerHTML = q.text.replace('______', '<span style="border-bottom:1px solid black; width:100px;display:inline-block;"> </span>');
+            document.getElementById(prefix + 'answer-input').value = mode === 'test' ? (mockTestAnswers[currentQuestionIndex] || '') : '';
+            document.getElementById(prefix + 'result').textContent = '';
+            if (mode === 'test') updateTestProgress();
+        }
+
+        function placeBet(bet, mode = '') {
+            currentBet = bet;
+            document.getElementById((mode ? mode + '-' : '') + 'bet-options').style.display = 'none';
+        }
+
+        async function checkAnswer(mode = '') {
+            const prefix = mode ? mode + '-' : '';
+            const inputEl = document.getElementById(prefix + 'answer-input');
+            const resultEl = document.getElementById(prefix + 'result');
+
+            if (mode === 'test') mockTestAnswers[currentQuestionIndex] = inputEl.value.trim();
+
+            const q = mode === 'set' ? currentSet.questions[currentQuestionIndex] :
+                      mode === 'test' ? mockTestQuestions[currentQuestionIndex] : questions[currentQuestionIndex];
+            const userAnswer = inputEl.value.trim().toLowerCase();
+            const correct = userAnswer === q.answer.toLowerCase();
+
+            resultEl.textContent = correct ? 'Đúng!' : 'Sai!';
+            resultEl.className = correct ? 'mt-6 text-lg font-bold text-green-600' : 'mt-6 text-lg font-bold text-red-600';
+
+            if (mode !== 'test' && currentUser) {
+                if (correct) {
+                    let reward = 10 * streak;
+                    if (currentBet === 2) reward *= 2;
+                    if (currentBet === 0) reward *= 2;
+                    if (isJackpot) reward *= 10;
+                    brainCoins += reward;
+                } else if (currentBet === 0) {
+                    brainCoins = Math.max(0, brainCoins - 20);
+                }
+                await saveUserData({ coins: brainCoins });
+            }
+        }
+
+        function showAnswer(mode = '') {
+            const prefix = mode ? mode + '-' : '';
+            const q = mode === 'set' ? currentSet.questions[currentQuestionIndex] :
+                      mode === 'test' ? mockTestQuestions[currentQuestionIndex] : questions[currentQuestionIndex];
+            document.getElementById(prefix + 'result').textContent = `Đáp án: ${q.answer}`;
+        }
+
+        function prevQuestion(mode = '') {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(mode);
+            }
+        }
+
+        function nextQuestion(mode = '') {
+            const max = mode === 'set' ? currentSet.questions.length - 1 :
+                        mode === 'test' ? mockTestQuestions.length - 1 : questions.length - 1;
+            if (currentQuestionIndex < max) {
+                currentQuestionIndex++;
+                loadQuestion(mode);
+            } else if (mode === 'test' && !mockTestSubmitted) {
+                if (confirm('Bạn đã làm hết câu. Bạn muốn nộp bài ngay bây giờ?')) submitTest();
+            }
+        }
+
+        function loadSetSelect() {
+            const select = document.getElementById('set-select');
+            select.innerHTML = '';
+            testSets.forEach((set, i) => {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = set.name;
+                select.appendChild(option);
+            });
+        }
+
+        function loadSet() {
+            const index = document.getElementById('set-select').value;
+            currentSet = testSets[index];
+            currentQuestionIndex = 0;
+            document.getElementById('set-question-container').classList.remove('hidden');
+            loadQuestion('set');
+        }
+
+        function updateTestProgress() {
+            document.getElementById('test-progress').textContent = `Câu ${currentQuestionIndex + 1} / ${mockTestQuestions.length}`;
+        }
+
+        document.getElementById('test-answer-input')?.addEventListener('input', (e) => {
+            if (document.getElementById('mock-test').classList.contains('hidden')) return;
+            mockTestAnswers[currentQuestionIndex] = e.target.value.trim();
+        });
+
+        function startMockTest() {
+            mockTestQuestions = Array.from({length: questions.length}, (_, i) => i)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 30)
+                .map(i => questions[i]);
+            mockTestAnswers = new Array(30).fill("");
+            currentQuestionIndex = 0;
+            timeLeft = 1200;
+            mockTestSubmitted = false;
+            mockTestStartTime = new Date();
+            document.getElementById('test-container').classList.remove('hidden');
+            document.getElementById('score').innerHTML = '';
+            document.getElementById('review-container').classList.add('hidden');
+            document.getElementById('review-container').innerHTML = '';
+            document.querySelectorAll('#test-container button').forEach(btn => btn.style.display = 'inline-block');
+            document.getElementById('new-test-btn')?.remove();
+            document.getElementById('review-btn')?.remove();
+            loadQuestion('test');
+            updateTestProgress();
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            const min = Math.floor(timeLeft / 60);
+            const sec = timeLeft % 60;
+            document.getElementById('timer').textContent = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                submitTest();
+            }
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            mockTestSubmitted = true;
+            let correctCount = 0;
+            mockTestQuestions.forEach((q, i) => {
+                if (mockTestAnswers[i]?.trim().toLowerCase() === q.answer.toLowerCase()) correctCount++;
+            });
+            const score = Math.round((correctCount / 30) * 100);
+            const timeTaken = Math.floor((Date.now() - mockTestStartTime) / 1000 / 60);
+            document.getElementById('score').innerHTML = `
+                <div class="text-3xl font-bold text-primary mb-2">Kết quả: ${score}/100</div>
+                <div class="text-xl">Bạn trả lời đúng <span class="font-bold text-green-600">${correctCount}</span> / 30 câu</div>
+                <div class="text-lg text-gray-600 dark:text-gray-400">Thời gian: ${timeTaken} phút</div>
+            `;
+            document.querySelectorAll('#test-container button').forEach(btn => {
+                if (!btn.textContent.includes('Thi mới') && !btn.textContent.includes('Xem đáp án')) btn.style.display = 'none';
+            });
+            const container = document.getElementById('test-container');
+            if (!document.getElementById('review-btn')) {
+                const reviewBtn = document.createElement('button');
+                reviewBtn.id = 'review-btn';
+                reviewBtn.textContent = 'Xem đáp án chi tiết';
+                reviewBtn.className = 'px-8 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition mt-6 mx-2';
+                reviewBtn.onclick = showReview;
+                container.appendChild(reviewBtn);
+
+                const newTestBtn = document.createElement('button');
+                newTestBtn.id = 'new-test-btn';
+                newTestBtn.textContent = 'Thi mới';
+                newTestBtn.className = 'px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition mt-6 mx-2';
+                newTestBtn.onclick = startMockTest;
+                container.appendChild(newTestBtn);
+            }
+        }
+
+        function showReview() {
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.classList.remove('hidden');
+            reviewContainer.innerHTML = '<h3 class="text-2xl font-bold mb-6 text-center">Đáp án chi tiết</h3>';
+            mockTestQuestions.forEach((q, i) => {
+                const userAns = mockTestAnswers[i] ? mockTestAnswers[i].trim() : '(chưa trả lời)';
+                const isCorrect = userAns.toLowerCase() === q.answer.toLowerCase();
+                const statusColor = isCorrect ? 'text-green-600' : 'text-red-600';
+                const statusText = isCorrect ? 'Đúng' : (userAns === '(chưa trả lời)' ? 'Chưa trả lời' : 'Sai');
+                const div = document.createElement('div');
+                div.className = 'mb-6 p-6 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600';
+                div.innerHTML = `
+                    <div class="font-bold mb-2">Câu ${i+1}:</div>
+                    <div class="mb-3">${q.text.replace('______', '___')}</div>
+                    <div class="mb-2">Đáp án của bạn: <span class="${statusColor} font-medium">${userAns}</span> (${statusText})</div>
+                    <div class="text-green-600 font-medium">Đáp án đúng: ${q.answer}</div>
+                `;
+                reviewContainer.appendChild(div);
+            });
+            reviewContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function loadShop() {
+            const container = document.getElementById('shop-items');
+            container.innerHTML = '';
+            shopItems.forEach(item => {
+                const owned = inventory.includes(item.id);
+                const card = document.createElement('div');
+                card.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 transform hover:scale-105 transition';
+                card.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold mb-2">${item.name}</h3>
+                        <p class="text-primary font-semibold mb-4">${item.price.toLocaleString()} Brain Coins</p>
+                        ${owned ? '<button class="w-full py-3 bg-gray-500 text-white rounded-xl cursor-not-allowed" disabled>Đã sở hữu</button>' : 
+                          `<button onclick="buyItem(${item.id}, ${item.price})" class="w-full py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">Mua ngay</button>`}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function buyItem(itemId, price) {
+            if (brainCoins < price) return alert("Không đủ Brain Coins!");
+            const itemName = shopItems.find(i => i.id === itemId)?.name || 'vật phẩm';
+            if (!confirm(`Mua "${itemName}" với ${price} coins?`)) return;
+
+            brainCoins -= price;
+            if (!inventory.includes(itemId)) inventory.push(itemId);
+
+            await saveUserData({
+                coins: brainCoins,
+                inventory: inventory
+            });
+
+            loadShop();
+            loadInventory();
+            alert("Mua thành công!");
+        }
+
+        function loadInventory() {
+            const container = document.getElementById('inventory-items');
+            container.innerHTML = '';
+            if (inventory.length === 0) {
+                container.innerHTML = '<p class="text-center col-span-full py-10 text-gray-500">Kho đồ trống. Đi mua sắm đi!</p>';
+                return;
+            }
+            inventory.forEach(id => {
+                const item = shopItems.find(i => i.id === id);
+                if (item) {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700';
+                    card.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover">
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold mb-2">${item.name}</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Đã sở hữu</p>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+        }
+
+        // Export hàm ra window để onclick hoạt động
+        Object.assign(window, {
+            
+            selectSubject,
+            backToSubjectSelect,
+            showSection,
+            loadQuestionList,
+            searchQuestions,
+            checkAnswer,
+            showAnswer,
+            prevQuestion,
+            nextQuestion,
+            loadSet,
+            loadSetSelect,
+            startMockTest,
+            submitTest,
+            showReview,
+            buyItem,
+            placeBet,
+            updateTestProgress,
+toggleEditMode,
+    saveProfileChanges,
+    updateUserGreeting,
+    loadProfile,
+updateUI
+
+        });
+
+        // Khởi tạo
+        updateUI();
+    </script>
+
+</body>
+</html>
