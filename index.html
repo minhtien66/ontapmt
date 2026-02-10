@@ -146,6 +146,11 @@
                     <h3 class="text-2xl font-bold text-accent mb-2">TT. Lao</h3>
                     <p class="text-gray-600 dark:text-gray-400">Mã: TCDY036</p>
                 </button>
+<button onclick="selectSubject('ung-thu-dai-cuong')" class="p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all border-2 border-red-500">
+    <h3 class="text-2xl font-bold text-red-500 mb-2">Ung thư đại cương</h3>
+    <p class="text-gray-600 dark:text-gray-400">Mã: TCDY117</p>
+</button>
+
             </div>
         </section>
 
@@ -423,7 +428,8 @@
         let currentSubject = null;
 let progress = {
     lao: { currentIndex: 0, answered: 0, correct: 0, total: 0 },
-    "tt-lao": { currentIndex: 0, answered: 0, correct: 0, total: 0 }
+    "tt-lao": { currentIndex: 0, answered: 0, correct: 0, total: 0 },
+    "ung-thu-dai-cuong": { currentIndex: 0, answered: 0, correct: 0, total: 0 }
 };
         let questions = [];
         let currentQuestionIndex = 0;
@@ -1058,7 +1064,871 @@ let progress = {
             "tt-lao": [
                 { text: "Test IGRA phát hiện sự tiết cytokine đặc biệt là ______.", answer: "IFN gamma", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
                 { text: "Tiêu chuẩn vàng chẩn đoán lao là tìm thấy ______ trong bệnh phẩm.", answer: "vi khuẩn lao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' }
-            ]
+            ],
+
+"ung-thu-dai-cuong": [
+  { text: "Ung thư là quá trình bệnh lý trong đó một số tế bào thoát ra khỏi sự ______ và sự ______ sinh lý của tế bào.", answer: "kiểm soát; biệt hóa", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Các tế bào ung thư tiếp tục ______, có khả năng ______ và phá hủy các tổ chức chung quanh.", answer: "nhân lên; xâm lấn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Các tế bào ung thư có thể di trú và phát triển ở nhiều cơ quan khác nhau tạo thành ______.", answer: "di căn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư có thể gây tử vong do các biến chứng cấp tính như ______, ______ và ______.", answer: "xuất huyết ồ ạt; chèn ép não; ngạt thở", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư tiến triển nặng dần có thể dẫn đến rối loạn chức năng cơ quan như ______ và ______.", answer: "thiểu năng hô hấp; suy chức năng gan thận", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Sự thoái triển kéo dài của ung thư dẫn đến ______ và cuối cùng bệnh nhân ______.", answer: "suy kiệt; tử vong", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Giai đoạn khởi đầu của ung thư thường xảy ra nhanh sau khi tế bào tiếp xúc với các tác nhân ______, ______ và ______.", answer: "vật lý; hóa học; virus", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Các tác nhân gây ung thư gây ra tổn thương ______ của DNA tế bào.", answer: "không hồi phục", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Giai đoạn thúc đẩy của ung thư do tiếp xúc ______, ______ với các chất gây ung thư.", answer: "liên tục; kéo dài", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trong giai đoạn tiến triển, tế bào ung thư mất khả năng ______ và xâm lấn ______.", answer: "biệt hóa; cục bộ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Dự phòng giai đoạn khởi đầu ung thư cần tránh tiếp xúc với các tác nhân như ______, ______ và ______.", answer: "thuốc lá; benzol; tia phóng xạ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Bản chất của ung thư tiến triển là khối u phát triển ______, xâm lấn vùng và cho ______.", answer: "cục bộ; di căn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Di căn ung thư là hiện tượng tế bào ung thư tách khỏi ______ để đến cư trú ở cơ quan khác.", answer: "u nguyên phát", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư biểu mô thường di căn theo đường ______ đến các trạm hạch ______.", answer: "bạch huyết; khu vực", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Sự hiện diện của di căn bạch huyết là đặc hiệu của ung thư đang ______.", answer: "tiến triển", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư của tổ chức liên kết thường di căn theo đường ______ đến gan, phổi và não.", answer: "máu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư dạ dày có thể lan qua lớp ______ vào ổ bụng gây di căn buồng trứng.", answer: "thanh mạc", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khoảng ______ % trường hợp ung thư có thể phòng tránh được.", answer: "50", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thuốc lá có liên quan rõ rệt đến các ung thư như phổi, thanh quản, khoang miệng và ______.", answer: "bàng quang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trong thuốc lá có hơn ______ loại hóa chất, nhiều chất có khả năng gây ung thư.", answer: "4000", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tư vấn di truyền trong ung thư nhằm đánh giá ______ và xây dựng chính sách ______ phù hợp.", answer: "nguy cơ di truyền; sàng lọc", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tamoxifen được sử dụng để dự phòng ung thư ______ ở người có nguy cơ cao.", answer: "vú", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Mục đích của sàng lọc ung thư là phát hiện ung thư khi chưa có biểu hiện ______.", answer: "lâm sàng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Sàng lọc ung thư giúp cải thiện ______ và làm giảm ______.", answer: "tiên lượng; tỷ lệ tử vong", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Chẩn đoán xác định ung thư cần thực hiện ______ khối u.", answer: "sinh thiết", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Xếp giai đoạn ung thư dựa trên mức độ xâm lấn tại chỗ, mức độ ______ và tình trạng ______ bệnh nhân.", answer: "di căn xa; toàn thân", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật ung thư có khả năng điều trị tốt nhất các ung thư ở giai đoạn ______ và ______.", answer: "tại chỗ; tại vùng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Điều trị tia xạ sử dụng tia bức xạ ______ để điều trị ung thư.", answer: "ion hóa", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hóa chất chống ung thư là các chất gây độc ______.", answer: "tế bào", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Điều trị ung thư hướng đích tác động vào các ______ đặc hiệu liên quan đến sự phát triển khối u.", answer: "phân tử", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tiên lượng ung thư phụ thuộc vào giai đoạn bệnh, cơ quan bị ung thư và ______ của tế bào ung thư.", answer: "độ ác tính", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hiện nay tỷ lệ mắc bệnh ung thư được dự báo ngày càng ______.", answer: "tăng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Đa số ung thư được phát hiện ở giai đoạn ______ nên kết quả chữa khỏi còn hạn chế.", answer: "muộn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Cách lý tưởng nhất trong phòng chống ung thư là biết cách ______ ung thư.", answer: "dự phòng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nguyên nhân sinh ung thư rất đa dạng, trong đó thuốc lá và ______ là các tác nhân đã được biết rõ.", answer: "amian", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Nghiên cứu nguyên nhân ung thư dựa trên hiểu biết sinh học và bằng chứng ______ học.", answer: "dịch tễ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Sự khác biệt tần suất ung thư được phân tích theo giới tính, tuổi tác, kinh tế xã hội và ______.", answer: "địa dư", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nguyên nhân sinh ung thư gồm 2 nhóm chính là yếu tố môi trường và tác nhân ______.", answer: "di truyền", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Percival Pott phát hiện mối liên quan ung thư da bìu với nghề thợ nạo ống khói vào năm ______.", answer: "1775", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Các tác nhân môi trường gây ung thư gồm tác nhân vật lý, hóa học và ______.", answer: "sinh học", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tác nhân vật lý gây ung thư chủ yếu là bức xạ ion hóa và tia ______.", answer: "cực tím", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Tỷ lệ tất cả ung thư do tia phóng xạ chiếm khoảng ______ %.", answer: "2-3", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư tuyến giáp tăng rõ ở những người điều trị tia xạ vùng cổ lúc còn ______.", answer: "trẻ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Nguy cơ ung thư phổi tăng ở thợ mỏ do tiếp xúc khí ______.", answer: "radon", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Sau thảm họa Chernobyl, ung thư tuyến giáp ở trẻ em tăng gấp ______ lần.", answer: "10", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tia phóng xạ gây ung thư thông qua tạo ra các ______ tự do.", answer: "gốc", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Các gốc tự do tác động lên ______ của ADN gây đột biến.", answer: "base", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Cơ quan nhạy cảm với tia xạ gồm tuyến giáp và ______.", answer: "tủy xương", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tia cực tím trong ánh sáng mặt trời gồm 3 loại A, B và ______.", answer: "C", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Tia C gây đột biến mạnh nhất nhưng được lọc bởi tầng ______.", answer: "ozon", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Tia B kích thích da tạo sắc tố ______.", answer: "melanin", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Những người làm việc ngoài trời có nguy cơ cao ung thư tế bào đáy và tế bào ______.", answer: "vảy", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Tỷ lệ ung thư hắc tố cao hơn ở người da trắng sống tại vùng ______.", answer: "nhiệt đới", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hút thuốc lá làm tăng nguy cơ ung thư phổi, thanh quản, khoang miệng, thực quản và ______.", answer: "bàng quang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Trong khói thuốc lá có trên ______ hóa chất.", answer: "4000", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Số chất gây ung thư đã được nhận biết trong khói thuốc lá là ______.", answer: "43", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nitrosamine là chất gây ung thư mạnh, có vai trò chủ yếu trong ung thư phổi và ______.", answer: "thực quản", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Polonium-210 trong khói thuốc có hoạt tính ______.", answer: "phóng xạ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thuốc lá là nguyên nhân của khoảng ______ % ung thư phế quản.", answer: "90", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Tổng cộng thuốc lá gây ra khoảng ______ % các loại ung thư.", answer: "30", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Lạm dụng rượu làm tăng nguy cơ ung thư vùng miệng, họng, thanh quản, thực quản và ______.", answer: "gan", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nhiễm Aspergillus flavus tạo ra độc tố ______ gây ung thư gan.", answer: "aflatoxin", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Đột biến gen P53 được tìm thấy trong ______ % ung thư gan nguyên phát liên quan aflatoxin.", answer: "53", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phơi nhiễm nghề nghiệp có thể gây ra khoảng ______ % tử vong do ung thư.", answer: "3", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Amian là chất quan trọng nhất gây ung thư phổi do ______.", answer: "nghề nghiệp", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Virus Epstein-Barr thuộc họ ______.", answer: "Herpes", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "EBV có liên quan đến u lymphô Burkitt và ung thư biểu mô ______.", answer: "vòm họng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khoảng ______ % ung thư gan nguyên phát liên quan đến HBV.", answer: "80", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Xét nghiệm phát hiện người mang HBV là ______.", answer: "HBsAg (+)", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HPV lây truyền chủ yếu qua đường ______.", answer: "sinh dục", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "HTLV-1 gây bệnh bạch cầu/u lymphô tế bào ______.", answer: "T", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nhiễm Schistosoma có liên quan đến ung thư ______.", answer: "bàng quang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "H. pylori liên quan rõ ràng hơn với u lymphô ______ dạ dày.", answer: "MALT", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Gen ức chế ung thư quan trọng trong ung thư liên bào võng mạc là gen ______.", answer: "P53", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Chuyển đoạn 9/22 gặp trong ung thư bạch cầu mạn thể ______.", answer: "tủy", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nguy cơ u lymphô ác không Hodgkin ở bệnh nhân ghép thận tăng ______ lần.", answer: "32", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Sarcome Kaposi thường gặp ở bệnh nhân nhiễm ______.", answer: "HIV", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Estrogen liều cao kéo dài có thể gây ung thư ______.", answer: "vú", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "DES từng được dùng cho phụ nữ mang thai và sau đó bị cấm do gây ung thư ______.", answer: "âm hộ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Yếu tố nguy cơ quan trọng nhất của ung thư tiền liệt tuyến là ______.", answer: "tuổi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Testosterone chuyển hóa thành ______ làm tăng sinh tế bào tiền liệt tuyến.", answer: "dihydrotestosterone", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khối u dù là lành tính hay ác tính cũng cần phải được ______ sớm.", answer: "phát hiện", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Để có chẩn đoán đúng và chính xác, khối u cần được thăm khám ______.", answer: "tỷ mỷ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một khối u có thể được phát hiện tình cờ bởi ______ hoặc qua các đợt khám sức khỏe.", answer: "bệnh nhân", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khối u có thể được phát hiện qua tổ chức khám sức khỏe ______ tại cộng đồng.", answer: "hàng loạt", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Theo Abedanet, khối u là một tổ chức ______.", answer: "tân sinh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khối u là kết quả của sự tăng sinh khuyếch đại từ các ______ của một tổ chức trong cơ thể.", answer: "tế bào", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khối u có xu hướng tồn tại và lớn lên một cách ______.", answer: "không giới hạn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Theo Willis, khối u vẫn tồn tại mặc dù đã lấy đi các yếu tố ______.", answer: "kích thích", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "U là một tổ chức tân sinh nhưng có cấu trúc mang đặc điểm của tổ chức đã ______ nó.", answer: "sinh ra", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "U vú dù là lành tính hay ác tính vẫn mang đặc điểm của tổ chức ______.", answer: "tuyến vú", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tổ chức nhiễm trùng sờ thấy giống u nhưng thực chất chỉ là tổ chức ______.", answer: "giả u", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tổ chức giả u không phải là một tổ chức ______.", answer: "tân sinh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tổ chức giả u tồn tại gắn liền với quá trình ______.", answer: "nhiễm trùng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tất cả mọi ______ trong cơ thể đều có thể phát sinh u.", answer: "cơ quan", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Có những u không thể phát hiện được qua thăm khám ______.", answer: "lâm sàng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một cơ quan có thể đồng thời tồn tại u lành và u ______.", answer: "ác", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Việc khám u cần kết hợp giữa lâm sàng và ______.", answer: "cận lâm sàng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Bệnh nhân có thể được khám ở tư thế nằm, ngồi hoặc tư thế ______.", answer: "đặc biệt", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khi khám vú cần bộc lộ rõ vùng ngực, cổ và ______.", answer: "nách", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khi khám cần so sánh tổn thương với bên ______.", answer: "lành", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nhìn giúp xác định vị trí u, đặc biệt là các u nằm ở ______.", answer: "nông", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Sờ giúp đánh giá kích thước, mật độ, ranh giới và mức độ ______ của u.", answer: "di động", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "U lành thường có ranh giới ______.", answer: "rõ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "U không xâm lấn các tổ chức xung quanh thường có tính ______.", answer: "di động", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư tiêu hóa cần phát hiện hạch Troiser ở vùng ______ bên trái.", answer: "thượng đòn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Gõ giúp đánh giá các u sâu ở vùng ______ và ngực.", answer: "bụng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nghe cần thiết khi khám các u có biểu hiện chèn ép hoặc phì đại ______.", answer: "mạch máu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tế bào học do Lebert đề xuất vào năm ______.", answer: "1825", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tế bào học là phương pháp đơn giản, ít tốn kém và ______.", answer: "dễ làm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Kết quả tế bào học (+) có giá trị ______ chẩn đoán.", answer: "quyết định", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Kết quả tế bào học (-) không có nghĩa là ______ chẩn đoán.", answer: "phủ định", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tổ chức học đánh giá hình thái tế bào u và cấu trúc ______.", answer: "tổ chức đệm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "X quang giúp phát hiện các u sâu với kích thước nhỏ khoảng ______ cm.", answer: "1", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Siêu âm không quyết định chẩn đoán nhưng giúp ______ chẩn đoán.", answer: "định hướng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "AFP tăng cao đặc biệt trong ung thư ______ nguyên phát.", answer: "gan", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "CEA thường tăng trong ung thư đại tràng, phổi và ______.", answer: "dạ dày", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hormon HCG là chất chỉ điểm của ung thư rau thai và ______.", answer: "tinh hoàn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "U lành thường phát triển ______.", answer: "chậm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "U lành thường có vỏ ______ bao bọc.", answer: "xơ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "U ác tính thường phát triển rất ______.", answer: "nhanh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "U ác tính thường có mật độ ______.", answer: "rắn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "U ác tính thường di căn theo ba con đường: xâm lấn kế cận, đường máu và ______.", answer: "bạch mạch", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tế bào học u ác tính dựa trên tiêu chuẩn thay đổi ______.", answer: "nhân", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Sự xuất hiện khối u có thể là triệu chứng phát hiện ______ hoặc là trực tiếp hoặc do những rối loạn do khối u tạo ra.", answer: "duy nhất", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Khi ung thư đã xâm lấn cấu trúc lành lân cận, khối u thường ______ di động, bờ ______, sờ thấy ______.", answer: "ít; không đều; cứng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Một ví dụ của hội chứng khối u là sự xuất hiện của một khối u ở ______.", answer: "vú", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "U não gây phù não có thể tạo ra tăng áp lực nội sọ với các triệu chứng đau đầu, ______ và tai biến mạch não.", answer: "nôn mửa", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Khó nuốt có thể do khối u ở ______.", answer: "thực quản", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Chèn ép niệu quản và niệu đạo có thể gặp trong ung thư ______.", answer: "tiền liệt tuyến", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Hội chứng bàng quang bé có thể gặp trong ung thư ______.", answer: "bàng quang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nhiều rối loạn tiêu hóa có thể do ung thư ______ và ung thư ______.", answer: "đại tràng; buồng trứng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+{ text: "Ung thư xâm lấn cục bộ làm thay đổi ______ hoặc rối loạn ______ của cơ quan bị xâm lấn.", answer: "hình thể; chức năng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Da màu da cam là dấu hiệu khi ung thư xâm lấn tới ______.", answer: "da", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nói khó có thể gặp trong ung thư ______ xâm lấn dây thanh âm.", answer: "thanh quản", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nuốt khó có thể liên quan đến ung thư ______ hoặc ung thư vùng ______.", answer: "thực quản; đầu mặt cổ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Đầy bụng khó tiêu có thể liên quan đến ung thư ______.", answer: "dạ dày", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Táo bón có thể liên quan đến ung thư ______.", answer: "đại trực tràng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Phù áo khoác là biểu hiện của hội chứng ______.", answer: "tĩnh mạch chủ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Đau do chèn ép dây thần kinh ngoại biên có thể gặp khi di căn ______.", answer: "xương", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Xâm lấn vào rốn trong ung thư buồng trứng được gọi là hội chứng ______.", answer: "Syster Mary", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+{ text: "Khối u phát triển lớn cần nhiều mạch máu nuôi dưỡng, sự suy yếu hệ mạch dẫn đến ______ và xuất huyết.", answer: "hoại tử", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Ho ra máu có thể gặp trong ung thư ______.", answer: "phế quản", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nôn ra máu và đi cầu phân đen gặp trong ung thư ______.", answer: "dạ dày", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tiểu máu có thể gặp trong ung thư bàng quang, thận, niệu quản hoặc ______.", answer: "tiền liệt tuyến", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Xuất huyết âm đạo là dấu hiệu có thể gặp trong ung thư ______.", answer: "cổ tử cung", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trước mỗi trường hợp xuất huyết cần phải ______ toàn bộ để tìm nguyên nhân.", answer: "thăm khám", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+{ text: "Hoại tử khối u thường xảy ra do hệ thống mạch máu nuôi dưỡng ______.", answer: "nghèo nàn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Hoại tử khối u có thể gây vết thương ______.", answer: "chậm liền", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Mùi rất hôi là đặc trưng trong ung thư ______ và ung thư ______.", answer: "đầu mặt cổ; phụ khoa", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+{ text: "Khoảng chừng ______% bệnh nhân ung thư khi đến khám đã có di căn.", answer: "15", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Hạch Troisier là di căn hạch ______.", answer: "thượng đòn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Di căn gan có thể gây ra ______ và ______.", answer: "vàng da; đau gan", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Di căn não thường gây triệu chứng ______ và ______.", answer: "nhức đầu; yếu liệt", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+{ text: "Thăm khám lâm sàng ______ là cách tốt nhất để đạt được chẩn đoán và xếp giai đoạn bệnh chính xác.", answer: "toàn diện", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trước tiên nên để bệnh nhân có đủ ______ để trình bày về tình hình bệnh tật.", answer: "thời gian", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thầy thuốc cần kiên nhẫn ______ để có thêm thông tin và thể hiện sự lịch sự, tôn trọng.", answer: "lắng nghe", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Những câu hỏi lâm sàng nên chính xác, kín đáo và ______.", answer: "thân thiện", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Một cuộc đối thoại mở giúp tạo sự ______ và thân thiện với bệnh nhân.", answer: "tin tưởng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thăm khám lâm sàng nên ______ tránh những thao tác gây đau đớn không cần thiết.", answer: "nhẹ nhàng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Trong một số trường hợp khó có thể gây mê ______ khi thăm khám.", answer: "toàn thân", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thăm khám lâm sàng không kỹ sẽ gây lãng phí ______ và ______.", answer: "thời gian; tiền bạc", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+{ text: "U vú có thể gây biến dạng hình thể tuyến vú hoặc da vú màu ______.", answer: "da cam", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Gõ hoặc nghe phổi nhằm phát hiện ______ màng phổi.", answer: "tràn dịch", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thăm khám khoang miệng giúp chẩn đoán và xếp giai đoạn ung thư ______.", answer: "khoang miệng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Sờ hệ thống hạch đặc biệt là hạch cổ, nách, bẹn để phát hiện ung thư ______.", answer: "di căn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thăm trực tràng ở nam giới còn giúp phát hiện ung thư ______.", answer: "tiền liệt tuyến", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thăm khám thần kinh nhằm phát hiện các khối u ______.", answer: "di căn não", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+{ text: "Xquang phổi giúp chẩn đoán ung thư phổi nguyên phát, di căn và ______ màng phổi.", answer: "tràn dịch", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Hình ảnh Xquang phổi có thể thấy hội chứng phế nang hoặc ______.", answer: "xẹp phổi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Xquang xương có thể phát hiện ung thư nguyên phát hoặc ung thư ______ đến xương.", answer: "di căn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thương tổn hủy xương là sự ______ một vùng cấu trúc xương.", answer: "biến mất", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Thương tổn dày xương thường gặp trong di căn ung thư vú, tiền liệt tuyến và ung thư ______.", answer: "tuyến giáp", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+{ text: "Mamography có thể phát hiện khối u vú nhỏ hơn ______ mm.", answer: "4", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Hình ảnh mamography đặc hiệu gồm bờ không rõ, khối mờ hình ______.", answer: "sao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Siêu âm giúp phân biệt khối u dạng ______ hoặc dạng ______.", answer: "đặc; nang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Siêu âm khó thực hiện với các tạng có ______.", answer: "không khí", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+{ text: "Xạ hình xương giúp phát hiện di căn xương trước khi có triệu chứng ______.", answer: "Xquang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Chất đánh dấu trong xạ hình xương là diphosphonate đánh dấu với ______.", answer: "99 Technetium", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "PETScan thường sử dụng chất đánh dấu ______.", answer: "18FDG", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Tế bào ung thư tiêu thụ ______ nhiều hơn tế bào bình thường.", answer: "glucose", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Độ đặc hiệu của PETScan không phải là ______.", answer: "tuyệt đối", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+{ text: "CT-Scan phát hiện dễ các tổn thương có kích thước lớn hơn ______ cm.", answer: "1", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Chụp cộng hưởng từ không sử dụng ______ nên an toàn.", answer: "tia xạ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "MRI cho hình ảnh rất rõ về bệnh lý ______ và ______.", answer: "thần kinh; xương", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nội soi cho phép thực hiện sinh thiết, cắt ______ và điều trị tổn thương.", answer: "polip", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+{ text: "Chất chỉ điểm khối u là chất hiện diện trong máu hoặc dịch và ______ ở người khỏe mạnh.", answer: "không có", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "CEA có thể tăng trong ung thư tiêu hóa, ung thư vú và ung thư ______.", answer: "buồng trứng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "AFP tăng cao trong ung thư ______ nguyên phát.", answer: "gan", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "PSA là chất chỉ điểm đặc hiệu của ung thư ______.", answer: "tiền liệt tuyến", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "CA 125 thường tăng trong ung thư ______.", answer: "buồng trứng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+{ text: "CCĐUT lý tưởng cần có độ ______ và độ ______ cao.", answer: "nhạy; đặc hiệu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Đa số CCĐUT hiện nay không khuyến cáo dùng để ______ do độ nhạy và đặc hiệu thấp.", answer: "sàng lọc", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "PSA tăng cao giúp xác định cơ quan có khối u là ______.", answer: "tuyến tiền liệt", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "Nồng độ CCĐUT cao thường có giá trị tiên lượng ______.", answer: "xấu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+{ text: "CCĐUT tăng trở lại sau khi ổn định cho thấy bệnh ______.", answer: "tái phát", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Albert Theodore Billroth (1829–1894) là người đầu tiên thực hiện ______, cắt thanh quản và thực quản.", answer: "cắt dạ dày", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "William Stewart Halsted đề ra nguyên tắc cắt bỏ ung thư thành ______.", answer: "một khối", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật cắt bỏ toàn bộ vú triệt căn mang tên của ______.", answer: "William Stewart Halsted", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hugh Young thực hiện phẫu thuật cắt triệt căn ung thư ______.", answer: "tiền liệt tuyến", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Enrst Wertheim thực hiện phẫu thuật cắt tử cung triệt căn vào năm ______.", answer: "1904", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "William E. Miles thực hiện cắt bỏ trực tràng triệt căn qua đường ______.", answer: "bụng–tầng sinh môn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Evats Graham thực hiện cắt phổi triệt căn thành công do ung thư phổi vào năm ______.", answer: "1933", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ngày nay các kỹ thuật phẫu thuật hiện đại trong ung thư gồm vi phẫu thuật và phẫu thuật ______.", answer: "nội soi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trước phẫu thuật ung thư, bác sĩ cần thảo luận đa phương thức với bác sĩ xạ trị và bác sĩ ______.", answer: "hoá trị", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Quan điểm quan trọng nhất trong phẫu thuật ung thư là phải có chẩn đoán ______ trước mổ.", answer: "giải phẫu bệnh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trong ung thư vú, cần sinh thiết bằng kim hoặc sinh thiết ______ để chứng minh tính ác tính.", answer: "mở", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trong ung thư dạ dày, phổi, đại tràng, sinh thiết thường được thực hiện qua ______.", answer: "nội soi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trong trường hợp không thể sinh thiết, có thể thực hiện phẫu thuật ______.", answer: "thăm dò", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Sinh thiết tức thì cần được phối hợp với bác sĩ ______ trong lúc mổ.", answer: "giải phẫu bệnh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Bản tường trình phẫu thuật là tài liệu quan trọng nhất trong hồ sơ ______ của bệnh nhân.", answer: "ung thư", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Bản tường trình phẫu thuật nên được viết ngay sau khi ______.", answer: "mổ xong", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Bản tường trình cần mô tả kích thước và vị trí của ______ nguyên phát.", answer: "khối u", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trong phẫu thuật ung thư, cần mô tả tình trạng lan tràn tới các cấu trúc ______.", answer: "lân cận", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Cần mô tả kích thước và vị trí của các ______ di căn.", answer: "hạch", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Các mép cắt của bệnh phẩm phải được ______.", answer: "đánh dấu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Bệnh phẩm không nên bị cắt nhỏ mà phải để ______.", answer: "nguyên vẹn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Dung dịch bảo quản bệnh phẩm thường dùng là ______.", answer: "formalin", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật triệt căn là cắt bỏ tổ chức ung thư thành ______.", answer: "một khối", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật triệt căn bao gồm khối u, cơ quan mang u và hệ thống ______ vùng.", answer: "bạch huyết", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tối thiểu trong phẫu thuật triệt căn nên vét hạch mức ______.", answer: "I", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trong trường hợp khó khăn, cần sinh thiết tức thì để kiểm tra ______ cắt.", answer: "bờ mép", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Mục đích chính của vét hạch trong phẫu thuật ung thư là đánh giá ______ bệnh.", answer: "tiến triển", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hạch bị xâm lấn càng nhiều thì tiên lượng càng ______.", answer: "xấu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Di căn hạch thường xảy ra ______, hiện tượng nhảy cóc rất hiếm.", answer: "tuần tự", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hạch ở trạm đầu tiên trong ung thư vú được gọi là hạch ______.", answer: "gác", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Chất màu thường dùng để phát hiện hạch gác là ______.", answer: "Evans Blue", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật cắt bỏ rộng rãi ung thư thành một khối gây nhiều tranh cãi vì ngay cả khi khối u còn tại chỗ, thực sự đã có ______ mà lâm sàng chưa phát hiện được.", answer: "di căn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trong ung thư vú, các nghiên cứu ngẫu nhiên chứng minh phẫu thuật bảo tồn bằng cắt bỏ khối u vú rộng rãi đến ______ kết hợp xạ trị có kết quả tương đương cắt bỏ toàn bộ vú.", answer: "bờ mép cắt không còn tế bào ung thư", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Yếu tố tiên lượng chính trong ung thư vú là tình trạng của ______.", answer: "hạch vệ tinh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Đường kính khối u được cắt bỏ không làm thay đổi nguy cơ ______.", answer: "di căn xa", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khi hạch nách dương tính hoặc khối u biệt hoá kém, điều trị hỗ trợ quan trọng là ______ hoặc nội tiết.", answer: "hoá trị", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật giảm thể tích khối u nhằm mục đích làm giảm tối đa ______ trước khi xạ trị hoặc hoá trị.", answer: "thể tích khối u", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật giảm thể tích khối u điển hình được áp dụng trong ung thư buồng trứng và ______.", answer: "lymphom Burkitt", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật dự phòng nhằm loại bỏ nguy cơ ung thư bằng cách điều trị khỏi các bệnh lý có khả năng ______ theo thời gian.", answer: "phát triển thành ung thư", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hạ tinh hoàn lạc chỗ được thực hiện để dự phòng ung thư ______.", answer: "tinh hoàn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Cắt tuyến giáp được chỉ định dự phòng ung thư tuyến giáp thể tuỷ ở bệnh nhân đa u tuyến nội tiết ______.", answer: "MEN II", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật chẩn đoán ung thư chủ yếu nhằm lấy ______ làm xét nghiệm mô bệnh học.", answer: "mẫu bệnh phẩm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Chẩn đoán chính xác ung thư dựa trên cơ sở ______.", answer: "mô bệnh học", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Sinh thiết bằng kim lớn còn được gọi là sinh thiết ______.", answer: "True-cut", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một lưu ý quan trọng trong phẫu thuật chẩn đoán là không sinh thiết vào mô ______.", answer: "hoại tử", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Đường rạch da sinh thiết phải nằm trong phần mô sẽ được cắt bỏ trong phẫu thuật ______ tiếp theo.", answer: "điều trị tận gốc", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật đánh giá tiến triển ung thư điển hình là phẫu thuật thám sát lần hai trong ung thư ______.", answer: "buồng trứng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ngày nay PET-Scan được sử dụng để tránh phẫu thuật ______.", answer: "không cần thiết", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một điều kiện để cắt bỏ khối u di căn là khối u nguyên phát đã ______ hoặc biến mất.", answer: "ổn định", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thời gian tối thiểu giữa phẫu thuật đầu tiên và phẫu thuật u di căn là ______ năm.", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Gãy cổ xương đùi do di căn xương thường được điều trị bằng phẫu thuật ______.", answer: "thay khớp háng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trong chèn ép tuỷ sống do di căn, phẫu thuật nên thực hiện trong vòng ______ giờ.", answer: "24", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật tạm thời được thực hiện khi khối u gây ______ đường hô hấp, tiêu hoá hoặc tiết niệu.", answer: "tắc nghẽn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Mở khí quản thường được chỉ định trong ung thư đầu cổ hoặc ung thư ______.", answer: "tuyến giáp", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật làm sạch không nhằm mục đích điều trị mà nhằm giúp bệnh nhân ______ hơn.", answer: "thoải mái", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật về nội tiết trong ung thư vú ở phụ nữ còn kinh nguyệt là cắt bỏ ______.", answer: "hai buồng trứng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật tạo hình có vai trò quan trọng nhằm phục hồi ______ sau cắt bỏ ung thư.", answer: "chức năng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phẫu thuật giảm đau được chỉ định khi các thuốc giảm đau ______.", answer: "không hiệu quả", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khoảng ______% phẫu thuật đơn thuần thất bại do tái phát hoặc di căn.", answer: "70", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Điều trị đa mô thức trong ung thư thường kết hợp phẫu thuật, xạ trị và ______.", answer: "điều trị toàn thân", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Bức xạ ion hoá là bức xạ có đủ năng lượng để bứt ______ khỏi nguyên tử.", answer: "điện tử", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Đơn vị đo liều hấp thụ bức xạ trong hệ SI là ______.", answer: "Gray (Gy)", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "1 Gy tương đương với ______ Rad.", answer: "100", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Giai đoạn hoá lý của tổn thương do tia xạ xảy ra trong khoảng thời gian ______ giây.", answer: "10⁻¹⁶ đến 10⁻¹³", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Liều chiếu là yếu tố quan trọng nhất quyết định mức độ ______ sau chiếu xạ.", answer: "tổn thương", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Điều trị tia xạ triệt căn chỉ được thực hiện khi không có ______.", answer: "di căn xa", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Liều lượng sử dụng trong điều trị tia xạ được đo bằng đơn vị ______ (Gy).", answer: "Gray", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trong điều trị ung thư triệt căn, liều điều trị các loại ung thư biểu mô đặc thường thay đổi từ ______ đến ______ Gy.", answer: "60;80", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Liều điều trị bổ trợ thường nằm trong khoảng ______ Gy đến ______ Gy.", answer: "45;60", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phân liều điều trị thường dùng trong xạ trị bổ trợ là ______ đến ______ Gy mỗi lần.", answer: "1,8;2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Việc phân liều trong xạ trị nhằm tạo điều kiện cho các tế bào ______ có thời gian phục hồi.", answer: "bình thường", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tại Hoa Kỳ, Úc và Châu Âu, phân liều xạ trị cho người lớn thường là ______ đến ______ Gy mỗi ngày.", answer: "1,8;2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ở Anh, phân liều xạ trị thông thường là khoảng ______ đến ______ Gy mỗi ngày.", answer: "2,67;2,75", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phân liều xạ trị ở trẻ em thường là ______ đến ______ Gy mỗi ngày.", answer: "1,5;1,7", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "CHART là viết tắt của ______ Hyperfactionated Accelerated Radiotherapy.", answer: "Continuous", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "CHART thường được sử dụng trong điều trị ung thư ______.", answer: "phổi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Theo dõi bệnh nhân trong quá trình điều trị tia xạ là trách nhiệm của bác sĩ ______.", answer: "xạ trị", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trong theo dõi lâm sàng, cần theo dõi đều đặn ______ của bệnh nhân.", answer: "trọng lượng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ngừng điều trị tia xạ khi bệnh nhân không ______ được.", answer: "chịu đựng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Sau khi hoàn tất xạ trị, cần lập bản tường trình chi tiết về liều, kỹ thuật và ______ của bệnh nhân.", answer: "đáp ứng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Xạ trị có thể kết hợp với phẫu thuật, hoá chất hoặc điều trị ______.", answer: "nội tiết", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Xạ trị hậu phẫu thường được thực hiện khoảng ______ tháng sau phẫu thuật.", answer: "1", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Mục đích của xạ trị tiền phẫu là làm ______ thể tích khối u.", answer: "giảm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Xạ trị toàn thân thường được chỉ định trong ghép ______ xương.", answer: "tuỷ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Liều xạ trị toàn thân thường sử dụng là ______ Gy.", answer: "8", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Xạ trị áp sát là phương pháp đặt nguồn ______ trực tiếp trong khối u.", answer: "phóng xạ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nguồn phóng xạ thường dùng trong xạ trị áp sát là Iridium 192 hoặc ______ 137.", answer: "Cesium", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ưu điểm của xạ trị áp sát là liều tia xạ cao trong thể tích ______.", answer: "nhỏ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Điều trị tia xạ là phương pháp điều trị ______.", answer: "không gây đau", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phản ứng phụ xảy ra trong hoặc 2–3 tuần sau xạ trị được gọi là phản ứng ______.", answer: "cấp tính", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phản ứng phụ xuất hiện nhiều tháng đến nhiều năm sau xạ trị được gọi là phản ứng ______.", answer: "muộn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một giả thuyết cho rằng thương tổn mãn tính do phá huỷ các ______ máu.", answer: "vi mạch", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hóa trị ung thư là phương pháp điều trị ung thư mang tính chất ______.", answer: "toàn thân", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thuốc hóa trị ung thư thường là các thuốc ______ tế bào.", answer: "gây độc", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Chu kỳ tế bào gồm ______ pha chính.", answer: "4", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Pha S là giai đoạn tổng hợp ______.", answer: "DNA", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Pha G0 gồm các tế bào không tham gia vào ______ tế bào.", answer: "chu kỳ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thời gian nhân đôi của ung thư là thời gian để khối u tăng gấp ______ số lượng tế bào.", answer: "đôi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khối u lớn làm hạn chế kết quả hóa trị do có nhiều tế bào ở pha ______.", answer: "G0", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một nguyên nhân gây kháng thuốc là sử dụng thuốc không đủ ______.", answer: "liều", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nhóm thuốc chống chuyển hoá tác động vào chuyển hoá ______ và ______.", answer: "pyrimidine;purine", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "5-Fluorouracil ức chế tổng hợp axit ______.", answer: "thymidylic", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Cyclophosphamide thuộc nhóm thuốc ______ hoá.", answer: "alkyl", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hóa trị có thể gây độc tính cấp và độc tính ______.", answer: "muộn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một tác dụng phụ muộn của hóa trị là ______ ung thư thứ hai.", answer: "sinh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Mặc dù chẩn đoán và điều trị ung thư đã có nhiều tiến bộ, số người mắc và tử vong do ung thư vẫn còn ______ và được dự báo tiếp tục ______.", answer: "cao; gia tăng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ngay cả khi ung thư được chữa khỏi, hậu quả về tài chính, thể lực và ______ vẫn có thể bao trùm quãng đời còn lại của người bệnh.", answer: "tình cảm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khoảng ______% các bệnh ung thư được ước lượng là do nguyên nhân môi trường.", answer: "70-80", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Về lý thuyết, nếu phòng ngừa tốt, có thể làm giảm tỷ lệ mắc và tử vong do ung thư hơn ______%.", answer: "80", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  // Phòng ngừa ban đầu
+  { text: "Phòng ngừa ban đầu là cố gắng loại trừ hoặc giảm tối đa sự ______ với các nguyên nhân gây ung thư.", answer: "tiếp xúc", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phòng ngừa ban đầu được xem là phương pháp dự phòng ______ nhất.", answer: "tích cực", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  // Hút thuốc lá
+  { text: "Mối liên hệ giữa hút thuốc lá và ung thư đã được nghi ngờ từ khoảng ______ năm trước.", answer: "200", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Báo cáo đầu tiên năm 1795 nêu mối liên hệ giữa thuốc lá và ung thư ______.", answer: "môi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư gặp nhiều hơn ở những người ______ thuốc lá.", answer: "nghiện", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thuốc lá gây ra khoảng ______% tổng số các loại ung thư.", answer: "30", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khoảng ______% ung thư phổi có liên quan đến hút thuốc lá.", answer: "90", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thuốc lá gây khoảng ______% ung thư khoang miệng, thanh quản và thực quản.", answer: "75", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khoảng ______% ung thư bàng quang có liên quan đến thuốc lá.", answer: "5", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Theo WHO, tỷ lệ hút thuốc lá ở các nước đang phát triển tăng trung bình khoảng ______% mỗi năm.", answer: "8", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  // Chế độ ăn
+  { text: "Sau thuốc lá, các yếu tố ______ được xem là nguyên nhân quan trọng thứ hai gây ung thư.", answer: "dinh dưỡng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Chế độ ăn kiểu Tây phương nhiều thịt và chất béo có liên quan đến ung thư ______.", answer: "đại tràng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Chế độ ăn ít rau và trái cây làm tăng nguy cơ ung thư do thiếu sinh tố ______, ______ và ______.", answer: "A; C; E", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Aflatoxin là sản phẩm của ______ mốc trên thức ăn, là nguyên nhân chính gây ung thư ______.", answer: "nấm; gan", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nitrit và Nitrat trong thực phẩm hong khói làm tăng nguy cơ ung thư ______ và ______.", answer: "thực quản; dạ dày", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  // Hóa dự phòng
+  { text: "Hóa dự phòng là sử dụng hóa chất hoặc sinh tố nhằm ______ quá trình sinh ung thư.", answer: "ngăn chặn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Các chất dùng trong hóa dự phòng gồm retinoid, caroten, vitamin C, E, selen, calci và thuốc kháng viêm không steroid như ______.", answer: "aspirin", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tamoxifen là chất kháng ______ được sử dụng rộng rãi trong điều trị ung thư vú.", answer: "estrogen", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  // Virus
+  { text: "Có ______ virus được biết là nguyên nhân gây ung thư ở người.", answer: "4", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Virus viêm gan B kết hợp với aflatoxin là nguyên nhân chính gây ung thư ______ nguyên phát.", answer: "gan", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Chủng ngừa viêm gan B rộng rãi cho trẻ sơ sinh giúp giảm tỷ lệ mắc và tử vong do ung thư ______.", answer: "gan", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  // Bức xạ
+  { text: "Bức xạ cực tím do phơi nắng quá độ là tác nhân chính gây ung thư ______.", answer: "da", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư da liên quan nhiều hơn ở các sắc dân có màu da ______.", answer: "sáng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  // Nghề nghiệp
+  { text: "Asbestos là chất sinh ung nghề nghiệp gây ung thư ______ và ______.", answer: "phổi; màng phổi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  // Sàng lọc
+  { text: "Sàng lọc nhằm phát hiện ung thư ở giai đoạn ______ trước khi có triệu chứng.", answer: "tiền lâm sàng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư lý tưởng cho sàng lọc là ung thư có giai đoạn tiền lâm sàng tồn tại ______.", answer: "khá lâu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  // Ung thư vú
+  { text: "Khám lâm sàng tuyến vú được khuyến cáo thực hiện hằng năm cho phụ nữ trên ______ tuổi.", answer: "40", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tự khám vú nên được thực hiện ______ tháng một lần sau khi sạch kinh.", answer: "1", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Độ nhạy của chụp tuyến vú ở phụ nữ trên 50 tuổi vượt hơn ______%.", answer: "85", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  // Kết luận
+  { text: "Sàng lọc cho kết quả khả quan nhất đối với các ung thư vú, cổ tử cung, dạ dày, đại tràng và ______.", answer: "ung thư hắc tố", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Hiện nay có khoảng hơn ______ bệnh ung thư khác nhau.", answer: "200", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Kết quả điều trị ung thư phụ thuộc chủ yếu vào việc phát hiện bệnh ở ______.", answer: "giai đoạn nào", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ở giai đoạn sớm, ung thư hoàn toàn có thể ______.", answer: "chữa khỏi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ở giai đoạn muộn, điều trị ung thư chủ yếu nhằm ______ và ______ triệu chứng.", answer: "kéo dài; giảm nhẹ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư không chỉ ảnh hưởng đến người bệnh mà còn là ______ của cộng đồng.", answer: "gánh nặng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hơn 1/3 bệnh nhân ung thư có biểu hiện ______ và ______ sau khi được chẩn đoán.", answer: "lo lắng; trầm cảm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Theo TCYTTG, các bệnh không lây nhiễm chiếm khoảng ______% nguyên nhân gây tử vong.", answer: "54", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Mỗi năm trên thế giới có khoảng ______ triệu người mắc mới ung thư.", answer: "14", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Mỗi năm trên thế giới có khoảng ______ triệu người chết do ung thư.", answer: "8,2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Dự báo đến năm 2030, số ca ung thư mới trên thế giới có thể đạt tới ______ triệu.", answer: "27", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nguyên nhân chính làm tăng tỷ lệ ung thư là tuổi thọ tăng, lối sống không lành mạnh và ______.", answer: "ô nhiễm môi trường", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư thường xuất hiện hoặc biểu hiện rõ ở độ tuổi trên ______.", answer: "45", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tại Việt Nam, mỗi năm ước tính có khoảng ______ ca ung thư mới mắc.", answer: "150.000", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Mỗi năm tại Việt Nam có khoảng ______ người chết do ung thư.", answer: "75.000", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ở nam giới Việt Nam, ung thư đứng hàng đầu là ung thư ______.", answer: "phổi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ở nữ giới Việt Nam, ung thư phổ biến nhất là ung thư ______.", answer: "vú", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Dưới ______% ung thư phát sinh do rối loạn bên trong cơ thể.", answer: "10", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trên ______% ung thư có liên quan đến môi trường sống và lối sống.", answer: "80", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hai loại ung thư có tính di truyền rõ rệt nhất là ung thư nguyên bào võng mạc và ung thư ______.", answer: "tuyến giáp thể tủy", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Rối loạn nội tiết không được khẳng định là nguyên nhân trực tiếp mà là ______ thuận lợi cho ung thư.", answer: "điều kiện", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ba nhóm tác nhân bên ngoài gây ung thư gồm vật lý, hóa học và ______.", answer: "sinh học", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Bức xạ ion hóa chiếm khoảng ______% nguyên nhân ung thư.", answer: "3", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Các cơ quan nhạy cảm nhất với tia phóng xạ là tuyến giáp và ______.", answer: "tủy xương", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tia cực tím chủ yếu gây ung thư ______.", answer: "da", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Các tia tử ngoại mặt trời mạnh nhất trong khoảng từ ______ đến ______ giờ.", answer: "11; 15", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khoảng ______% ung thư có liên quan đến các yếu tố hóa học.", answer: "65", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hút thuốc lá là nguyên nhân của khoảng ______% các trường hợp ung thư.", answer: "30", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Riêng ung thư phổi, hút thuốc lá là nguyên nhân của trên ______% trường hợp.", answer: "90", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khói thuốc lá chứa hơn ______ loại hóa chất.", answer: "7000", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Có khoảng ______ chất trong khói thuốc đã được chứng minh gây ung thư.", answer: "70", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Chế độ ăn uống có liên quan đến khoảng ______–______% ung thư.", answer: "30;40", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Béo phì có liên quan đến khoảng ______–______% các bệnh ung thư.", answer: "20;30", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Aflatoxin là độc tố sinh ra từ nấm mốc và gây ung thư ______.", answer: "gan", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Virus viêm gan B là nguyên nhân chính gây ung thư ______.", answer: "gan nguyên phát", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "HPV là nguyên nhân gây khoảng ______% ung thư cổ tử cung.", answer: "70", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Theo TCYTTG, ______ ung thư có thể dự phòng được.", answer: "1/3", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phòng bệnh ung thư nhằm mục đích giảm tỷ lệ mắc bệnh bằng cách loại trừ ______.", answer: "yếu tố nguy cơ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Sàng lọc ung thư còn được gọi là phòng bệnh cấp ______.", answer: "2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Sàng lọc ung thư chỉ có hiệu quả khi đảm bảo độ bao phủ ít nhất ______%.", answer: "80", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư vú có thể phát hiện sớm bằng tự khám vú, khám chuyên khoa và ______.", answer: "chụp tuyến vú", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Ung thư đầu mặt cổ bao gồm các ung thư xuất phát từ môi, lợi, lưỡi, sàn miệng, vòm họng, hạ họng, thanh quản và ______.", answer: "hốc mũi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tỷ lệ mắc ung thư đầu mặt cổ đang ______ trên toàn cầu.", answer: "ngày một tăng nhanh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thuốc lá và rượu gây hậu quả được gọi là ______ và ______.", answer: "niêm mạc bị kết án; sự ung thư hóa vùng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khoang miệng là khoang nằm ngay phía ______ nên việc thăm khám rất dễ dàng.", answer: "ngoài", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phát hiện sớm giúp tỷ lệ sống trên 5 năm đạt khoảng ______ %.", answer: "95", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư đầu mặt cổ thường xảy ra ở tuổi trên ______.", answer: "45", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tỷ lệ nam/nữ mắc ung thư đầu mặt cổ khoảng ______.", answer: "3/1", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư tuyến giáp thường gặp nhiều hơn ở ______.", answer: "phụ nữ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nguy cơ ung thư tăng từ ______ đến ______ lần nếu vừa hút thuốc vừa uống rượu.", answer: "6; 28", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ở Mỹ, ______ % ung thư đầu cổ liên quan đến hút thuốc và rượu.", answer: "95", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Virus thường gặp trong ung thư miệng và amidan là ______.", answer: "HPV", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Virus Epstein–Barr liên quan đến ung thư ______.", answer: "vòm họng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Bức xạ ánh sáng mặt trời gây ung thư ______.", answer: "môi và da", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Người làm nghề mộc có nguy cơ ung thư các ______.", answer: "xoang", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Những người hút thuốc và uống rượu cần khám định kỳ ______ năm một lần.", answer: "hàng năm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Triệu chứng vùng đầu cổ kéo dài trên ______ tuần cần được khám kỹ.", answer: "4", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư vòm mũi họng là khối u ác tính phát sinh từ biểu mô vùng ______.", answer: "họng mũi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "UTVH có đặc điểm chẩn đoán ______, triệu chứng mượn và tiến triển âm thầm.", answer: "muộn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Thể đại thể thường gặp nhất của UTVH là thể ______ chiếm 82%.", answer: "sùi", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Vị trí thường gặp nhất của UTVH là ______.", answer: "thành bên", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "K biểu mô chiếm khoảng ______ – ______ % UTVH.", answer: "90; 95", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "UCNT là viết tắt của ______.", answer: "Undifferentiated Carcinome of Nasopharyngeal Type", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "K liên kết chỉ chiếm khoảng ______ – ______ %.", answer: "5; 10", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "UTVH đáp ứng tốt với xạ trị và hóa trị khi được phát hiện ______.", answer: "sớm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Độ tuổi mắc UTVH thường gặp nhất là từ ______ đến ______ tuổi.", answer: "40; 60", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Vùng có nguy cơ UTVH cao nhất là ______ Trung Quốc và Đông Nam Á.", answer: "miền Nam", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tỷ lệ mắc UTVH ở vùng nguy cơ cao là ______ – ______ /100.000 dân.", answer: "20; 30", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tại Việt Nam, UTVH chiếm khoảng ______ – ______ % ung thư toàn thân.", answer: "10; 12", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Nguyên nhân UTVH chưa rõ, nhưng có liên quan đến yếu tố ______.", answer: "di truyền và virus", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "EBV được phát hiện trong ______ % bệnh tích UTVH.", answer: "100", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Dấu hiệu hay gặp nhất của UTVH là ______.", answer: "nhức đầu", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hạch cổ xuất hiện sớm thường nằm ở dãy cảnh trên gọi là hạch ______.", answer: "Kuttner", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Liệt dây thần kinh sọ thường bị đầu tiên là dây ______.", answer: "V", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Sinh thiết u là xét nghiệm có giá trị ______ nhất.", answer: "cao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "CT scan là phương pháp chính xác nhất để đánh giá ______ của khối u.", answer: "xâm lấn", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Giai đoạn IV của UTVH có đặc điểm là ______.", answer: "di căn xa hoặc xâm lấn rộng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Phương pháp điều trị chủ yếu của UTVH là ______.", answer: "xạ trị", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hai hóa chất thường dùng là Cisplatine và ______.", answer: "5 Fluoro-uracyl", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Tỷ lệ sống trên 5 năm sau điều trị UTVH nói chung khoảng ______ %.", answer: "30", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Biện pháp phòng bệnh quan trọng nhất hiện nay là ______.", answer: "phát hiện sớm và điều trị kịp thời", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Ung thư trẻ em chiếm khoảng ______% các dạng ung thư.", answer: "1-2", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Tần suất ung thư trẻ em là khoảng ______ trên 1 triệu trẻ.", answer: "100", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Khoảng ______% tử vong ở trẻ em có liên hệ với ung thư.", answer: "10", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư trẻ em có tác động sâu xa về ______, kinh tế xã hội đến trẻ và gia đình.", answer: "tâm lý", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trẻ em có đặc điểm ______ khác với người lớn.", answer: "tâm sinh lý", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Trẻ em không phải là người lớn ______.", answer: "thu nhỏ", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Cơ thể trẻ em đang trong giai đoạn hình thành cơ quan và ______ bộ máy.", answer: "hoàn chỉnh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Khoảng ______% trọng lượng cơ thể trẻ em là nước.", answer: "70-75", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Hệ miễn dịch trẻ em còn kém, đặc biệt ở trẻ dưới ______ tuổi.", answer: "3-4", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Trẻ em có nguy cơ cao bị ______ và nhiễm trùng.", answer: "suy dinh dưỡng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một số bệnh bẩm sinh liên quan ung thư trẻ em gồm Hội chứng Down, Beckwith-Wiedemann và hội chứng ______.", answer: "Li-Fraumeni", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư trẻ em thường xuất phát từ tế bào non, tăng sinh mạnh gọi là ______.", answer: "Blastoma", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Ung thư trẻ em có diễn tiến bệnh ______.", answer: "nhanh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư hệ tạo huyết chiếm khoảng ______% các trường hợp ung thư trẻ em.", answer: "50", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Trong UT hệ tạo huyết, khoảng ______% là bệnh bạch cầu lymphô cấp.", answer: "75", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Những bướu đặc thường gặp ở trẻ em gồm bướu não, bướu nguyên bào võng mạc và bướu nguyên bào ______.", answer: "thần kinh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một số ung thư phổ biến ở người lớn nhưng ít gặp ở trẻ em là UT cổ tử cung, UT phổi và UT ______.", answer: "da", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một số UT trẻ em có yếu tố di truyền liên quan đến ______ gen.", answer: "đột biến", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Bướu nguyên bào võng mạc là ví dụ của UT trẻ em có yếu tố ______ gia đình.", answer: "di truyền", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Bệnh cảnh lâm sàng và điều trị UT trẻ em có ______ với UT người lớn.", answer: "khác", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Theo thống kê NCI Mỹ (1982-1986), ung thư thường gặp nhất ở trẻ em là ______.", answer: "Bạch cầu cấp", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Tỉ lệ bạch cầu cấp ở trẻ em theo NCI Mỹ là ______%.", answer: "30.5", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Ung thư đứng thứ hai về tỉ lệ ở trẻ em là ______.", answer: "Bướu não", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Biểu hiện lâm sàng UT hệ tạo huyết gồm sốt kéo dài, xanh xao và ______ trên da.", answer: "vết bầm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Trẻ UT hệ tạo huyết có thể có gan lách to và viêm loét ______.", answer: "miệng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Cận lâm sàng chẩn đoán UT hệ tạo huyết gồm huyết đồ và ______ đồ.", answer: "tủy", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Chẩn đoán bướu não cần chụp CT scan não tủy và ______.", answer: "MRI", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Triệu chứng bướu não thường gặp là nhức đầu tăng dần và nôn ói vào buổi ______.", answer: "sáng", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Bướu ổ bụng có thể gây bụng to, trẻ chậm lớn và ______.", answer: "xanh xao", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Dấu ấn ung thư dùng trong bướu ổ bụng gồm AFP, βHCG và ______.", answer: "VMA", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một dấu hiệu cảnh báo UT trẻ em là sốt cao kéo dài kèm ______ dưới da.", answer: "vết bầm", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+  { text: "Nhức đầu tăng dần kèm nôn ói buổi sáng là triệu chứng cảnh báo ______.", answer: "ung thư", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Khoảng ______ trường hợp UT trẻ em đến bệnh viện ở giai đoạn trễ.", answer: "2/3", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hiện nay tại Việt Nam chỉ có Hà Nội và ______ có chuyên khoa Ung Bướu nhi.", answer: "TP Hồ Chí Minh", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Một số UT trẻ em có thể điều trị khỏi nếu phát hiện sớm như Lymphôm Hodgkin và bướu ______.", answer: "Wilms", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+
+  { text: "Hợp tác liên chuyên khoa và nhiều bệnh viện là mục tiêu nhằm ______ kết quả điều trị UT trẻ em.", answer: "cải thiện", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' }
+
+
+]
         };
 
         const shopItems = [ 
@@ -1221,7 +2091,9 @@ let progress = {
 const progressData = userData.progress || {};
     progress = {
         lao: progressData.lao || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
-        "tt-lao": progressData['tt-lao'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null }
+        "tt-lao": progressData['tt-lao'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
+        "ung-thu-dai-cuong": progressData['ung-thu-dai-cuong'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null }
+
     };
 
     updateUI();
@@ -1470,7 +2342,8 @@ let totalAnswered = 0;
 
     const subjects = {
         lao: 'Lao (TCDY035)',
-        "tt-lao": 'TT. Lao (TCDY036)'
+        "tt-lao": 'TT. Lao (TCDY036)',
+        "ung-thu-dai-cuong": 'Ung thư đại cương (TCDY117)'
     };
 
     const tableBody = document.getElementById('stats-table-body');
@@ -1560,12 +2433,17 @@ let totalAnswered = 0;
 
     // Cập nhật tiêu đề
     document.getElementById('app-title').textContent = 
-        subjectKey === 'lao' ? 'Ôn Tập Lao - TCDY035' :
-        subjectKey === 'tt-lao' ? 'Ôn Tập TT. Lao - TCDY036' : 'Ôn Tập';
+    subjectKey === 'lao' ? 'Ôn Tập Lao - TCDY035' :
+    subjectKey === 'tt-lao' ? 'Ôn Tập TT. Lao - TCDY036' :
+    subjectKey === 'ung-thu-dai-cuong' ? 'Ôn Tập Ung thư đại cương - TCDY117' : 
+    'Ôn Tập';
+
 
     document.getElementById('current-subject-display').textContent = 
-        subjectKey === 'lao' ? 'Lao (TCDY035)' :
-        subjectKey === 'tt-lao' ? 'TT. Lao (TCDY036)' : 'Không xác định';
+    subjectKey === 'lao' ? 'Lao (TCDY035)' :
+    subjectKey === 'tt-lao' ? 'TT. Lao (TCDY036)' :
+    subjectKey === 'ung-thu-dai-cuong' ? 'Ung thư đại cương (TCDY117)' : 
+    'Không xác định';
 
     // Ẩn phần chọn môn, hiện nav
     document.getElementById('subject-select').classList.add('hidden');
@@ -2119,15 +2997,9 @@ toggleEditMode,
     updateUserGreeting,
     loadProfile,
 updateUI
-
         });
-
         // Khởi tạo
         updateUI();
     </script>
-
 </body>
-
 </html>
-
-
