@@ -131,7 +131,6 @@
             <button onclick="showSection('test-sets')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Ôn Theo Bộ Đề</button>
             <button onclick="showSection('mock-test')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Thi Thử</button>
             <button onclick="showSection('shop')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Cửa Hàng</button>
-            <button onclick="showSection('inventory')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Kho Đồ</button>
             <button onclick="showSection('profile')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Hồ sơ</button>
                      </nav>
 
@@ -243,13 +242,6 @@
             <div id="shop-items" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
         </section>
 
-        <!-- Kho đồ -->
-        <section id="inventory" class="section hidden">
-            <h2 class="text-3xl font-bold mb-8 text-center">Kho Đồ Của Bạn</h2>
-            <p class="text-center text-gray-600 dark:text-gray-400 mb-10">Các vật phẩm bạn đã sở hữu</p>
-            <div id="inventory-items" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
-        </section>
-
         <!-- Hồ sơ cá nhân - Nâng cấp với chỉnh sửa inline -->
 <section id="profile" class="section hidden max-w-4xl mx-auto pt-10">
     <h2 class="text-4xl font-bold mb-10 text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -352,9 +344,22 @@
                         <p id="profile-max-streak" class="text-2xl font-bold text-orange-500">0 ngày</p>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+                
+       <div class="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-6">
+                        <h4 class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                            📦 Kho vật phẩm
+                        </h4>
+                        <span class="text-sm bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full font-medium">
+                            Tổng cộng: <span id="profile-inventory-count-detail">0</span>
+                        </span>
+                    </div>
+                    
+                    <div id="inventory-items" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        </div>
+                </div> 
+
+            </div> </div> </div> </section>
 </section>
     </main>
 
@@ -1518,6 +1523,7 @@ let totalAnswered = 0;
     document.getElementById('last-active').innerHTML = latestActive 
         ? `Thời gian học gần nhất: <strong>${latestActive.toLocaleString('vi-VN')}</strong>` 
         : 'Thời gian học gần nhất: Chưa có';
+    loadInventory();
 }
 
         // Auth State
@@ -2054,28 +2060,37 @@ async function resetSubjectProgress() {
         }
 
         function loadInventory() {
-            const container = document.getElementById('inventory-items');
-            container.innerHTML = '';
-            if (inventory.length === 0) {
-                container.innerHTML = '<p class="text-center col-span-full py-10 text-gray-500">Kho đồ trống. Đi mua sắm đi!</p>';
-                return;
-            }
-            inventory.forEach(id => {
-                const item = shopItems.find(i => i.id === id);
-                if (item) {
-                    const card = document.createElement('div');
-                    card.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700';
-                    card.innerHTML = `
-                        <img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover">
-                        <div class="p-5">
-                            <h3 class="text-xl font-bold mb-2">${item.name}</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Đã sở hữu</p>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                }
-            });
+    const container = document.getElementById('inventory-items');
+    if (!container) return;
+    container.innerHTML = '';
+
+    let ownedCount = 0;
+    inventory.forEach(item => {
+        if (item.owned) {
+            ownedCount++;
+            const card = document.createElement('div');
+            // Thiết kế nhỏ gọn, hiện đại
+            card.className = 'group relative bg-gray-50 dark:bg-gray-700/30 p-3 rounded-2xl border border-gray-100 dark:border-gray-600 text-center transition-all hover:shadow-md';
+            card.innerHTML = `
+                <div class="w-16 h-16 mx-auto mb-2 overflow-hidden rounded-lg">
+                    <img src="${item.image}" alt="${item.name}" class="w-full h-full object-contain transform group-hover:scale-110 transition-transform">
+                </div>
+                <p class="text-xs font-bold truncate">${item.name}</p>
+            `;
+            container.appendChild(card);
         }
+    });
+
+    // Cập nhật các con số hiển thị trong hồ sơ
+    const countBadge = document.getElementById('profile-inventory-count');
+    const countDetail = document.getElementById('profile-inventory-count-detail');
+    if (countBadge) countBadge.textContent = ownedCount;
+    if (countDetail) countDetail.textContent = ownedCount;
+
+    if (ownedCount === 0) {
+        container.innerHTML = '<p class="col-span-full text-center text-gray-500 text-sm py-4">Bạn chưa mua vật phẩm nào.</p>';
+    }
+}
 
         // Export hàm ra window để onclick hoạt động
         Object.assign(window, {
@@ -2114,3 +2129,4 @@ updateUI
 </body>
 
 </html>
+
