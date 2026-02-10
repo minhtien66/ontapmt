@@ -359,44 +359,53 @@
 
     <!-- Firebase SDK -->
     <script type="module">
-        // ────────────────────────────────────────────────
-        // Firebase Imports
-        // ────────────────────────────────────────────────
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js";
-        import { 
-            getAuth, 
-            createUserWithEmailAndPassword, 
-            signInWithEmailAndPassword, 
-            onAuthStateChanged, 
-            signOut,
-            sendPasswordResetEmail
-        } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-        
-        import { 
-            getDatabase, 
-            ref, 
-            set, 
-            get, 
-            update, 
-            child 
-        } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+  // ────────────────────────────────────────────────
+  // Firebase Imports (phiên bản mới nhất 12.9.0)
+  // ────────────────────────────────────────────────
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-analytics.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAQOhMBlPUfOzBu2h0ljlaxdjVcpQJbBYw",
-            authDomain: "ontap-pro-mode.firebaseapp.com",
-            databaseURL: "https://ontap-pro-mode-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "ontap-pro-mode",
-            storageBucket: "ontap-pro-mode.firebasestorage.app",
-            messagingSenderId: "215082917090",
-            appId: "1:215082917090:web:ee378f14a65d67d9da12bb",
-            measurementId: "G-R6H6X1KTTR"
-        };
+  // Authentication imports
+  import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    onAuthStateChanged, 
+    signOut,
+    sendPasswordResetEmail
+  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-        const app = initializeApp(firebaseConfig);
-        getAnalytics(app);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
+  // Realtime Database imports
+  import { 
+    getDatabase, 
+    ref, 
+    set, 
+    get, 
+    update, 
+    child 
+  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+  // Your Firebase configuration (giữ nguyên như cũ)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAQOhMBlPUfOzBu2h0ljlaxdjVcpQJbBYw",
+    authDomain: "ontap-pro-mode.firebaseapp.com",
+    databaseURL: "https://ontap-pro-mode-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "ontap-pro-mode",
+    storageBucket: "ontap-pro-mode.firebasestorage.app",
+    messagingSenderId: "215082917090",
+    appId: "1:215082917090:web:ee378f14a65d67d9da12bb",
+    measurementId: "G-R6H6X1KTTR"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);  // giữ nếu bạn dùng Analytics
+
+  // Khởi tạo các instance chính (giống code 1)
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  console.log("Firebase đã sẵn sàng với Auth + Realtime DB version 12.9.0!");
 
         // Biến toàn cục
         let currentUser = null;
@@ -1847,6 +1856,7 @@ updateUI
 </body>
 
 </html>
+
 
 
 
