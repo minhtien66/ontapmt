@@ -179,6 +179,10 @@
                         <button onclick="showAnswer()" class="flex-1 py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700 transition">Hiện Đáp Án</button>
                         <button onclick="prevQuestion()" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Trước</button>
                         <button onclick="nextQuestion()" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Sau</button>
+<!-- Trong section fill-blank -->
+<button onclick="resetSubjectProgress()" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm">
+    Reset tiến độ môn này
+</button>
                     </div>
                     <div id="result" class="mt-6 text-lg font-bold"></div>
                 </div>
@@ -415,6 +419,10 @@
         let inventory = [];
 
         let currentSubject = null;
+let progress = {
+    lao: { currentIndex: 0, answered: 0, correct: 0, total: 0 },
+    "tt-lao": { currentIndex: 0, answered: 0, correct: 0, total: 0 }
+};
         let questions = [];
         let currentQuestionIndex = 0;
         let currentSet = null;
@@ -1477,36 +1485,70 @@ function loadProfile() {
         }
 
         // Các hàm logic chính (giữ nguyên như cũ, chỉ thêm showSection fix profile)
-        function selectSubject(subjectKey) { 
-currentSubject = subjectKey;
-            questions = questionBank[subjectKey] || [];
+        async function selectSubject(subjectKey) {
+    currentSubject = subjectKey;
+    questions = questionBank[subjectKey] || [];
 
-            document.getElementById('app-title').textContent = 
-                subjectKey === 'lao' ? 'Ôn Tập Lao - TCDY035' :
-                subjectKey === 'tt-lao' ? 'Ôn Tập TT. Lao - TCDY036' : 'Ôn Tập';
+    // Cập nhật tiêu đề
+    document.getElementById('app-title').textContent = 
+        subjectKey === 'lao' ? 'Ôn Tập Lao - TCDY035' :
+        subjectKey === 'tt-lao' ? 'Ôn Tập TT. Lao - TCDY036' : 'Ôn Tập';
 
-            const displayEl = document.getElementById('current-subject-display');
-            if (displayEl) displayEl.textContent = 
-                subjectKey === 'lao' ? 'Lao (TCDY035)' :
-                subjectKey === 'tt-lao' ? 'TT. Lao (TCDY036)' : 'Không xác định';
+    document.getElementById('current-subject-display').textContent = 
+        subjectKey === 'lao' ? 'Lao (TCDY035)' :
+        subjectKey === 'tt-lao' ? 'TT. Lao (TCDY036)' : 'Không xác định';
 
-            document.getElementById('subject-select').classList.add('hidden');
-            document.getElementById('main-nav').classList.remove('hidden');
-            document.getElementById('back-to-subjects').classList.remove('hidden');
+    // Ẩn phần chọn môn, hiện nav
+    document.getElementById('subject-select').classList.add('hidden');
+    document.getElementById('main-nav').classList.remove('hidden');
+    document.getElementById('back-to-subjects').classList.remove('hidden');
 
-            const numSets = 5;
-            const perSet = questions.length > 0 ? Math.ceil(questions.length / numSets) : 0;
-            testSets = Array.from({length: numSets}, (_, i) => ({
-                name: `Bộ ${i+1}`,
-                questions: questions.slice(i * perSet, (i + 1) * perSet)
-            }));
-
-            currentQuestionIndex = 0;
-            showSection('home');
-            loadQuestionList();
-            loadSetSelect();
+    // Tải tiến độ từ Firebase
+    if (currentUser) {
+        const progressRef = ref(db, `users/${currentUser.uid}/progress/${subjectKey}`);
+        const snapshot = await get(progressRef);
         
- }
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            progress[subjectKey] = {
+                currentIndex: data.currentIndex || 0,
+                answered: data.answered || 0,
+                correct: data.correct || 0,
+                total: questions.length
+            };
+            currentQuestionIndex = progress[subjectKey].currentIndex;
+        } else {
+            // Khởi tạo mới nếu chưa có
+            progress[subjectKey] = {
+                currentIndex: 0,
+                answered: 0,
+                correct: 0,
+                total: questions.length
+            };
+            currentQuestionIndex = 0;
+        }
+    } else {
+        // Không đăng nhập → dùng local hoặc mặc định 0
+        currentQuestionIndex = 0;
+    }
+
+    // Tạo bộ đề ngẫu nhiên (giữ nguyên)
+    const numSets = 5;
+    const perSet = questions.length > 0 ? Math.ceil(questions.length / numSets) : 0;
+    testSets = Array.from({length: numSets}, (_, i) => ({
+        name: `Bộ ${i+1}`,
+        questions: questions.slice(i * perSet, (i + 1) * perSet)
+    }));
+
+    // Hiển thị tiến độ ngay trên giao diện home hoặc fill-blank
+    updateProgressDisplay();
+
+    showSection('home');           // hoặc 'fill-blank' nếu muốn vào thẳng ôn
+    loadQuestionList();
+    loadSetSelect();
+}
+
+
         function backToSubjectSelect() { 
 currentSubject = null;
             questions = [];
@@ -1586,59 +1628,205 @@ currentSubject = null;
             document.getElementById((mode ? mode + '-' : '') + 'bet-options').style.display = 'none';
         }
 
-        async function checkAnswer(mode = '') {
-            const prefix = mode ? mode + '-' : '';
-            const inputEl = document.getElementById(prefix + 'answer-input');
-            const resultEl = document.getElementById(prefix + 'result');
+        // ────────────────────────────────────────────────
+// Phần code đã sửa + tích hợp lưu tiến độ
+// ────────────────────────────────────────────────
 
-            if (mode === 'test') mockTestAnswers[currentQuestionIndex] = inputEl.value.trim();
+async function checkAnswer(mode = '') {
+    const prefix = mode ? mode + '-' : '';
+    const inputEl = document.getElementById(prefix + 'answer-input');
+    const resultEl = document.getElementById(prefix + 'result');
 
-            const q = mode === 'set' ? currentSet.questions[currentQuestionIndex] :
-                      mode === 'test' ? mockTestQuestions[currentQuestionIndex] : questions[currentQuestionIndex];
-            const userAnswer = inputEl.value.trim().toLowerCase();
-            const correct = userAnswer === q.answer.toLowerCase();
+    if (mode === 'test') {
+        mockTestAnswers[currentQuestionIndex] = inputEl.value.trim();
+    }
 
-            resultEl.textContent = correct ? 'Đúng!' : 'Sai!';
-            resultEl.className = correct ? 'mt-6 text-lg font-bold text-green-600' : 'mt-6 text-lg font-bold text-red-600';
+    const q = mode === 'set' ? currentSet.questions[currentQuestionIndex] :
+              mode === 'test' ? mockTestQuestions[currentQuestionIndex] : 
+              questions[currentQuestionIndex];
 
-            if (mode !== 'test' && currentUser) {
-                if (correct) {
-                    let reward = 10 * streak;
-                    if (currentBet === 2) reward *= 2;
-                    if (currentBet === 0) reward *= 2;
-                    if (isJackpot) reward *= 10;
-                    brainCoins += reward;
-                } else if (currentBet === 0) {
-                    brainCoins = Math.max(0, brainCoins - 20);
-                }
-                await saveUserData({ coins: brainCoins });
-            }
+    if (!q) return;
+
+    const userAnswer = inputEl.value.trim().toLowerCase();
+    const correct = userAnswer === q.answer.toLowerCase();
+
+    resultEl.textContent = correct ? 'Đúng!' : 'Sai!';
+    resultEl.className = correct 
+        ? 'mt-6 text-lg font-bold text-green-600' 
+        : 'mt-6 text-lg font-bold text-red-600';
+
+    // ─── Chỉ xử lý tiến độ & coins cho phần ôn điền khuyết chính (mode === '') ───
+    if (mode === '' && currentSubject && currentUser) {
+        const prog = progress[currentSubject];
+
+        // Tính thưởng coins (giữ nguyên logic cũ)
+        if (correct) {
+            let reward = 10 * (streak || 1);  // tránh streak = 0
+            if (currentBet === 2) reward *= 2;
+            if (currentBet === 0) reward *= 2;
+            if (isJackpot) reward *= 10;
+            brainCoins += reward;
+        } else if (currentBet === 0) {
+            brainCoins = Math.max(0, brainCoins - 20);
         }
 
-        function showAnswer(mode = '') {
-            const prefix = mode ? mode + '-' : '';
-            const q = mode === 'set' ? currentSet.questions[currentQuestionIndex] :
-                      mode === 'test' ? mockTestQuestions[currentQuestionIndex] : questions[currentQuestionIndex];
-            document.getElementById(prefix + 'result').textContent = `Đáp án: ${q.answer}`;
+        // ─── Cập nhật tiến độ ───────────────────────────────────────
+        // Chỉ tăng answered nếu đây là lần đầu check câu này
+        // (tránh người dùng check nhiều lần thì answered tăng vô hạn)
+        const alreadyAnswered = prog.answered > currentQuestionIndex;
+
+        if (!alreadyAnswered) {
+            prog.answered = currentQuestionIndex + 1;  // số câu đã làm = index hiện tại + 1
+            if (correct) prog.correct++;
         }
 
-        function prevQuestion(mode = '') {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                loadQuestion(mode);
-            }
-        }
+        prog.currentIndex = currentQuestionIndex;
 
-        function nextQuestion(mode = '') {
-            const max = mode === 'set' ? currentSet.questions.length - 1 :
-                        mode === 'test' ? mockTestQuestions.length - 1 : questions.length - 1;
-            if (currentQuestionIndex < max) {
-                currentQuestionIndex++;
-                loadQuestion(mode);
-            } else if (mode === 'test' && !mockTestSubmitted) {
-                if (confirm('Bạn đã làm hết câu. Bạn muốn nộp bài ngay bây giờ?')) submitTest();
-            }
+        // Lưu lên Firebase
+        try {
+            await update(ref(db, `users/${currentUser.uid}/progress/${currentSubject}`), {
+                currentIndex: prog.currentIndex,
+                answered: prog.answered,
+                correct: prog.correct,
+                total: questions.length,
+                lastActive: new Date().toISOString()
+            });
+
+            // Cập nhật coins luôn
+            await saveUserData({ coins: brainCoins });
+
+            // Cập nhật giao diện tiến độ
+            updateProgressDisplay();
+        } catch (err) {
+            console.error("Lỗi lưu tiến độ:", err);
         }
+    }
+
+    // Reset bet sau khi check (tùy chọn – bạn có thể giữ hoặc bỏ)
+    currentBet = 1;
+}
+
+function showAnswer(mode = '') {
+    const prefix = mode ? mode + '-' : '';
+    const q = mode === 'set' ? currentSet.questions[currentQuestionIndex] :
+              mode === 'test' ? mockTestQuestions[currentQuestionIndex] : 
+              questions[currentQuestionIndex];
+    
+    if (q) {
+        document.getElementById(prefix + 'result').textContent = `Đáp án: ${q.answer}`;
+    }
+}
+
+function prevQuestion(mode = '') {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        loadQuestion(mode);
+
+        // Lưu currentIndex ngay cả khi prev (để nhớ vị trí khi reload)
+        if (mode === '' && currentSubject && currentUser) {
+            progress[currentSubject].currentIndex = currentQuestionIndex;
+            update(ref(db, `users/${currentUser.uid}/progress/${currentSubject}`), {
+                currentIndex: currentQuestionIndex,
+                lastActive: new Date().toISOString()
+            }).catch(err => console.error("Lỗi lưu index khi prev:", err));
+
+            updateProgressDisplay();
+        }
+    }
+}
+
+function nextQuestion(mode = '') {
+    const max = mode === 'set' ? currentSet.questions.length - 1 :
+                mode === 'test' ? mockTestQuestions.length - 1 : 
+                questions.length - 1;
+
+    if (currentQuestionIndex < max) {
+        currentQuestionIndex++;
+        loadQuestion(mode);
+
+        // Lưu currentIndex khi next
+        if (mode === '' && currentSubject && currentUser) {
+            progress[currentSubject].currentIndex = currentQuestionIndex;
+            update(ref(db, `users/${currentUser.uid}/progress/${currentSubject}`), {
+                currentIndex: currentQuestionIndex,
+                lastActive: new Date().toISOString()
+            }).catch(err => console.error("Lỗi lưu index khi next:", err));
+
+            updateProgressDisplay();
+        }
+    } 
+    else if (mode === 'test' && !mockTestSubmitted) {
+        if (confirm('Bạn đã làm hết câu. Bạn muốn nộp bài ngay bây giờ?')) {
+            submitTest();
+        }
+    }
+}
+
+function updateProgressDisplay() {
+    if (!currentSubject || !questions.length) return;
+
+    const prog = progress[currentSubject];
+    const percent = prog.total > 0 ? Math.round((prog.answered / prog.total) * 100) : 0;
+
+    // Tạo phần tử hiển thị (có thể thêm vào section home hoặc fill-blank)
+    let progressEl = document.getElementById('subject-progress');
+    if (!progressEl) {
+        progressEl = document.createElement('div');
+        progressEl.id = 'subject-progress';
+        progressEl.className = 'text-center text-lg font-medium text-primary mt-6';
+        document.querySelector('#home h2')?.insertAdjacentElement('afterend', progressEl);
+    }
+
+    progressEl.innerHTML = `
+        Bạn đã hoàn thành <strong>${prog.answered}/${prog.total}</strong> câu 
+        (<strong>${percent}%</strong>)<br>
+        Đúng: <strong>${prog.correct}</strong> • Sai/Để lại: <strong>${prog.answered - prog.correct}</strong>
+    `;
+}
+
+async function resetSubjectProgress() {
+    if (!currentSubject) {
+        alert('Vui lòng chọn môn trước!');
+        return;
+    }
+
+    if (!confirm(`Reset tiến độ môn ${currentSubject.toUpperCase()}?\nMọi thống kê (đúng/sai, câu đã làm) sẽ về 0.`)) {
+        return;
+    }
+
+    // Reset object local
+    progress[currentSubject] = {
+        currentIndex: 0,
+        answered: 0,
+        correct: 0,
+        total: questions.length
+    };
+
+    currentQuestionIndex = 0;
+
+    // Reset trên Firebase nếu đã đăng nhập
+    if (currentUser) {
+        try {
+            await set(ref(db, `users/${currentUser.uid}/progress/${currentSubject}`), {
+                currentIndex: 0,
+                answered: 0,
+                correct: 0,
+                total: questions.length,
+                lastActive: new Date().toISOString()
+            });
+            console.log('Đã reset tiến độ trên Firebase');
+        } catch (err) {
+            console.error('Lỗi reset Firebase:', err);
+            alert('Reset thành công cục bộ, nhưng không lưu được lên cloud. Kiểm tra kết nối.');
+        }
+    }
+
+    // Cập nhật UI
+    updateProgressDisplay();
+    loadQuestion();  // load lại câu đầu tiên
+
+    alert('Đã reset tiến độ môn này!');
+}
 
         function loadSetSelect() {
             const select = document.getElementById('set-select');
@@ -1833,6 +2021,8 @@ currentSubject = null;
             showAnswer,
             prevQuestion,
             nextQuestion,
+            resetSubjectProgress,
+            updateProgressDisplay,
             loadSet,
             loadSetSelect,
             startMockTest,
@@ -1846,18 +2036,9 @@ toggleEditMode,
     updateUserGreeting,
     loadProfile,
 updateUI
-
         });
-
         // Khởi tạo
         updateUI();
     </script>
-
 </body>
-
 </html>
-
-
-
-
-
