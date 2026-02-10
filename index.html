@@ -48,22 +48,58 @@
         }
     </script>
     <style>
+/* Đảm bảo main luôn đẩy xuống đủ chỗ cho header fixed */
+main {
+    padding-top: 140px !important;   /* Tăng lên 140-160px để dư chỗ cho header dài */
+}
+
+/* Trên màn hình lớn hơn thì giảm lại */
+@media (min-width: 768px) {
+    main {
+        padding-top: 100px !important;
+    }
+}
+
+/* Header linh hoạt hơn, không để wrap quá nhiều */
+header .max-w-7xl {
+    flex-wrap: nowrap !important;   /* Ngăn wrap quá sớm */
+    gap: 8px;
+}
+
+#app-title {
+    white-space: nowrap;            /* Giữ tiêu đề môn không xuống dòng */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 45vw;                /* Giới hạn chiều rộng tiêu đề trên mobile */
+}
+
+/* Nav menu nhỏ gọn hơn trên mobile */
+#main-nav {
+    gap: 4px !important;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#main-nav button {
+    padding: 8px 12px !important;
+    font-size: 0.875rem !important;  /* Nhỏ hơn một chút */
+}
         body { font-family: 'Inter', system-ui, sans-serif; }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300">
 
     <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-6">
-                <h1 id="app-title" class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-4 flex-wrap justify-center w-full md:w-auto">
+                <h1 id="app-title" class="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                     Ôn Tập Pro Mode
                 </h1>
 
 <!-- Modal Chỉnh sửa hồ sơ -->
 <div id="modal-display-name" class="fixed inset-0 bg-black/70 flex items-center justify-center z-[200] backdrop-blur-sm hidden">
-    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 w-full max-w-lg mx-4 relative">
-        <h3 class="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 w-full max-w-md mx-4 relative">
+        <h3 class="text-xl md:text-2xl font-bold mb-6 text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Chỉnh sửa hồ sơ
         </h3>
 
@@ -72,20 +108,20 @@
         <!-- Tên hiển thị -->
         <div class="mb-6">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tên hiển thị</label>
-            <input id="modal-display-name" type="text" placeholder="Ví dụ: Tiến Minh" class="w-full p-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
+            <input id="modal-display-name" type="text" placeholder="Ví dụ: Tiến Minh" class="w-full p-3 md:p-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
         </div>
 
         <!-- Avatar URL -->
         <div class="mb-6">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Link ảnh đại diện (URL)</label>
-            <input id="modal-avatar-url" type="url" placeholder="https://example.com/avatar.jpg" class="w-full p-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
+            <input id="modal-avatar-url" type="url" placeholder="https://example.com/avatar.jpg" class="w-full p-3 md:p-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
             <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Dán link ảnh từ Imgur, Google Drive, hoặc bất kỳ đâu (khuyến nghị ảnh vuông)</p>
         </div>
 
         <!-- Preview avatar -->
         <div class="mb-8 text-center">
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Xem trước ảnh đại diện:</p>
-            <div id="avatar-preview" class="w-24 h-24 mx-auto rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden border-4 border-primary">
+            <div id="avatar-preview" class="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden border-4 border-primary">
                 <span id="preview-initial" class="text-3xl font-bold text-gray-600 dark:text-gray-400"></span>
                 <img id="preview-img" class="hidden w-full h-full object-cover" alt="Avatar preview">
             </div>
@@ -93,10 +129,10 @@
 
         <!-- Nút hành động -->
         <div class="flex gap-4">
-            <button onclick="saveProfileChanges()" class="flex-1 py-4 bg-primary hover:bg-primaryDark text-white font-bold rounded-xl transition">
+            <button onclick="saveProfileChanges()" class="flex-1 py-3 md:py-4 bg-primary hover:bg-primaryDark text-white font-bold rounded-xl transition">
                 Lưu thay đổi
             </button>
-            <button onclick="closeEditProfileModal()" class="flex-1 py-4 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold rounded-xl transition">
+            <button onclick="closeEditProfileModal()" class="flex-1 py-3 md:py-4 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold rounded-xl transition">
                 Hủy
             </button>
         </div>
@@ -105,49 +141,49 @@
     </div>
 </div>
 
-                <div id="user-greeting" class="text-lg font-medium text-gray-700 dark:text-gray-300 hidden">
+                <div id="user-greeting" class="text-base md:text-lg font-medium text-gray-700 dark:text-gray-300 hidden">
                     Chào <span id="user-name-display">bạn</span>
                 </div>
-                <button id="back-to-subjects" onclick="backToSubjectSelect()" class="hidden px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm font-medium">
+                <button id="back-to-subjects" onclick="backToSubjectSelect()" class="hidden px-3 py-1 md:px-4 md:py-2 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm font-medium">
                     ← Chọn môn khác
                 </button>
             </div>
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3 md:gap-4 justify-center w-full md:w-auto mt-2 md:mt-0">
                 <button id="dark-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition text-xl">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <div id="coins" class="text-sm font-medium px-3 py-1 bg-primary/10 dark:bg-primary/20 rounded-full text-primary">Brain Coins: 0</div>
-                <div id="streak" class="text-sm font-medium px-3 py-1 bg-accent/10 dark:bg-accent/20 rounded-full text-accent">Chuỗi: 0 ngày</div>
-                <button id="logout-btn" class="hidden px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition">Đăng xuất</button>
+                <div id="coins" class="text-xs md:text-sm font-medium px-2 md:px-3 py-1 bg-primary/10 dark:bg-primary/20 rounded-full text-primary">Brain Coins: 0</div>
+                <div id="streak" class="text-xs md:text-sm font-medium px-2 md:px-3 py-1 bg-accent/10 dark:bg-accent/20 rounded-full text-accent">Chuỗi: 0 ngày</div>
+                <button id="logout-btn" class="hidden px-3 py-1 md:px-4 md:py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs md:text-sm font-medium transition">Đăng xuất</button>
             </div>
         </div>
     </header>
 
     <main class="pt-24 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <nav class="flex flex-wrap justify-center gap-3 mb-10 hidden" id="main-nav">
-            <button onclick="showSection('home')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Trang Chủ</button>
-            <button onclick="showSection('fill-blank')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Ôn Điền Khuyết</button>
-            <button onclick="showSection('test-sets')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Ôn Theo Bộ Đề</button>
-            <button onclick="showSection('mock-test')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Thi Thử</button>
-            <button onclick="showSection('shop')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Cửa Hàng</button>
-            <button onclick="showSection('profile')" class="px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">Hồ sơ</button>
+        <nav class="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-10 hidden" id="main-nav">
+            <button onclick="showSection('home')" class="px-4 py-2 md:px-6 md:py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm md:text-base">Trang Chủ</button>
+            <button onclick="showSection('fill-blank')" class="px-4 py-2 md:px-6 md:py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm md:text-base">Ôn Điền Khuyết</button>
+            <button onclick="showSection('test-sets')" class="px-4 py-2 md:px-6 md:py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm md:text-base">Ôn Theo Bộ Đề</button>
+            <button onclick="showSection('mock-test')" class="px-4 py-2 md:px-6 md:py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm md:text-base">Thi Thử</button>
+            <button onclick="showSection('shop')" class="px-4 py-2 md:px-6 md:py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm md:text-base">Cửa Hàng</button>
+            <button onclick="showSection('profile')" class="px-4 py-2 md:px-6 md:py-3 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm md:text-base">Hồ sơ</button>
                      </nav>
 
         <!-- Chọn môn -->
-        <section id="subject-select" class="section text-center max-w-4xl mx-auto pt-20">
-            <h2 class="text-4xl font-bold mb-10">Chọn môn bạn muốn ôn</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <button onclick="selectSubject('lao')" class="p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all border-2 border-primary">
-                    <h3 class="text-2xl font-bold text-primary mb-2">Lao</h3>
+        <section id="subject-select" class="section text-center max-w-4xl mx-auto pt-16 md:pt-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 md:mb-10">Chọn môn bạn muốn ôn</h2>
+            <div class="grid grid-cols-1 gap-6">
+                <button onclick="selectSubject('lao')" class="p-6 md:p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all border-2 border-primary">
+                    <h3 class="text-xl md:text-2xl font-bold text-primary mb-2">Lao</h3>
                     <p class="text-gray-600 dark:text-gray-400">Mã: TCDY035</p>
                 </button>
-                <button onclick="selectSubject('tt-lao')" class="p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all border-2 border-accent">
-                    <h3 class="text-2xl font-bold text-accent mb-2">TT. Lao</h3>
+                <button onclick="selectSubject('tt-lao')" class="p-6 md:p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all border-2 border-accent">
+                    <h3 class="text-xl md:text-2xl font-bold text-accent mb-2">TT. Lao</h3>
                     <p class="text-gray-600 dark:text-gray-400">Mã: TCDY036</p>
                 </button>
-<button onclick="selectSubject('ung-thu-dai-cuong')" class="p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all border-2 border-red-500">
-    <h3 class="text-2xl font-bold text-red-500 mb-2">Ung thư đại cương</h3>
+<button onclick="selectSubject('ung-thu-dai-cuong')" class="p-6 md:p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all border-2 border-red-500">
+    <h3 class="text-xl md:text-2xl font-bold text-red-500 mb-2">Ung thư đại cương</h3>
     <p class="text-gray-600 dark:text-gray-400">Mã: TCDY117</p>
 </button>
 
@@ -156,35 +192,35 @@
 
         <!-- Trang chủ -->
         <section id="home" class="section hidden text-center max-w-3xl mx-auto">
-            <h2 class="text-4xl font-bold mb-6">Chào mừng bạn đến với nền tảng ôn tập</h2>
-            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Chào mừng bạn đến với nền tảng ôn tập</h2>
+            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 mb-8">
                 Bạn đang ôn môn: <span id="current-subject-display" class="font-bold text-primary">Chưa chọn môn</span>
             </p>
-            <button onclick="showSection('fill-blank')" class="inline-block px-8 py-4 bg-gradient-to-r from-primary to-primaryDark text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
+            <button onclick="showSection('fill-blank')" class="inline-block px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-primary to-primaryDark text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
                 Bắt đầu ôn ngay
             </button>
         </section>
 
         <!-- Ôn điền khuyết -->
         <section id="fill-blank" class="section hidden">
-            <h2 class="text-3xl font-bold mb-6 text-center">Ôn Điền Khuyết</h2>
-            <input type="text" id="search" placeholder="Tìm kiếm câu hỏi..." class="w-full max-w-xl mx-auto block p-4 mb-6 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary" oninput="searchQuestions()">
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                <div class="lg:col-span-1 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 max-h-[70vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center">Ôn Điền Khuyết</h2>
+            <input type="text" id="search" placeholder="Tìm kiếm câu hỏi..." class="w-full max-w-xl mx-auto block p-3 md:p-4 mb-6 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary" oninput="searchQuestions()">
+            <div class="flex flex-col lg:grid lg:grid-cols-4 gap-6">
+                <div class="order-2 lg:order-1 lg:col-span-1 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 max-h-[60vh] md:max-h-[70vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
                     <ul id="question-list" class="space-y-2"></ul>
                 </div>
-                <div id="question-container" class="lg:col-span-3 hidden bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
-                    <div id="difficulty" class="inline-block px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium mb-4"></div>
+                <div id="question-container" class="order-1 lg:order-2 lg:col-span-3 hidden bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 border border-gray-200 dark:border-gray-700">
+                    <div id="difficulty" class="inline-block px-3 md:px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium mb-4"></div>
                     <div id="bet-options" class="flex flex-wrap gap-3 mb-6"></div>
-                    <div id="question" class="text-xl leading-relaxed mb-6"></div>
-                    <input type="text" id="answer-input" placeholder="Nhập đáp án của bạn..." class="w-full p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-primary mb-6">
+                    <div id="question" class="text-lg md:text-xl leading-relaxed mb-6"></div>
+                    <input type="text" id="answer-input" placeholder="Nhập đáp án của bạn..." class="w-full p-3 md:p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-primary mb-6">
                     <div class="flex flex-wrap gap-3">
-                        <button onclick="checkAnswer()" class="flex-1 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">Kiểm Tra</button>
-                        <button onclick="showAnswer()" class="flex-1 py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700 transition">Hiện Đáp Án</button>
-                        <button onclick="prevQuestion()" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Trước</button>
-                        <button onclick="nextQuestion()" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Sau</button>
+                        <button onclick="checkAnswer()" class="flex-1 py-2 md:py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">Kiểm Tra</button>
+                        <button onclick="showAnswer()" class="flex-1 py-2 md:py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700 transition">Hiện Đáp Án</button>
+                        <button onclick="prevQuestion()" class="py-2 md:py-3 px-4 md:px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Trước</button>
+                        <button onclick="nextQuestion()" class="py-2 md:py-3 px-4 md:px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Sau</button>
 <!-- Trong section fill-blank -->
-<button onclick="resetSubjectProgress()" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm">
+<button onclick="resetSubjectProgress()" class="px-3 py-1 md:px-4 md:py-2 bg-red-100 text-red-700 rounded-lg text-sm">
     Reset tiến độ môn này
 </button>
                     </div>
@@ -195,22 +231,22 @@
 
         <!-- Ôn theo bộ đề -->
         <section id="test-sets" class="section hidden">
-            <h2 class="text-3xl font-bold mb-6 text-center">Ôn Theo Bộ Đề</h2>
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center">Ôn Theo Bộ Đề</h2>
             <div class="text-center mb-6">
-                <select id="set-select" class="p-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"></select>
-                <button onclick="loadSet()" class="ml-4 px-6 py-3 bg-primary text-white rounded-xl hover:bg-primaryDark transition">Tải Bộ Đề</button>
+                <select id="set-select" class="p-2 md:p-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"></select>
+                <button onclick="loadSet()" class="ml-2 md:ml-4 px-4 md:px-6 py-2 md:py-3 bg-primary text-white rounded-xl hover:bg-primaryDark transition">Tải Bộ Đề</button>
             </div>
-            <div id="set-question-container" class="hidden bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700 max-w-3xl mx-auto">
-                <div id="set-difficulty" class="inline-block px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium mb-4"></div>
+            <div id="set-question-container" class="hidden bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 border border-gray-200 dark:border-gray-700 max-w-3xl mx-auto">
+                <div id="set-difficulty" class="inline-block px-3 md:px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium mb-4"></div>
                 <div id="set-bet-options" class="flex flex-wrap gap-3 mb-6"></div>
-                <div id="set-progress" class="text-xl font-bold text-primary mb-4 text-center"></div>
-                <div id="set-question" class="text-xl leading-relaxed mb-6"></div>
-                <input type="text" id="set-answer-input" placeholder="Nhập đáp án..." class="w-full p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-primary mb-6">
+                <div id="set-progress" class="text-lg md:text-xl font-bold text-primary mb-4 text-center"></div>
+                <div id="set-question" class="text-lg md:text-xl leading-relaxed mb-6"></div>
+                <input type="text" id="set-answer-input" placeholder="Nhập đáp án..." class="w-full p-3 md:p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-primary mb-6">
                 <div class="flex flex-wrap gap-3">
-                    <button onclick="checkAnswer('set')" class="flex-1 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">Kiểm Tra</button>
-                    <button onclick="showAnswer('set')" class="flex-1 py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700 transition">Hiện Đáp Án</button>
-                    <button onclick="prevQuestion('set')" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Trước</button>
-                    <button onclick="nextQuestion('set')" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Sau</button>
+                    <button onclick="checkAnswer('set')" class="flex-1 py-2 md:py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">Kiểm Tra</button>
+                    <button onclick="showAnswer('set')" class="flex-1 py-2 md:py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700 transition">Hiện Đáp Án</button>
+                    <button onclick="prevQuestion('set')" class="py-2 md:py-3 px-4 md:px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Trước</button>
+                    <button onclick="nextQuestion('set')" class="py-2 md:py-3 px-4 md:px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Sau</button>
                 </div>
                 <div id="set-result" class="mt-6 text-lg font-bold"></div>
             </div>
@@ -218,58 +254,58 @@
 
         <!-- Thi thử -->
         <section id="mock-test" class="section hidden">
-            <h2 class="text-3xl font-bold mb-6 text-center">Thi Thử</h2>
-            <button onclick="startMockTest()" class="inline-block px-8 py-4 bg-gradient-to-r from-primary to-primaryDark text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">Bắt Đầu Thi Thử</button>
-            <div id="test-container" class="hidden mt-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700 max-w-4xl mx-auto">
-                <div id="timer" class="text-3xl font-bold text-red-600 mb-4 text-center"></div>
-                <div id="test-progress" class="text-xl font-bold text-primary mb-4 text-center"></div>
-                <div id="test-difficulty" class="inline-block px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium mb-4"></div>
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center">Thi Thử</h2>
+            <button onclick="startMockTest()" class="inline-block px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-primary to-primaryDark text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">Bắt Đầu Thi Thử</button>
+            <div id="test-container" class="hidden mt-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 border border-gray-200 dark:border-gray-700 max-w-4xl mx-auto">
+                <div id="timer" class="text-2xl md:text-3xl font-bold text-red-600 mb-4 text-center"></div>
+                <div id="test-progress" class="text-lg md:text-xl font-bold text-primary mb-4 text-center"></div>
+                <div id="test-difficulty" class="inline-block px-3 md:px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium mb-4"></div>
                 <div id="test-bet-options" class="flex flex-wrap gap-3 mb-6 justify-center"></div>
-                <div id="test-question" class="text-xl leading-relaxed mb-6"></div>
-                <input type="text" id="test-answer-input" placeholder="Nhập đáp án..." class="w-full p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-primary mb-6">
+                <div id="test-question" class="text-lg md:text-xl leading-relaxed mb-6"></div>
+                <input type="text" id="test-answer-input" placeholder="Nhập đáp án..." class="w-full p-3 md:p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-primary mb-6">
                 <div class="flex flex-wrap gap-3 justify-center">
-                    <button onclick="checkAnswer('test')" class="px-8 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">Kiểm Tra</button>
-                    <button onclick="showAnswer('test')" class="px-8 py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700 transition">Hiện Đáp Án</button>
-                    <button onclick="prevQuestion('test')" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Trước</button>
-                    <button onclick="nextQuestion('test')" class="py-3 px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Sau</button>
-                    <button onclick="submitTest()" class="px-8 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition">Nộp Bài</button>
+                    <button onclick="checkAnswer('test')" class="px-6 md:px-8 py-2 md:py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">Kiểm Tra</button>
+                    <button onclick="showAnswer('test')" class="px-6 md:px-8 py-2 md:py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700 transition">Hiện Đáp Án</button>
+                    <button onclick="prevQuestion('test')" class="py-2 md:py-3 px-4 md:px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Trước</button>
+                    <button onclick="nextQuestion('test')" class="py-2 md:py-3 px-4 md:px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Sau</button>
+                    <button onclick="submitTest()" class="px-6 md:px-8 py-2 md:py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition">Nộp Bài</button>
                 </div>
                 <div id="test-result" class="mt-6 text-lg font-bold text-center"></div>
             </div>
-            <div id="score" class="mt-8 text-2xl font-bold text-center"></div>
+            <div id="score" class="mt-8 text-xl md:text-2xl font-bold text-center"></div>
             <div id="review-container" class="hidden mt-10 max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700"></div>
         </section>
 
         <!-- Cửa hàng -->
         <section id="shop" class="section hidden">
-            <h2 class="text-3xl font-bold mb-8 text-center">Cửa Hàng</h2>
-            <p class="text-center text-gray-600 dark:text-gray-400 mb-10">Dùng Brain Coins để mua các vật phẩm sưu tầm đẹp mắt!</p>
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">Cửa Hàng</h2>
+            <p class="text-center text-gray-600 dark:text-gray-400 mb-8 md:mb-10">Dùng Brain Coins để mua các vật phẩm sưu tầm đẹp mắt!</p>
             <div id="shop-items" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
         </section>
 
         <!-- Hồ sơ cá nhân - Nâng cấp với chỉnh sửa inline -->
-<section id="profile" class="section hidden max-w-4xl mx-auto pt-10">
-    <h2 class="text-4xl font-bold mb-10 text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+<section id="profile" class="section hidden max-w-4xl mx-auto pt-8 md:pt-10">
+    <h2 class="text-3xl md:text-4xl font-bold mb-8 md:mb-10 text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
         Hồ sơ cá nhân
     </h2>
     
     <div class="bg-white dark:bg-gray-800/90 rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700 backdrop-blur-sm">
         <!-- Header profile (giữ nguyên như cũ) -->
-        <div class="bg-gradient-to-br from-primary/20 to-accent/20 dark:from-primary/10 dark:to-accent/10 p-10 text-center relative">
-            <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-5xl font-bold shadow-xl ring-4 ring-white dark:ring-gray-900 overflow-hidden">
+        <div class="bg-gradient-to-br from-primary/20 to-accent/20 dark:from-primary/10 dark:to-accent/10 p-8 md:p-10 text-center relative">
+            <div class="w-24 h-24 md:w-32 md:h-32 mx-auto mb-4 md:mb-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-4xl md:text-5xl font-bold shadow-xl ring-4 ring-white dark:ring-gray-900 overflow-hidden">
                 <img id="profile-avatar-img" class="hidden w-full h-full object-cover" alt="Avatar">
                 <span id="profile-avatar-initial" class="text-5xl"></span>
             </div>
             
-            <h3 id="profile-display-name" class="text-3xl font-bold mb-2"></h3>
-            <p id="profile-email" class="text-lg text-gray-600 dark:text-gray-400 mb-4"></p>
+            <h3 id="profile-display-name" class="text-2xl md:text-3xl font-bold mb-2"></h3>
+            <p id="profile-email" class="text-base md:text-lg text-gray-600 dark:text-gray-400 mb-4"></p>
             
             <div class="flex flex-wrap justify-center gap-4">
-                <div class="px-6 py-2 bg-white/80 dark:bg-gray-900/80 rounded-full shadow-md flex items-center gap-2">
+                <div class="px-4 md:px-6 py-2 bg-white/80 dark:bg-gray-900/80 rounded-full shadow-md flex items-center gap-2">
                     <span class="text-yellow-500 text-xl">🪙</span>
                     <span id="profile-coins-badge" class="font-bold text-primary"></span>
                 </div>
-                <div class="px-6 py-2 bg-white/80 dark:bg-gray-900/80 rounded-full shadow-md flex items-center gap-2">
+                <div class="px-4 md:px-6 py-2 bg-white/80 dark:bg-gray-900/80 rounded-full shadow-md flex items-center gap-2">
                     <span class="text-orange-500 text-xl">🔥</span>
                     <span id="profile-streak-badge" class="font-bold text-accent"></span>
                 </div>
@@ -277,48 +313,48 @@
         </div>
 
         <!-- Body profile - PHẦN NÀY ĐÃ THÊM THỐNG KÊ -->
-        <div class="p-8 sm:p-12 space-y-8">
+        <div class="p-6 md:p-8 sm:p-12 space-y-8">
             <div id="profile-view" class="space-y-8">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-4 md:p-6 rounded-2xl text-center shadow-inner">
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Brain Coins</p>
-                        <p id="profile-coins" class="text-2xl font-bold text-primary">0</p>
+                        <p id="profile-coins" class="text-xl md:text-2xl font-bold text-primary">0</p>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-4 md:p-6 rounded-2xl text-center shadow-inner">
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Chuỗi ngày học</p>
-                        <p id="profile-streak" class="text-2xl font-bold text-accent">0 ngày</p>
+                        <p id="profile-streak" class="text-xl md:text-2xl font-bold text-accent">0 ngày</p>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-4 md:p-6 rounded-2xl text-center shadow-inner">
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Số vật phẩm</p>
-                        <p id="profile-inventory-count" class="text-2xl font-bold">0</p>
+                        <p id="profile-inventory-count" class="text-xl md:text-2xl font-bold">0</p>
                     </div>
                 </div>
 
                 <!-- PHẦN THỐNG KÊ MỚI -->
                 <div id="learning-stats" class="space-y-6">
-                    <h4 class="text-2xl font-bold text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Thống kê học tập</h4>
+                    <h4 class="text-xl md:text-2xl font-bold text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Thống kê học tập</h4>
                     
                     <!-- Tổng quan -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 gap-4">
                         <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl text-center">
                             <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng câu đã làm</p>
-                            <p id="total-answered" class="text-xl font-bold text-primary">0</p>
+                            <p id="total-answered" class="text-lg md:text-xl font-bold text-primary">0</p>
                         </div>
                         <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl text-center">
                             <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng câu đúng</p>
-                            <p id="total-correct" class="text-xl font-bold text-green-600">0</p>
+                            <p id="total-correct" class="text-lg md:text-xl font-bold text-green-600">0</p>
                         </div>
                         <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl text-center">
                             <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Tỷ lệ chính xác</p>
-                            <p id="total-accuracy" class="text-xl font-bold text-accent">0%</p>
+                            <p id="total-accuracy" class="text-lg md:text-xl font-bold text-accent">0%</p>
                         </div>
                     </div>
 
                     <!-- Môn mạnh/yếu + thời gian gần nhất -->
                     <div class="text-center space-y-2 mt-4">
-                        <p id="strongest-subject" class="text-lg font-medium">Môn mạnh nhất: Chưa có dữ liệu</p>
-                        <p id="weakest-subject" class="text-lg font-medium">Môn yếu nhất: Chưa có dữ liệu</p>
-                        <p id="last-active" class="text-lg font-medium">Thời gian học gần nhất: Chưa có</p>
+                        <p id="strongest-subject" class="text-base md:text-lg font-medium">Môn mạnh nhất: Chưa có dữ liệu</p>
+                        <p id="weakest-subject" class="text-base md:text-lg font-medium">Môn yếu nhất: Chưa có dữ liệu</p>
+                        <p id="last-active" class="text-base md:text-lg font-medium">Thời gian học gần nhất: Chưa có</p>
                     </div>
 
                     <!-- Bảng chi tiết theo môn -->
@@ -326,11 +362,11 @@
                         <table class="w-full border-collapse bg-white dark:bg-gray-800 rounded-xl shadow-md">
                             <thead>
                                 <tr class="bg-gray-100 dark:bg-gray-700">
-                                    <th class="p-3 text-left font-bold">Môn</th>
-                                    <th class="p-3 text-center font-bold">Đã làm</th>
-                                    <th class="p-3 text-center font-bold">Đúng</th>
-                                    <th class="p-3 text-center font-bold">%</th>
-                                    <th class="p-3 text-right font-bold">Lần học cuối</th>
+                                    <th class="p-2 md:p-3 text-left font-bold">Môn</th>
+                                    <th class="p-2 md:p-3 text-center font-bold">Đã làm</th>
+                                    <th class="p-2 md:p-3 text-center font-bold">Đúng</th>
+                                    <th class="p-2 md:p-3 text-center font-bold">%</th>
+                                    <th class="p-2 md:p-3 text-right font-bold">Lần học cuối</th>
                                 </tr>
                             </thead>
                             <tbody id="stats-table-body" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody>
@@ -339,20 +375,20 @@
                 </div>
 
                 <!-- Phần cũ (số câu đúng ước tính, chuỗi dài nhất) - giữ hoặc bỏ tùy anh -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-4 md:p-6 rounded-2xl text-center shadow-inner">
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Số câu đúng ước tính</p>
-                        <p id="profile-correct-answers" class="text-2xl font-bold text-green-600">~0</p>
+                        <p id="profile-correct-answers" class="text-xl md:text-2xl font-bold text-green-600">~0</p>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-4 md:p-6 rounded-2xl text-center shadow-inner">
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Chuỗi ngày học dài nhất</p>
-                        <p id="profile-max-streak" class="text-2xl font-bold text-orange-500">0 ngày</p>
+                        <p id="profile-max-streak" class="text-xl md:text-2xl font-bold text-orange-500">0 ngày</p>
                     </div>
                 </div>
                 
-       <div class="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700">
+       <div class="mt-8 md:mt-10 pt-6 md:pt-8 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-6">
-                        <h4 class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                        <h4 class="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                             📦 Kho vật phẩm
                         </h4>
                         <span class="text-sm bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full font-medium">
@@ -360,7 +396,7 @@
                         </span>
                     </div>
                     
-                    <div id="inventory-items" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div id="inventory-items" class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         </div>
                 </div> 
 
@@ -2997,7 +3033,9 @@ toggleEditMode,
     updateUserGreeting,
     loadProfile,
 updateUI
+
         });
+
         // Khởi tạo
         updateUI();
     </script>
