@@ -257,7 +257,7 @@
     </h2>
     
     <div class="bg-white dark:bg-gray-800/90 rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700 backdrop-blur-sm">
-        <!-- Header profile -->
+        <!-- Header profile (giữ nguyên như cũ) -->
         <div class="bg-gradient-to-br from-primary/20 to-accent/20 dark:from-primary/10 dark:to-accent/10 p-10 text-center relative">
             <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-5xl font-bold shadow-xl ring-4 ring-white dark:ring-gray-900 overflow-hidden">
                 <img id="profile-avatar-img" class="hidden w-full h-full object-cover" alt="Avatar">
@@ -279,81 +279,78 @@
             </div>
         </div>
 
-        <!-- Body profile -->
+        <!-- Body profile - PHẦN NÀY ĐÃ THÊM THỐNG KÊ -->
         <div class="p-8 sm:p-12 space-y-8">
-            <!-- View mode -->
             <div id="profile-view" class="space-y-8">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Brain Coins</p>
-                        <p id="profile-coins" class="text-3xl font-bold text-primary"></p>
+                        <p id="profile-coins" class="text-2xl font-bold text-primary">0</p>
                     </div>
                     <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Chuỗi ngày</p>
-                        <p id="profile-streak" class="text-3xl font-bold text-accent"></p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Chuỗi ngày học</p>
+                        <p id="profile-streak" class="text-2xl font-bold text-accent">0 ngày</p>
                     </div>
                     <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Vật phẩm</p>
-                        <p id="profile-inventory-count" class="text-3xl font-bold text-purple-600 dark:text-purple-400"></p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Số vật phẩm</p>
+                        <p id="profile-inventory-count" class="text-2xl font-bold">0</p>
                     </div>
                 </div>
 
-                <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl">
-                    <h4 class="text-xl font-semibold mb-4 flex items-center gap-2">
-                        <span class="text-2xl">📊</span> Thống kê ôn tập
-                    </h4>
-                    <div class="space-y-3">
-                        <div class="flex justify-between">
-                            <span class="text-gray-700 dark:text-gray-300">Tổng câu trả lời đúng ước tính:</span>
-                            <span class="font-bold text-green-600" id="profile-correct-answers">~0</span>
+                <!-- PHẦN THỐNG KÊ MỚI -->
+                <div id="learning-stats" class="space-y-6">
+                    <h4 class="text-2xl font-bold text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Thống kê học tập</h4>
+                    
+                    <!-- Tổng quan -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl text-center">
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng câu đã làm</p>
+                            <p id="total-answered" class="text-xl font-bold text-primary">0</p>
                         </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-700 dark:text-gray-300">Ngày ôn tập liên tục cao nhất:</span>
-                            <span class="font-bold text-accent" id="profile-max-streak">0 ngày</span>
+                        <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl text-center">
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng câu đúng</p>
+                            <p id="total-correct" class="text-xl font-bold text-green-600">0</p>
                         </div>
-                    </div>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button onclick="toggleEditMode()" class="flex-1 py-4 bg-gradient-to-r from-primary to-primaryDark text-white font-bold rounded-xl hover:shadow-lg transition transform hover:-translate-y-1">
-                        Chỉnh sửa hồ sơ
-                    </button>
-                    <button onclick="signOut(auth)" class="flex-1 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition transform hover:-translate-y-1">
-                        Đăng xuất
-                    </button>
-                </div>
-            </div>
-
-            <!-- Edit mode (ẩn mặc định) -->
-            <div id="profile-edit" class="hidden space-y-8">
-                <div class="space-y-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tên hiển thị</label>
-                        <input id="inline-display-name" type="text" placeholder="Ví dụ: Tiến Minh" class="w-full p-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Link ảnh đại diện (URL)</label>
-                        <input id="inline-avatar-url" type="url" placeholder="https://example.com/avatar.jpg" class="w-full p-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Dán link ảnh vuông (jpg/png/gif/webp) từ Imgur hoặc bất kỳ đâu</p>
-                    </div>
-
-                    <div class="text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Xem trước ảnh đại diện:</p>
-                        <div class="w-24 h-24 mx-auto rounded-full overflow-hidden border-4 border-primary">
-                            <img id="edit-preview-img" class="hidden w-full h-full object-cover" alt="Preview">
-                            <span id="edit-preview-initial" class="text-3xl font-bold text-gray-600 dark:text-gray-400 flex items-center justify-center h-full"></span>
+                        <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl text-center">
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Tỷ lệ chính xác</p>
+                            <p id="total-accuracy" class="text-xl font-bold text-accent">0%</p>
                         </div>
                     </div>
+
+                    <!-- Môn mạnh/yếu + thời gian gần nhất -->
+                    <div class="text-center space-y-2 mt-4">
+                        <p id="strongest-subject" class="text-lg font-medium">Môn mạnh nhất: Chưa có dữ liệu</p>
+                        <p id="weakest-subject" class="text-lg font-medium">Môn yếu nhất: Chưa có dữ liệu</p>
+                        <p id="last-active" class="text-lg font-medium">Thời gian học gần nhất: Chưa có</p>
+                    </div>
+
+                    <!-- Bảng chi tiết theo môn -->
+                    <div class="overflow-x-auto mt-6">
+                        <table class="w-full border-collapse bg-white dark:bg-gray-800 rounded-xl shadow-md">
+                            <thead>
+                                <tr class="bg-gray-100 dark:bg-gray-700">
+                                    <th class="p-3 text-left font-bold">Môn</th>
+                                    <th class="p-3 text-center font-bold">Đã làm</th>
+                                    <th class="p-3 text-center font-bold">Đúng</th>
+                                    <th class="p-3 text-center font-bold">%</th>
+                                    <th class="p-3 text-right font-bold">Lần học cuối</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stats-table-body" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div class="flex gap-4 justify-center">
-                    <button onclick="saveProfileChanges()" class="flex-1 max-w-xs py-4 bg-primary hover:bg-primaryDark text-white font-bold rounded-xl transition">
-                        Lưu thay đổi
-                    </button>
-                    <button onclick="toggleEditMode()" class="flex-1 max-w-xs py-4 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold rounded-xl transition">
-                        Hủy
-                    </button>
+                <!-- Phần cũ (số câu đúng ước tính, chuỗi dài nhất) - giữ hoặc bỏ tùy anh -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Số câu đúng ước tính</p>
+                        <p id="profile-correct-answers" class="text-2xl font-bold text-green-600">~0</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-2xl text-center shadow-inner">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Chuỗi ngày học dài nhất</p>
+                        <p id="profile-max-streak" class="text-2xl font-bold text-orange-500">0 ngày</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1216,6 +1213,11 @@ let progress = {
     inventory = Array.isArray(userData.inventory) ? userData.inventory : [];  // fix undefined.length
     userData.displayName = userData.displayName || null;
     userData.avatarUrl = userData.avatarUrl || null;
+const progressData = userData.progress || {};
+    progress = {
+        lao: progressData.lao || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
+        "tt-lao": progressData['tt-lao'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null }
+    };
 
     updateUI();
     updateUserGreeting();
@@ -1454,8 +1456,69 @@ function loadProfile() {
 
     document.getElementById('profile-correct-answers').textContent = `~${Math.floor(brainCoins / 10)}`;
     document.getElementById('profile-max-streak').textContent = `${streak} ngày`;
-}
 
+let totalAnswered = 0;
+    let totalCorrect = 0;
+    let latestActive = null;
+    let strongest = { subject: null, accuracy: -1 };
+    let weakest = { subject: null, accuracy: Infinity };
+
+    const subjects = {
+        lao: 'Lao (TCDY035)',
+        "tt-lao": 'TT. Lao (TCDY036)'
+    };
+
+    const tableBody = document.getElementById('stats-table-body');
+    tableBody.innerHTML = '';
+
+    Object.keys(progress).forEach(key => {
+        const prog = progress[key];
+        totalAnswered += prog.answered || 0;
+        totalCorrect += prog.correct || 0;
+
+        const accuracy = prog.answered > 0 ? Math.round((prog.correct / prog.answered) * 100) : 0;
+
+        if (accuracy > strongest.accuracy && prog.answered > 0) {
+            strongest = { subject: subjects[key], accuracy };
+        }
+        if (accuracy < weakest.accuracy && prog.answered > 0) {
+            weakest = { subject: subjects[key], accuracy };
+        }
+
+        if (prog.lastActive) {
+            const date = new Date(prog.lastActive);
+            if (!latestActive || date > latestActive) latestActive = date;
+        }
+
+        // Row bảng
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="p-3 text-left">${subjects[key]}</td>
+            <td class="p-3 text-center">${prog.answered}/${prog.total}</td>
+            <td class="p-3 text-center">${prog.correct}</td>
+            <td class="p-3 text-center">${accuracy}%</td>
+            <td class="p-3 text-right">${prog.lastActive ? new Date(prog.lastActive).toLocaleString('vi-VN') : 'Chưa học'}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+
+    const totalAccuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+
+    document.getElementById('total-answered').textContent = totalAnswered;
+    document.getElementById('total-correct').textContent = totalCorrect;
+    document.getElementById('total-accuracy').textContent = `${totalAccuracy}%`;
+
+    document.getElementById('strongest-subject').innerHTML = strongest.subject 
+        ? `Môn mạnh nhất: <strong>${strongest.subject}</strong> (${strongest.accuracy}%)` 
+        : 'Môn mạnh nhất: Chưa có dữ liệu';
+    document.getElementById('weakest-subject').innerHTML = weakest.subject 
+        ? `Môn yếu nhất: <strong>${weakest.subject}</strong> (${weakest.accuracy}%)` 
+        : 'Môn yếu nhất: Chưa có dữ liệu';
+
+    document.getElementById('last-active').innerHTML = latestActive 
+        ? `Thời gian học gần nhất: <strong>${latestActive.toLocaleString('vi-VN')}</strong>` 
+        : 'Thời gian học gần nhất: Chưa có';
+}
 
         // Auth State
         onAuthStateChanged(auth, async (user) => {
@@ -1621,7 +1684,13 @@ currentSubject = null;
             document.getElementById(prefix + 'answer-input').value = mode === 'test' ? (mockTestAnswers[currentQuestionIndex] || '') : '';
             document.getElementById(prefix + 'result').textContent = '';
             if (mode === 'test') updateTestProgress();
-        }
+        if (mode === '' && currentSubject && currentUser) {
+        progress[currentSubject].lastActive = new Date().toISOString();
+        update(ref(db, `users/${currentUser.uid}/progress/${currentSubject}`), {
+            lastActive: progress[currentSubject].lastActive
+        }).catch(err => console.error("Lỗi update lastActive khi loadQuestion:", err));
+    }
+}
 
         function placeBet(bet, mode = '') {
             currentBet = bet;
@@ -1632,6 +1701,7 @@ currentSubject = null;
 // Phần code đã sửa + tích hợp lưu tiến độ
 // ────────────────────────────────────────────────
 
+// 1. Hàm checkAnswer đã sửa
 async function checkAnswer(mode = '') {
     const prefix = mode ? mode + '-' : '';
     const inputEl = document.getElementById(prefix + 'answer-input');
@@ -1655,13 +1725,12 @@ async function checkAnswer(mode = '') {
         ? 'mt-6 text-lg font-bold text-green-600' 
         : 'mt-6 text-lg font-bold text-red-600';
 
-    // ─── Chỉ xử lý tiến độ & coins cho phần ôn điền khuyết chính (mode === '') ───
+    // Xử lý tiến độ & coins
     if (mode === '' && currentSubject && currentUser) {
         const prog = progress[currentSubject];
-
-        // Tính thưởng coins (giữ nguyên logic cũ)
+        
         if (correct) {
-            let reward = 10 * (streak || 1);  // tránh streak = 0
+            let reward = 10 * (streak || 1);
             if (currentBet === 2) reward *= 2;
             if (currentBet === 0) reward *= 2;
             if (isJackpot) reward *= 10;
@@ -1670,42 +1739,37 @@ async function checkAnswer(mode = '') {
             brainCoins = Math.max(0, brainCoins - 20);
         }
 
-        // ─── Cập nhật tiến độ ───────────────────────────────────────
-        // Chỉ tăng answered nếu đây là lần đầu check câu này
-        // (tránh người dùng check nhiều lần thì answered tăng vô hạn)
-        const alreadyAnswered = prog.answered > currentQuestionIndex;
+        if (currentQuestionIndex >= prog.answered) {
+            prog.answered = currentQuestionIndex + 1;
+        }
 
-        if (!alreadyAnswered) {
-            prog.answered = currentQuestionIndex + 1;  // số câu đã làm = index hiện tại + 1
-            if (correct) prog.correct++;
+        if (correct) {
+            prog.correct += 1;
         }
 
         prog.currentIndex = currentQuestionIndex;
+        prog.lastActive = new Date().toISOString();
 
-        // Lưu lên Firebase
         try {
             await update(ref(db, `users/${currentUser.uid}/progress/${currentSubject}`), {
                 currentIndex: prog.currentIndex,
                 answered: prog.answered,
                 correct: prog.correct,
                 total: questions.length,
-                lastActive: new Date().toISOString()
+                lastActive: prog.lastActive
             });
 
-            // Cập nhật coins luôn
             await saveUserData({ coins: brainCoins });
-
-            // Cập nhật giao diện tiến độ
             updateProgressDisplay();
         } catch (err) {
             console.error("Lỗi lưu tiến độ:", err);
         }
-    }
 
-    // Reset bet sau khi check (tùy chọn – bạn có thể giữ hoặc bỏ)
-    currentBet = 1;
-}
+        currentBet = 1;
+    } // Đã đóng IF
+} // Đã đóng hàm checkAnswer
 
+// 2. Hàm showAnswer
 function showAnswer(mode = '') {
     const prefix = mode ? mode + '-' : '';
     const q = mode === 'set' ? currentSet.questions[currentQuestionIndex] :
@@ -1717,24 +1781,27 @@ function showAnswer(mode = '') {
     }
 }
 
+// 3. Hàm prevQuestion đã sửa (Trước đó thiếu 2 dấu ngoặc)
 function prevQuestion(mode = '') {
     if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
         loadQuestion(mode);
 
-        // Lưu currentIndex ngay cả khi prev (để nhớ vị trí khi reload)
         if (mode === '' && currentSubject && currentUser) {
             progress[currentSubject].currentIndex = currentQuestionIndex;
+            progress[currentSubject].lastActive = new Date().toISOString();
+
             update(ref(db, `users/${currentUser.uid}/progress/${currentSubject}`), {
                 currentIndex: currentQuestionIndex,
-                lastActive: new Date().toISOString()
-            }).catch(err => console.error("Lỗi lưu index khi prev:", err));
+                lastActive: progress[currentSubject].lastActive
+            }).catch(err => console.error("Lỗi lưu lastActive khi prev:", err));
 
             updateProgressDisplay();
-        }
-    }
-}
+        } // Đóng IF mode
+    } // Đóng IF index > 0
+} // Đóng hàm prevQuestion
 
+// 4. Hàm nextQuestion đã sửa (Trước đó thiếu 2 dấu ngoặc)
 function nextQuestion(mode = '') {
     const max = mode === 'set' ? currentSet.questions.length - 1 :
                 mode === 'test' ? mockTestQuestions.length - 1 : 
@@ -1744,23 +1811,24 @@ function nextQuestion(mode = '') {
         currentQuestionIndex++;
         loadQuestion(mode);
 
-        // Lưu currentIndex khi next
         if (mode === '' && currentSubject && currentUser) {
             progress[currentSubject].currentIndex = currentQuestionIndex;
+            progress[currentSubject].lastActive = new Date().toISOString();
+
             update(ref(db, `users/${currentUser.uid}/progress/${currentSubject}`), {
                 currentIndex: currentQuestionIndex,
-                lastActive: new Date().toISOString()
-            }).catch(err => console.error("Lỗi lưu index khi next:", err));
+                lastActive: progress[currentSubject].lastActive
+            }).catch(err => console.error("Lỗi lưu lastActive khi next:", err));
 
             updateProgressDisplay();
-        }
+        } // Đóng IF mode
     } 
     else if (mode === 'test' && !mockTestSubmitted) {
         if (confirm('Bạn đã làm hết câu. Bạn muốn nộp bài ngay bây giờ?')) {
             submitTest();
         }
     }
-}
+} // Đóng hàm nextQuestion
 
 function updateProgressDisplay() {
     if (!currentSubject || !questions.length) return;
@@ -2036,9 +2104,13 @@ toggleEditMode,
     updateUserGreeting,
     loadProfile,
 updateUI
+
         });
+
         // Khởi tạo
         updateUI();
     </script>
+
 </body>
+
 </html>
