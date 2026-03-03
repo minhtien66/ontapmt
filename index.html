@@ -308,6 +308,35 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
 .badge-card.unlocked { animation: badgePop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
 @keyframes badgePop { from { transform: scale(0.7); opacity:0; } to { transform: scale(1); opacity:1; } }
 
+/* ── CONFETTI ── */
+.confetti-piece {
+    position: fixed; top: -20px; border-radius: 4px;
+    animation: confettiFall linear forwards;
+    pointer-events: none; z-index: 9999;
+}
+@keyframes confettiFall {
+    0%   { transform: translateY(0) rotateZ(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotateZ(720deg); opacity: 0; }
+}
+
+/* ── HEATMAP ── */
+.heatmap-col { display: flex; flex-direction: column; gap: 3px; }
+.heatmap-cell { width: 13px; height: 13px; border-radius: 3px; background: #f3f4f6; transition: transform 0.1s; }
+.dark .heatmap-cell { background: #374151; }
+.heatmap-cell:hover { transform: scale(1.4); }
+.heatmap-cell.lvl1 { background: rgba(16,185,129,0.25); }
+.heatmap-cell.lvl2 { background: rgba(16,185,129,0.55); }
+.heatmap-cell.lvl3 { background: rgba(16,185,129,0.85); }
+.heatmap-cell.lvl4 { background: #059669; }
+
+/* ── LEADERBOARD ── */
+.lb-row { transition: all 0.2s; }
+.lb-row:hover { transform: translateX(4px); }
+
+/* ── DAILY ── */
+.daily-card { animation: slideUp 0.3s ease; }
+@keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+
 /* ── DARK ICON ── */
 #theme-icon { font-size: 1.1rem; transition: transform 0.3s ease; }
 #dark-toggle:hover #theme-icon { transform: rotate(20deg); }
@@ -334,6 +363,9 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
                 <button id="dark-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
                     <span id="theme-icon">🌙</span>
                 </button>
+                <button id="sound-toggle" onclick="toggleSound()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition" title="Âm thanh">
+                    <span id="sound-icon">🔊</span>
+                </button>
                 <div id="coins" class="text-xs font-semibold px-3 py-1.5 bg-primary/10 dark:bg-primary/20 rounded-full text-primary whitespace-nowrap">🪙 0</div>
                 <div id="streak" class="text-xs font-semibold px-3 py-1.5 bg-orange-50 dark:bg-orange-900/20 rounded-full text-orange-500 whitespace-nowrap">🔥 0 ngày</div>
                 <button id="logout-btn" class="hidden px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-semibold transition whitespace-nowrap">Đăng xuất</button>
@@ -353,6 +385,8 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
             <button onclick="showSection('mcq-test')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">📋 Trắc Nghiệm</button>
             <button onclick="showSection('shop')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">🛍️ Cửa Hàng</button>
             <button onclick="showSection('badges')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">🏆 Thành Tích</button>
+            <button onclick="showSection('leaderboard')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">🏅 Xếp Hạng</button>
+            <button onclick="showSection('daily')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">☀️ Daily 5</button>
             <button onclick="showSection('profile')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">👤 Hồ Sơ</button>
         </nav>
 
@@ -432,16 +466,138 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
         </section>
 
         <!-- Trang chủ -->
-        <section id="home" class="section hidden text-center max-w-3xl mx-auto">
-            <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Chào mừng bạn! 👋</h2>
-            <p class="text-base md:text-lg text-gray-500 dark:text-gray-400 mb-2">
-                Đang ôn môn: <span id="current-subject-display" class="font-bold text-primary">Chưa chọn môn</span>
-            </p>
-            <div id="subject-progress" class="mt-6 mb-8 bg-white dark:bg-gray-800 rounded-2xl p-5 shadow border border-gray-100 dark:border-gray-700 text-left"></div>
-            <button onclick="showSection('fill-blank')" class="inline-block px-8 py-4 bg-gradient-to-r from-primary to-primaryDark text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all text-lg">
-                Bắt đầu ôn ngay →
-            </button>
+        <section id="home" class="section hidden max-w-4xl mx-auto">
+            <!-- Greeting + daily streak banner -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-extrabold" id="dash-greeting">Chào mừng bạn! 👋</h2>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Đang ôn: <span id="current-subject-display" class="font-bold text-primary">Chưa chọn môn</span></p>
+                </div>
+                <div id="daily-banner" class="hidden flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-2xl shadow-lg font-bold text-sm cursor-pointer hover:scale-105 transition" onclick="showSection('daily')">
+                    ✨ Câu hỏi hôm nay chờ bạn!
+                </div>
+            </div>
+
+            <!-- Stats cards row -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 text-center">
+                    <div class="text-2xl font-extrabold text-primary" id="dash-total-correct">0</div>
+                    <div class="text-xs text-gray-500 mt-1">Câu đúng</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 text-center">
+                    <div class="text-2xl font-extrabold text-amber-500" id="dash-streak">0🔥</div>
+                    <div class="text-xs text-gray-500 mt-1">Streak ngày</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 text-center">
+                    <div class="text-2xl font-extrabold text-purple-500" id="dash-coins">0</div>
+                    <div class="text-xs text-gray-500 mt-1">Brain Coins</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 text-center">
+                    <div class="text-2xl font-extrabold text-cyan-500" id="dash-accuracy">0%</div>
+                    <div class="text-xs text-gray-500 mt-1">Độ chính xác</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+                <!-- Heatmap -->
+                <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-extrabold text-sm text-gray-700 dark:text-gray-200">📅 Hoạt động 10 tuần gần đây</h3>
+                        <span class="text-xs text-gray-400" id="heatmap-total"></span>
+                    </div>
+                    <div id="activity-heatmap" class="flex gap-1 overflow-x-auto pb-1"></div>
+                    <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
+                        <span>Ít</span>
+                        <div class="w-3 h-3 rounded-sm bg-gray-100 dark:bg-gray-700"></div>
+                        <div class="w-3 h-3 rounded-sm bg-primary/30"></div>
+                        <div class="w-3 h-3 rounded-sm bg-primary/60"></div>
+                        <div class="w-3 h-3 rounded-sm bg-primary"></div>
+                        <span>Nhiều</span>
+                    </div>
+                </div>
+
+                <!-- Donut chart per subject -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700">
+                    <h3 class="font-extrabold text-sm text-gray-700 dark:text-gray-200 mb-3">📊 Tiến độ môn học</h3>
+                    <div id="subject-donut-list" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- Quick actions -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+                <button onclick="showSection('fill-blank')" class="flex items-center gap-3 p-4 bg-gradient-to-br from-primary to-primaryDark text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
+                    <span class="text-2xl">✏️</span><span>Điền Khuyết</span>
+                </button>
+                <button onclick="showSection('flashcard')" class="flex items-center gap-3 p-4 bg-gradient-to-br from-purple-500 to-accent text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
+                    <span class="text-2xl">🃏</span><span>Flashcard</span>
+                </button>
+                <button onclick="showSection('mcq-test')" class="flex items-center gap-3 p-4 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
+                    <span class="text-2xl">📋</span><span>Trắc Nghiệm</span>
+                </button>
+                <button onclick="showSection('wrong-review')" class="flex items-center gap-3 p-4 bg-gradient-to-br from-red-400 to-rose-500 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
+                    <span class="text-2xl">📝</span><span>Ôn Câu Sai <span id="dash-wrong-badge" class="ml-1 text-xs bg-white/30 px-1.5 py-0.5 rounded-full"></span></span>
+                </button>
+                <button onclick="showSection('leaderboard')" class="flex items-center gap-3 p-4 bg-gradient-to-br from-amber-400 to-yellow-500 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
+                    <span class="text-2xl">🏅</span><span>Bảng Xếp Hạng</span>
+                </button>
+                <button onclick="showSection('daily')" class="flex items-center gap-3 p-4 bg-gradient-to-br from-teal-400 to-cyan-500 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
+                    <span class="text-2xl">☀️</span><span>Daily 5</span>
+                </button>
+            </div>
         </section>
+
+        <!-- ── DAILY 5 ── -->
+        <section id="daily" class="section hidden max-w-2xl mx-auto">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-extrabold">☀️ Câu Hỏi Hôm Nay</h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" id="daily-date"></p>
+                </div>
+                <div id="daily-done-badge" class="hidden px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-bold">✓ Hoàn thành hôm nay!</div>
+            </div>
+            <div id="daily-container"></div>
+        </section>
+
+        <!-- ── LEADERBOARD ── -->
+        <section id="leaderboard" class="section hidden max-w-2xl mx-auto">
+            <h2 class="text-2xl md:text-3xl font-extrabold mb-2 text-center">🏅 Bảng Xếp Hạng</h2>
+            <div class="flex gap-2 justify-center mb-6">
+                <button onclick="switchLB('coins')" id="lb-tab-coins" class="px-4 py-2 rounded-xl text-sm font-bold bg-primary text-white transition">💰 Brain Coins</button>
+                <button onclick="switchLB('streak')" id="lb-tab-streak" class="px-4 py-2 rounded-xl text-sm font-bold bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 transition">🔥 Streak</button>
+                <button onclick="switchLB('correct')" id="lb-tab-correct" class="px-4 py-2 rounded-xl text-sm font-bold bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 transition">✅ Câu Đúng</button>
+            </div>
+            <div id="lb-loading" class="text-center py-12 text-gray-400">⏳ Đang tải...</div>
+            <div id="lb-list" class="space-y-3"></div>
+        </section>
+
+        <!-- ── SHARE RESULT MODAL ── -->
+        <div id="share-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-sm w-full p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-lg">📤 Chia sẻ kết quả</h3>
+                    <button onclick="closeShareModal()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-200 transition text-gray-500">✕</button>
+                </div>
+                <!-- Share card preview -->
+                <div id="share-card" class="rounded-2xl p-6 mb-5 text-white text-center" style="background:linear-gradient(135deg,#10b981,#8b5cf6)">
+                    <div class="text-3xl mb-2" id="sc-icon">🎯</div>
+                    <div class="text-xl font-extrabold mb-1" id="sc-title"></div>
+                    <div class="text-4xl font-black mb-2" id="sc-score"></div>
+                    <div class="text-sm opacity-80 mb-3" id="sc-sub"></div>
+                    <div class="flex justify-center gap-4 text-sm">
+                        <div>🔥 <span id="sc-streak"></span> ngày</div>
+                        <div>🪙 <span id="sc-coins"></span> coins</div>
+                    </div>
+                    <div class="mt-3 text-xs opacity-60">nhmtontap.dpdns.org</div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="copyShareText()" class="flex-1 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-bold text-sm hover:bg-gray-200 transition">📋 Copy text</button>
+                    <button onclick="downloadShareCard()" class="flex-1 py-2.5 bg-gradient-to-r from-primary to-accent text-white rounded-xl font-bold text-sm hover:opacity-90 transition">💾 Lưu ảnh</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── GIAO DIỆN GHI CHÚ (inline per question) ── -->
+        <!-- Note popup is injected dynamically -->
 
         <!-- Ôn điền khuyết -->
         <section id="fill-blank" class="section hidden">
@@ -463,6 +619,15 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
                         <button onclick="prevQuestion()" class="py-2 md:py-3 px-4 md:px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition font-medium">← Trước</button>
                         <button onclick="nextQuestion()" class="py-2 md:py-3 px-4 md:px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition font-medium">Sau →</button>
                         <button onclick="resetSubjectProgress()" class="px-3 py-1 md:px-4 md:py-2 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 transition">↺ Reset</button>
+                        <button onclick="toggleNote()" id="note-btn" class="py-2 px-3 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-xl hover:bg-yellow-200 transition text-sm font-medium" title="Ghi chú">📝</button>
+                        <button onclick="openShareFromQuestion()" class="py-2 px-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 rounded-xl hover:bg-indigo-200 transition text-sm font-medium" title="Chia sẻ">📤</button>
+                    </div>
+                    <div id="note-box" class="hidden mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-yellow-700 dark:text-yellow-400">📝 Ghi chú của bạn</span>
+                            <button onclick="saveNote()" class="text-xs px-3 py-1 bg-yellow-400 text-white rounded-lg font-bold hover:bg-yellow-500 transition">Lưu</button>
+                        </div>
+                        <textarea id="note-input" rows="3" placeholder="Viết ghi chú, mẹo nhớ, liên kết kiến thức..." class="w-full p-2 rounded-lg border border-yellow-200 dark:border-yellow-700 bg-white dark:bg-gray-800 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400"></textarea>
                     </div>
                     <div id="result" class="mt-6 text-base font-bold"></div>
                 </div>
@@ -2414,10 +2579,10 @@ let progress = {
 
 ],
 
-          // ── RĂNG HÀM MẶT ──
+        // ── RĂNG HÀM MẶT ──
         "rang-ham-mat": [
             // TODO: Thêm câu hỏi môn Răng hàm mặt vào đây
-          { text: "Hệ thống răng miệng đảm nhiệm các chức năng sống còn như nhai, phát âm và cảm nhận ______.", answer: "vị giác", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
+           { text: "Hệ thống răng miệng đảm nhiệm các chức năng sống còn như nhai, phát âm và cảm nhận ______.", answer: "vị giác", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
 
 { text: "Răng và các mô quanh răng bắt đầu hình thành từ giai đoạn ______ rất sớm.", answer: "phôi thai", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
 
@@ -3052,8 +3217,6 @@ let progress = {
 { text: "Phẫu thuật tạo hình vòm miệng khi trẻ ______-______ tháng.", answer: "18-24", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' }
 
 
-
-
         ],
 
         // ── MẮT ──
@@ -3237,6 +3400,7 @@ const progressData = userData.progress || {};
     // Load wrong answers & badges
     wrongAnswers = Array.isArray(userData.wrongAnswers) ? userData.wrongAnswers : [];
     unlockedBadges = new Set(Array.isArray(userData.badges) ? userData.badges : []);
+    loadExtendedUserData();
     if (!document.getElementById('profile').classList.contains('hidden')) {
         loadProfile();
     }
@@ -3584,6 +3748,7 @@ function loadProfile() {
     updateProgressDisplay();
 
     showSection('home');           // hoặc 'fill-blank' nếu muốn vào thẳng ôn
+    setTimeout(loadDashboard, 50);
     loadQuestionList();
     loadSetSelect();
 }
@@ -3622,6 +3787,9 @@ currentSubject = null;
                     document.getElementById('mcq-result').classList.add('hidden');
                 }
                 if (id === 'badges') { checkBadges(); renderBadges(); }
+                if (id === 'leaderboard') { loadLeaderboard('coins'); }
+                if (id === 'daily') { loadDaily(); }
+                if (id === 'home') { loadDashboard(); }
                 setNavActive(id);
             }
         }
@@ -4561,10 +4729,528 @@ async function resetSubjectProgress() {
             checkWrongAnswer, showWrongAnswer, prevWrong, nextWrong, clearWrongAnswers,
             startMCQTest, submitMCQTest, nextMCQ, prevMCQ, skipMCQ, toggleMCQReview,
             checkBadges, renderBadges,
+            // New features
+            toggleSound, loadDashboard, loadDaily, loadLeaderboard, switchLB,
+            toggleNote, saveNote, openShareFromQuestion, closeShareModal, downloadShareCard, copyShareText,
         });
 
         // Khởi tạo
         updateUI();
+
+
+        // ════════════════════════════════════════════
+        // 🎉 CONFETTI
+        // ════════════════════════════════════════════
+        function launchConfetti(count = 80) {
+            const colors = ['#10b981','#8b5cf6','#f59e0b','#3b82f6','#ef4444','#ec4899','#06b6d4'];
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti-piece';
+                el.style.cssText = `
+                    left: ${Math.random() * 100}vw;
+                    width: ${6 + Math.random() * 8}px;
+                    height: ${10 + Math.random() * 10}px;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    animation-duration: ${1.5 + Math.random() * 2}s;
+                    animation-delay: ${Math.random() * 0.5}s;
+                    transform: rotateZ(${Math.random() * 360}deg);
+                `;
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 4000);
+            }
+        }
+
+        // ════════════════════════════════════════════
+        // 🔊 SOUND EFFECTS
+        // ════════════════════════════════════════════
+        let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            localStorage.setItem('soundEnabled', soundEnabled);
+            document.getElementById('sound-icon').textContent = soundEnabled ? '🔊' : '🔇';
+            showToast(soundEnabled ? '🔊 Âm thanh bật' : '🔇 Âm thanh tắt', 'info', 1500);
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain); gain.connect(ctx.destination);
+                if (type === 'correct') {
+                    osc.frequency.setValueAtTime(523, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+                    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.5);
+                } else if (type === 'wrong') {
+                    osc.frequency.setValueAtTime(200, ctx.currentTime);
+                    osc.frequency.setValueAtTime(150, ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.35);
+                } else if (type === 'jackpot') {
+                    [523,659,784,1047].forEach((f, i) => {
+                        const o2 = ctx.createOscillator(); const g2 = ctx.createGain();
+                        o2.connect(g2); g2.connect(ctx.destination);
+                        o2.frequency.value = f;
+                        g2.gain.setValueAtTime(0.12, ctx.currentTime + i*0.1);
+                        g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.1 + 0.4);
+                        o2.start(ctx.currentTime + i*0.1); o2.stop(ctx.currentTime + i*0.1 + 0.4);
+                    });
+                } else if (type === 'badge') {
+                    [784, 1047].forEach((f, i) => {
+                        const o2 = ctx.createOscillator(); const g2 = ctx.createGain();
+                        o2.connect(g2); g2.connect(ctx.destination);
+                        o2.frequency.value = f;
+                        g2.gain.setValueAtTime(0.1, ctx.currentTime + i*0.15);
+                        g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.15 + 0.3);
+                        o2.start(ctx.currentTime + i*0.15); o2.stop(ctx.currentTime + i*0.15 + 0.3);
+                    });
+                }
+            } catch(e) {}
+        }
+
+        // ════════════════════════════════════════════
+        // 📊 DASHBOARD
+        // ════════════════════════════════════════════
+        function loadDashboard() {
+            if (!currentUser) return;
+            // Update stat cards
+            let totalAnswered = 0, totalCorrect = 0;
+            Object.values(progress).forEach(p => { totalAnswered += p.answered||0; totalCorrect += p.correct||0; });
+            const acc = totalAnswered > 0 ? Math.round(totalCorrect/totalAnswered*100) : 0;
+            const el = (id) => document.getElementById(id);
+            if(el('dash-total-correct')) el('dash-total-correct').textContent = totalCorrect.toLocaleString();
+            if(el('dash-streak')) el('dash-streak').textContent = streak + '🔥';
+            if(el('dash-coins')) el('dash-coins').textContent = brainCoins.toLocaleString();
+            if(el('dash-accuracy')) el('dash-accuracy').textContent = acc + '%';
+            if(el('dash-wrong-badge')) el('dash-wrong-badge').textContent = wrongAnswers.length || '';
+            // Greeting
+            const h = new Date().getHours();
+            const greet = h < 12 ? 'Chào buổi sáng ☀️' : h < 18 ? 'Chào buổi chiều 👋' : 'Chào buổi tối 🌙';
+            const name = userData.displayName || currentUser?.email?.split('@')[0] || 'Bạn';
+            if(el('dash-greeting')) el('dash-greeting').textContent = `${greet}, ${name}!`;
+            // Daily banner
+            const today = new Date().toDateString();
+            const dailyDone = (userData.dailyDone || '') === today;
+            if(el('daily-banner')) el('daily-banner').classList.toggle('hidden', dailyDone);
+            buildHeatmap();
+            buildSubjectDonuts();
+        }
+
+        function buildHeatmap() {
+            const wrap = document.getElementById('activity-heatmap');
+            if (!wrap) return;
+            wrap.innerHTML = '';
+            // Build activity map from progress lastActive
+            const actMap = {};
+            // Use activityLog if available
+            const log = userData.activityLog || {};
+            Object.entries(log).forEach(([d, v]) => { actMap[d] = (actMap[d]||0) + v; });
+
+            const now = new Date();
+            const WEEKS = 10;
+            // Start from WEEKS*7 days ago, aligned to Sunday
+            const startDate = new Date(now);
+            startDate.setDate(startDate.getDate() - WEEKS * 7 + 1);
+
+            let totalActive = 0;
+            for (let w = 0; w < WEEKS; w++) {
+                const col = document.createElement('div');
+                col.className = 'heatmap-col';
+                for (let d = 0; d < 7; d++) {
+                    const date = new Date(startDate);
+                    date.setDate(startDate.getDate() + w*7 + d);
+                    const key = date.toDateString();
+                    const val = actMap[key] || 0;
+                    if (val > 0) totalActive++;
+                    const cell = document.createElement('div');
+                    cell.className = 'heatmap-cell' + (val === 0 ? '' : val < 5 ? ' lvl1' : val < 10 ? ' lvl2' : val < 20 ? ' lvl3' : ' lvl4');
+                    cell.title = `${date.toLocaleDateString('vi-VN')}: ${val} hoạt động`;
+                    col.appendChild(cell);
+                }
+                wrap.appendChild(col);
+            }
+            const htEl = document.getElementById('heatmap-total');
+            if (htEl) htEl.textContent = `${totalActive} ngày hoạt động`;
+        }
+
+        function buildSubjectDonuts() {
+            const wrap = document.getElementById('subject-donut-list');
+            if (!wrap) return;
+            wrap.innerHTML = '';
+            const subjectMeta = {
+                lao: { name: 'Lao', color: '#10b981' },
+                'tt-lao': { name: 'TT. Lao', color: '#8b5cf6' },
+                'ung-thu-dai-cuong': { name: 'Ung thư ĐC', color: '#ef4444' },
+                'rang-ham-mat': { name: 'Răng hàm mặt', color: '#3b82f6' },
+                mat: { name: 'Mắt', color: '#06b6d4' },
+            };
+            Object.entries(progress).forEach(([key, p]) => {
+                const meta = subjectMeta[key] || { name: key, color: '#10b981' };
+                const pct = p.total > 0 ? Math.round(p.answered / p.total * 100) : 0;
+                const acc = p.answered > 0 ? Math.round(p.correct / p.answered * 100) : 0;
+                const row = document.createElement('div');
+                row.innerHTML = `
+                    <div class="flex justify-between text-xs mb-1">
+                        <span class="font-semibold">${meta.name}</span>
+                        <span class="text-gray-500">${p.answered}/${p.total||0} · ${acc}% đúng</span>
+                    </div>
+                    <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2.5">
+                        <div class="donut-bar h-2.5 rounded-full" style="width:0%;background:${meta.color}" data-target="${pct}"></div>
+                    </div>`;
+                wrap.appendChild(row);
+            });
+            // Animate bars
+            setTimeout(() => {
+                wrap.querySelectorAll('.donut-bar').forEach(bar => {
+                    bar.style.width = bar.dataset.target + '%';
+                });
+            }, 100);
+        }
+
+        // Log activity to Firebase
+        async function logActivity() {
+            if (!currentUser) return;
+            const today = new Date().toDateString();
+            const path = `users/${currentUser.uid}/activityLog/${today}`;
+            try {
+                const snap = await get(ref(db, path));
+                const cur = snap.exists() ? (snap.val() || 0) : 0;
+                await set(ref(db, path), cur + 1);
+                if (!userData.activityLog) userData.activityLog = {};
+                userData.activityLog[today] = (userData.activityLog[today] || 0) + 1;
+            } catch(e) {}
+        }
+
+        // ════════════════════════════════════════════
+        // ☀️ DAILY 5
+        // ════════════════════════════════════════════
+        let dailyQuestions = [];
+        let dailyIndex = 0;
+        let dailyScore = 0;
+
+        function loadDaily() {
+            if (!currentUser) return;
+            const today = new Date().toDateString();
+            document.getElementById('daily-date').textContent = new Date().toLocaleDateString('vi-VN', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+            const done = (userData.dailyDone || '') === today;
+            const doneBadge = document.getElementById('daily-done-badge');
+            if (doneBadge) doneBadge.classList.toggle('hidden', !done);
+
+            const container = document.getElementById('daily-container');
+            if (!container) return;
+
+            if (done) {
+                const score = userData.dailyScore || 0;
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-2xl shadow border border-gray-100 dark:border-gray-700">
+                        <div class="text-6xl mb-4">✅</div>
+                        <h3 class="text-2xl font-extrabold mb-2">Hôm nay hoàn thành rồi!</h3>
+                        <p class="text-gray-500 mb-2">Bạn đã trả lời đúng <span class="font-bold text-primary">${score}/5</span> câu hôm nay</p>
+                        <p class="text-sm text-gray-400">Quay lại vào ngày mai 👋</p>
+                        <button onclick="showSection('home')" class="mt-6 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition">← Về trang chủ</button>
+                    </div>`;
+                return;
+            }
+
+            // Pick 5 random questions prioritising wrong answers
+            const pool = wrongAnswers.length >= 3
+                ? [...wrongAnswers, ...questions.filter(q => !wrongAnswers.find(w => w.text === q.text))].slice(0, 5)
+                : [...questions].sort(() => Math.random() - 0.5).slice(0, 5);
+
+            dailyQuestions = pool.slice(0, 5);
+            dailyIndex = 0; dailyScore = 0;
+            renderDailyQuestion(container);
+        }
+
+        function renderDailyQuestion(container) {
+            if (!container) container = document.getElementById('daily-container');
+            if (!container) return;
+            if (dailyIndex >= dailyQuestions.length) {
+                finishDaily(container); return;
+            }
+            const q = dailyQuestions[dailyIndex];
+            const fromWrong = wrongAnswers.some(w => w.text === q.text);
+            container.innerHTML = `
+                <div class="daily-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-100 dark:border-gray-700">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs font-bold text-primary">Câu ${dailyIndex + 1} / ${dailyQuestions.length}</span>
+                        ${fromWrong ? '<span class="text-xs bg-red-100 dark:bg-red-900/30 text-red-600 px-2 py-1 rounded-full font-bold">📝 Câu từng sai</span>' : ''}
+                    </div>
+                    <div class="progress-bar-track mb-5"><div class="progress-bar-fill" style="width:${dailyIndex/dailyQuestions.length*100}%"></div></div>
+                    <div class="text-lg font-semibold leading-relaxed mb-6">${q.text.replace(/______/g, '<span class="border-b-2 border-primary px-4 text-primary font-bold">___</span>')}</div>
+                    <input type="text" id="daily-input" placeholder="Nhập đáp án..." class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-primary mb-4">
+                    <div id="daily-result" class="hidden text-base font-bold mb-4"></div>
+                    <div class="flex gap-3">
+                        <button onclick="checkDailyAnswer()" class="flex-1 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition">✓ Kiểm Tra</button>
+                        <button onclick="skipDailyQuestion()" class="py-3 px-5 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 transition font-medium text-sm">Bỏ qua</button>
+                    </div>
+                </div>`;
+            document.getElementById('daily-input')?.focus();
+            document.getElementById('daily-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') checkDailyAnswer(); });
+        }
+
+        function checkDailyAnswer() {
+            const input = document.getElementById('daily-input');
+            const resultEl = document.getElementById('daily-result');
+            if (!input || !resultEl) return;
+            const q = dailyQuestions[dailyIndex];
+            const correct = input.value.trim().toLowerCase() === q.answer.toLowerCase();
+            resultEl.classList.remove('hidden');
+            resultEl.textContent = correct ? `✓ Đúng! Đáp án: ${q.answer}` : `✗ Sai! Đáp án: ${q.answer}`;
+            resultEl.className = correct
+                ? 'text-base font-bold text-green-600 mb-4'
+                : 'text-base font-bold text-red-600 mb-4';
+            if (correct) { dailyScore++; playSound('correct'); removeFromWrong(q.text); }
+            else { playSound('wrong'); addWrongAnswer(q); }
+            // Add next button
+            const btnRow = resultEl.nextElementSibling;
+            if (btnRow) {
+                btnRow.innerHTML = `<button onclick="nextDailyQuestion()" class="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition">${dailyIndex + 1 < dailyQuestions.length ? 'Câu tiếp →' : 'Xem kết quả 🎉'}</button>`;
+            }
+        }
+
+        function skipDailyQuestion() { dailyIndex++; renderDailyQuestion(); }
+        function nextDailyQuestion() { dailyIndex++; renderDailyQuestion(); }
+
+        async function finishDaily(container) {
+            if (!container) container = document.getElementById('daily-container');
+            const today = new Date().toDateString();
+            const reward = dailyScore * 30;
+            brainCoins += reward;
+            userData.dailyDone = today;
+            userData.dailyScore = dailyScore;
+            await saveUserData({ coins: brainCoins, dailyDone: today, dailyScore });
+            updateUI();
+            if (dailyScore >= 4) { launchConfetti(); playSound('jackpot'); }
+            else if (dailyScore >= 2) playSound('correct');
+            checkBadges();
+            container.innerHTML = `
+                <div class="daily-card text-center bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
+                    <div class="text-6xl mb-4">${dailyScore === 5 ? '🏆' : dailyScore >= 3 ? '🌟' : '💪'}</div>
+                    <h3 class="text-2xl font-extrabold mb-2">Hoàn thành Daily 5!</h3>
+                    <div class="text-5xl font-black text-primary mb-2">${dailyScore}/5</div>
+                    <p class="text-gray-500 mb-2">${dailyScore === 5 ? 'Hoàn hảo! 🎉' : dailyScore >= 3 ? 'Tốt lắm!' : 'Cố gắng hơn ngày mai!'}</p>
+                    <p class="text-sm font-bold text-amber-600 mb-6">+${reward} 🪙 Brain Coins</p>
+                    <div class="flex gap-3 justify-center">
+                        <button onclick="showSection('home')" class="px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition">← Trang chủ</button>
+                        <button onclick="openShareResult(${dailyScore}, 5, 'Daily 5')" class="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition">📤 Chia sẻ</button>
+                    </div>
+                </div>`;
+        }
+
+        // ════════════════════════════════════════════
+        // 🏅 LEADERBOARD
+        // ════════════════════════════════════════════
+        let currentLBType = 'coins';
+
+        async function loadLeaderboard(type) {
+            currentLBType = type || currentLBType;
+            const listEl = document.getElementById('lb-list');
+            const loadEl = document.getElementById('lb-loading');
+            if (!listEl) return;
+            if (loadEl) loadEl.classList.remove('hidden');
+            listEl.innerHTML = '';
+
+            // Update tab styles
+            ['coins','streak','correct'].forEach(t => {
+                const tab = document.getElementById(`lb-tab-${t}`);
+                if (tab) tab.className = `px-4 py-2 rounded-xl text-sm font-bold transition ${t === currentLBType ? 'bg-primary text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`;
+            });
+
+            try {
+                const snap = await get(ref(db, 'users'));
+                if (!snap.exists()) { loadEl?.classList.add('hidden'); listEl.innerHTML = '<div class="text-center text-gray-400 py-8">Chưa có dữ liệu</div>'; return; }
+                const users = snap.val();
+                let rows = Object.entries(users).map(([uid, u]) => {
+                    const totalCorrect = Object.values(u.progress || {}).reduce((s, p) => s + (p.correct||0), 0);
+                    return {
+                        uid,
+                        name: u.displayName || u.email?.split('@')[0] || 'Ẩn danh',
+                        avatar: u.avatarUrl || '',
+                        coins: u.coins || 0,
+                        streak: u.streak || 0,
+                        correct: totalCorrect,
+                    };
+                });
+                rows.sort((a, b) => b[currentLBType] - a[currentLBType]);
+                rows = rows.slice(0, 20);
+                if (loadEl) loadEl.classList.add('hidden');
+                rows.forEach((row, i) => {
+                    const rank = i + 1;
+                    const isMe = row.uid === currentUser?.uid;
+                    const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+                    const valLabel = currentLBType === 'coins' ? `💰 ${row.coins.toLocaleString()}` : currentLBType === 'streak' ? `🔥 ${row.streak} ngày` : `✅ ${row.correct}`;
+                    const div = document.createElement('div');
+                    div.className = `lb-row flex items-center gap-3 p-3 rounded-2xl border transition ${isMe ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800'} shadow-sm`;
+                    div.innerHTML = `
+                        <div class="w-8 text-center font-extrabold text-lg">${rankEmoji}</div>
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 ${rank===1?'lb-rank-1':rank===2?'lb-rank-2':rank===3?'lb-rank-3':'bg-gray-400'}" style="${row.avatar ? `background:url(${row.avatar}) center/cover` : ''}">
+                            ${row.avatar ? '' : row.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-sm truncate">${row.name}${isMe ? ' <span class="text-xs text-primary">(Bạn)</span>' : ''}</div>
+                        </div>
+                        <div class="font-extrabold text-sm text-primary whitespace-nowrap">${valLabel}</div>`;
+                    listEl.appendChild(div);
+                });
+            } catch(e) {
+                if (loadEl) loadEl.classList.add('hidden');
+                listEl.innerHTML = '<div class="text-center text-red-400 py-8">Lỗi tải bảng xếp hạng</div>';
+            }
+        }
+
+        function switchLB(type) { loadLeaderboard(type); }
+
+        // ════════════════════════════════════════════
+        // 📝 GHI CHÚ
+        // ════════════════════════════════════════════
+        let notes = {};  // { questionKey: noteText }
+
+        function getNoteKey() {
+            const q = questions[currentQuestionIndex];
+            return q ? `${currentSubject}_${currentQuestionIndex}` : null;
+        }
+
+        function toggleNote() {
+            const box = document.getElementById('note-box');
+            if (!box) return;
+            const isHidden = box.classList.contains('hidden');
+            box.classList.toggle('hidden', !isHidden);
+            if (!isHidden) return;
+            // Load existing note
+            const key = getNoteKey();
+            const input = document.getElementById('note-input');
+            if (input && key) input.value = notes[key] || '';
+            // Update button indicator
+            const btn = document.getElementById('note-btn');
+            if (btn && key && notes[key]) btn.style.background = '#fef3c7';
+        }
+
+        async function saveNote() {
+            const key = getNoteKey();
+            const input = document.getElementById('note-input');
+            if (!key || !input) return;
+            notes[key] = input.value.trim();
+            // Prune empty
+            if (!notes[key]) delete notes[key];
+            if (currentUser) {
+                try { await update(ref(db, `users/${currentUser.uid}`), { notes }); } catch(e) {}
+            }
+            const btn = document.getElementById('note-btn');
+            if (btn) btn.style.background = notes[key] ? '#fef3c7' : '';
+            showToast('📝 Đã lưu ghi chú!', 'success', 1500);
+        }
+
+        function loadNoteForCurrentQuestion() {
+            const key = getNoteKey();
+            const box = document.getElementById('note-box');
+            const input = document.getElementById('note-input');
+            const btn = document.getElementById('note-btn');
+            if (box && !box.classList.contains('hidden') && input && key) {
+                input.value = notes[key] || '';
+            }
+            if (btn && key) btn.style.background = notes[key] ? '#fef3c7' : '';
+        }
+
+        // ════════════════════════════════════════════
+        // 📤 CHIA SẺ KẾT QUẢ
+        // ════════════════════════════════════════════
+        function openShareResult(score, total, mode) {
+            const pct = Math.round(score / total * 100);
+            const icon = pct >= 80 ? '🏆' : pct >= 60 ? '🌟' : pct >= 40 ? '💪' : '📖';
+            document.getElementById('sc-icon').textContent = icon;
+            document.getElementById('sc-title').textContent = mode || 'Kết quả';
+            document.getElementById('sc-score').textContent = `${score}/${total}`;
+            document.getElementById('sc-sub').textContent = pct >= 80 ? 'Xuất sắc!' : pct >= 60 ? 'Khá tốt!' : 'Cố gắng lên!';
+            document.getElementById('sc-streak').textContent = streak;
+            document.getElementById('sc-coins').textContent = brainCoins.toLocaleString();
+            document.getElementById('share-modal').classList.remove('hidden');
+        }
+
+        function openShareFromQuestion() {
+            const prog = currentSubject ? progress[currentSubject] : null;
+            const score = prog ? prog.correct : 0;
+            const total = prog ? prog.answered : 0;
+            openShareResult(score, total, currentSubject ? 'Điền Khuyết' : 'Ôn tập');
+        }
+
+        function closeShareModal() {
+            document.getElementById('share-modal').classList.add('hidden');
+        }
+
+        function copyShareText() {
+            const score = document.getElementById('sc-score').textContent;
+            const mode = document.getElementById('sc-title').textContent;
+            const text = `🎓 Kết quả ${mode}: ${score}\n🔥 Streak: ${streak} ngày | 🪙 ${brainCoins.toLocaleString()} Coins\nnhmtontap.dpdns.org`;
+            navigator.clipboard?.writeText(text).then(() => showToast('📋 Đã copy!', 'success', 1500));
+        }
+
+        async function downloadShareCard() {
+            // Use html2canvas if available, else fallback
+            const card = document.getElementById('share-card');
+            if (window.html2canvas) {
+                const canvas = await html2canvas(card, { scale: 2, useCORS: true });
+                const a = document.createElement('a'); a.download = 'ket-qua.png';
+                a.href = canvas.toDataURL('image/png'); a.click();
+            } else {
+                // Fallback: copy text
+                copyShareText();
+                showToast('💡 Chưa hỗ trợ lưu ảnh, đã copy text!', 'info', 2500);
+            }
+        }
+
+        // ════════════════════════════════════════════
+        // Patch checkAnswer: sound + confetti + activityLog
+        // ════════════════════════════════════════════
+        // Wrap existing checkAnswer to add sound/confetti
+        const _baseCheckAnswer = checkAnswer;
+        checkAnswer = async function(mode = '') {
+            await _baseCheckAnswer(mode);
+            // Check result
+            const prefix = mode ? mode + '-' : '';
+            const resultEl = document.getElementById(prefix + 'result');
+            if (resultEl) {
+                const correct = resultEl.classList.contains('result-correct');
+                const wrong = resultEl.classList.contains('result-wrong');
+                if (correct && mode === '') {
+                    playSound(isJackpot ? 'jackpot' : 'correct');
+                    if (isJackpot) launchConfetti(120);
+                    logActivity();
+                    loadNoteForCurrentQuestion();
+                } else if (wrong && mode === '') {
+                    playSound('wrong');
+                }
+            }
+        };
+        window.checkAnswer = checkAnswer;
+
+        // Patch checkBadges to also play badge sound
+        const _baseCheckBadges = checkBadges;
+        checkBadges = function() {
+            const before = unlockedBadges.size;
+            _baseCheckBadges();
+            if (unlockedBadges.size > before) { playSound('badge'); }
+        };
+        window.checkBadges = checkBadges;
+
+        // ════════════════════════════════════════════
+        // Load notes & activityLog from Firebase
+        // ════════════════════════════════════════════
+        // Called inside loadUserData after userData set
+        function loadExtendedUserData() {
+            notes = userData.notes || {};
+            if (!userData.activityLog) userData.activityLog = {};
+        }
+
+        // Init sound icon
+        document.getElementById('sound-icon').textContent = soundEnabled ? '🔊' : '🔇';
+
 
         // ── Tự động đo header và set padding-top cho main ──
         function adjustMainPadding() {
