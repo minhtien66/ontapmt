@@ -608,7 +608,18 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
                     <ul id="question-list" class="space-y-1"></ul>
                 </div>
                 <div id="question-container" class="order-1 lg:order-2 lg:col-span-3 hidden bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 border border-gray-200 dark:border-gray-700">
-                    <div id="difficulty" class="inline-block px-3 md:px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium mb-4"></div>
+                    <!-- Question number bar -->
+                    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                        <div class="flex items-center gap-2">
+                            <span id="q-number-badge" class="px-3 py-1 bg-primary text-white text-sm font-extrabold rounded-full">Câu 1</span>
+                            <span id="q-total-badge" class="text-xs text-gray-400 font-medium"></span>
+                        </div>
+                        <div id="difficulty" class="inline-block px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-sm font-medium"></div>
+                    </div>
+                    <!-- Mini progress bar -->
+                    <div class="progress-bar-track mb-5" style="height:5px">
+                        <div id="q-mini-progress" class="progress-bar-fill transition-all duration-300" style="width:0%"></div>
+                    </div>
                     <div id="bet-options" class="flex flex-wrap gap-3 mb-6"></div>
                     <div id="question" class="text-lg md:text-xl leading-relaxed mb-6 font-medium"></div>
                     <input type="text" id="answer-input" placeholder="Nhập đáp án của bạn..." class="w-full p-3 md:p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-primary mb-2 text-base">
@@ -3840,6 +3851,18 @@ currentSubject = null;
             const q = mode === 'set' ? currentSet.questions[currentQuestionIndex] :
                       mode === 'test' ? mockTestQuestions[currentQuestionIndex] : questions[currentQuestionIndex];
             if (!q) return;
+
+            // ── Cập nhật số câu + progress bar (chỉ cho fill-blank) ──
+            if (mode === '') {
+                const total = questions.length;
+                const idx = currentQuestionIndex;
+                const numBadge = document.getElementById('q-number-badge');
+                const totalBadge = document.getElementById('q-total-badge');
+                const miniBar = document.getElementById('q-mini-progress');
+                if (numBadge) numBadge.textContent = `Câu ${idx + 1}`;
+                if (totalBadge) totalBadge.textContent = `/ ${total} câu`;
+                if (miniBar) miniBar.style.width = `${Math.round(((idx + 1) / total) * 100)}%`;
+            }
 
             isJackpot = Math.random() < 0.05;
             document.getElementById(prefix + 'difficulty').textContent = `Độ khó: ${q.difficulty}${isJackpot ? ' (Jackpot)' : ''}`;
