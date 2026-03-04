@@ -188,6 +188,7 @@ header .max-w-7xl {
 .toast-success { background: #10b981; color: white; }
 .toast-error   { background: #ef4444; color: white; }
 .toast-info    { background: #8b5cf6; color: white; }
+.toast-warning { background: #f59e0b; color: white; }
 .toast-coin    { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
 @keyframes toastIn {
     from { opacity: 0; transform: translateX(60px) scale(0.9); }
@@ -1111,6 +1112,16 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
                 <div id="inventory-items" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
             </div>
 
+            <!-- ── VÙNG NGUY HIỂM ── -->
+            <div class="pt-4 border-t-2 border-dashed border-red-200 dark:border-red-900/50">
+                <h4 class="text-lg font-extrabold mb-2 flex items-center gap-2 text-red-500">⚠️ Vùng nguy hiểm</h4>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Các hành động dưới đây không thể hoàn tác. Hãy cẩn thận!</p>
+                <button onclick="deleteAccount()"
+                    class="flex items-center gap-2 px-5 py-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-2xl font-bold text-sm hover:bg-red-100 dark:hover:bg-red-900/40 transition">
+                    🗑️ Xóa tài khoản vĩnh viễn
+                </button>
+            </div>
+
         </div><!-- end body -->
     </div><!-- end card -->
 </section>
@@ -1189,7 +1200,11 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
     signInWithEmailAndPassword, 
     onAuthStateChanged, 
     signOut,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    sendEmailVerification,
+    reauthenticateWithCredential,
+    EmailAuthProvider,
+    deleteUser
   } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
   // Realtime Database imports
@@ -1199,7 +1214,8 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
     set, 
     get, 
     update, 
-    child 
+    child,
+    remove
   } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
   // Your Firebase configuration (giữ nguyên như cũ)
@@ -2748,7 +2764,7 @@ let progress = {
 
         // ── RĂNG HÀM MẶT ──
         "rang-ham-mat": [
-             // TODO: Thêm câu hỏi môn Răng hàm mặt vào đây
+              // TODO: Thêm câu hỏi môn Răng hàm mặt vào đây
            { text: "Hệ thống răng miệng đảm nhiệm các chức năng sống còn như nhai, phát âm và cảm nhận ______.", answer: "vị giác", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
 
 { text: "Răng và các mô quanh răng bắt đầu hình thành từ giai đoạn ______ rất sớm.", answer: "phôi thai", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
@@ -3386,7 +3402,6 @@ let progress = {
 
         ],
 
-
         // ── MẮT ──
         "mat": [
             // TODO: Thêm câu hỏi môn Mắt vào đây
@@ -3525,11 +3540,18 @@ let progress = {
                 credential = await signInWithEmailAndPassword(auth, email, password);
             } else {
                 credential = await createUserWithEmailAndPassword(auth, email, password);
+                // Gửi email xác nhận
+                await sendEmailVerification(credential.user);
+                // Đăng xuất ngay, chờ xác nhận email
+                await signOut(auth);
+                modal.remove();
+                showToast('📧 Đăng ký thành công! Vui lòng kiểm tra email và xác nhận tài khoản trước khi đăng nhập.', 'success', 8000);
+                return;
             }
             currentUser = credential.user;
             await loadUserData();
             modal.remove();
-            showToast(isLogin ? '👋 Đăng nhập thành công!' : '🎉 Đăng ký thành công! Bạn được tặng 100 🪙 Brain Coins.', 'success', 4000);
+            showToast('👋 Đăng nhập thành công!', 'success', 4000);
         } catch (err) {
     let msg = 'Có lỗi xảy ra. Vui lòng thử lại.';
     
@@ -3919,6 +3941,15 @@ function loadProfile() {
 
         // Auth State
         onAuthStateChanged(auth, async (user) => {
+            if (user && !user.emailVerified) {
+                // Tài khoản chưa xác nhận email → đăng xuất, yêu cầu xác nhận
+                await signOut(auth);
+                currentUser = null;
+                document.getElementById('logout-btn')?.classList.add('hidden');
+                showAuthModal();
+                showToast('⚠️ Email chưa được xác nhận. Vui lòng kiểm tra hộp thư và click link xác nhận.', 'warning', 7000);
+                return;
+            }
             currentUser = user;
             if (user) {
                 await loadUserData();
@@ -3932,6 +3963,73 @@ function loadProfile() {
         });
 
         document.getElementById('logout-btn')?.addEventListener('click', () => signOut(auth));
+
+        // ── XÓA TÀI KHOẢN ──
+        async function deleteAccount() {
+            const step1 = await showConfirm(
+                '🗑️ Xóa tài khoản',
+                'Tất cả dữ liệu sẽ bị xóa vĩnh viễn:<br><br><span style="color:#ef4444">• Toàn bộ tiến độ học tập<br>• Brain Coins & vật phẩm<br>• Lịch sử & thống kê</span><br><br><b>Hành động này KHÔNG thể hoàn tác!</b>',
+                'Tiếp tục xóa', 'Hủy bỏ', true
+            );
+            if (!step1) return;
+
+            const password = await new Promise((resolve) => {
+                const isDark = document.documentElement.classList.contains('dark');
+                const overlay = document.createElement('div');
+                overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:10001;display:flex;align-items:center;justify-content:center;padding:16px';
+                
+                const box = document.createElement('div');
+                box.style.cssText = 'background:' + (isDark ? '#1f2937' : '#fff') + ';border-radius:20px;padding:28px;max-width:360px;width:100%;box-shadow:0 25px 60px rgba(0,0,0,0.4)';
+                box.innerHTML =
+                    '<div style="font-size:18px;font-weight:800;margin-bottom:8px;color:' + (isDark?'#f9fafb':'#111') + '">🔐 Xác nhận danh tính</div>' +
+                    '<p style="font-size:13px;color:' + (isDark?'#9ca3af':'#666') + ';margin-bottom:16px">Nhập mật khẩu để xác nhận xóa tài khoản</p>' +
+                    '<input id="del-pw" type="password" placeholder="Mật khẩu của bạn" style="width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid ' + (isDark?'#374151':'#e5e7eb') + ';background:' + (isDark?'#111827':'#f9fafb') + ';color:' + (isDark?'#f9fafb':'#111') + ';font-size:14px;box-sizing:border-box;margin-bottom:8px;outline:none"/>' +
+                    '<p id="del-err" style="color:#ef4444;font-size:12px;min-height:16px;margin-bottom:12px"></p>' +
+                    '<div style="display:flex;gap:10px;justify-content:flex-end">' +
+                    '<button id="del-cancel" style="padding:10px 20px;border-radius:12px;border:1.5px solid ' + (isDark?'#374151':'#e5e7eb') + ';background:transparent;color:' + (isDark?'#9ca3af':'#666') + ';font-weight:600;font-size:14px;cursor:pointer">Hủy</button>' +
+                    '<button id="del-ok" style="padding:10px 22px;border-radius:12px;border:none;background:#ef4444;color:#fff;font-weight:700;font-size:14px;cursor:pointer">Xóa vĩnh viễn</button>' +
+                    '</div>';
+                
+                overlay.appendChild(box);
+                document.body.appendChild(overlay);
+
+                const input = box.querySelector('#del-pw');
+                setTimeout(() => input.focus(), 100);
+
+                box.querySelector('#del-cancel').onclick = () => { overlay.remove(); resolve(null); };
+                box.querySelector('#del-ok').onclick = () => {
+                    const pw = input.value.trim();
+                    if (!pw) { box.querySelector('#del-err').textContent = 'Vui lòng nhập mật khẩu'; return; }
+                    overlay.remove();
+                    resolve(pw);
+                };
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') box.querySelector('#del-ok').click();
+                    if (e.key === 'Escape') { overlay.remove(); resolve(null); }
+                });
+            });
+
+            if (!password) return;
+
+            try {
+                const credential = EmailAuthProvider.credential(currentUser.email, password);
+                await reauthenticateWithCredential(currentUser, credential);
+                await remove(ref(db, 'users/' + currentUser.uid));
+                await deleteUser(currentUser);
+                showToast('✅ Tài khoản đã được xóa vĩnh viễn.', 'success', 5000);
+                currentUser = null;
+            } catch (err) {
+                if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+                    showToast('❌ Mật khẩu không đúng. Không thể xóa tài khoản.', 'error', 5000);
+                } else if (err.code === 'auth/too-many-requests') {
+                    showToast('⏳ Quá nhiều lần thử. Vui lòng chờ rồi thử lại.', 'warning', 5000);
+                } else {
+                    showToast('❌ Lỗi: ' + (err.message || 'Không thể xóa tài khoản.'), 'error', 5000);
+                }
+            }
+        }
+        window.deleteAccount = deleteAccount;
+
 
         // Dark Mode
         document.getElementById('dark-toggle').onclick = () => {
