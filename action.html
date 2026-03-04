@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Tập Y Khoa — Xác thực</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --accent: #8b5cf6;
+      --bg: #0f1117;
+      --surface: #1a1f2e;
+      --surface2: #252b3b;
+      --border: rgba(255,255,255,0.08);
+      --text: #f0f0f5;
+      --muted: #6b7280;
+      --danger: #ef4444;
+      --warn: #f59e0b;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      overflow-x: hidden;
+    }
+
+    /* Animated background blobs */
+    .bg-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.12;
+      pointer-events: none;
+      animation: blobFloat 8s ease-in-out infinite;
+    }
+    .bg-blob-1 { width: 400px; height: 400px; background: var(--primary); top: -100px; left: -100px; }
+    .bg-blob-2 { width: 300px; height: 300px; background: var(--accent); bottom: -80px; right: -80px; animation-delay: -4s; }
+    @keyframes blobFloat {
+      0%, 100% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(20px, 20px) scale(1.05); }
+    }
+
+    /* Logo */
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 32px;
+      animation: slideDown .5s ease;
+    }
+    .logo-icon {
+      width: 44px; height: 44px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; box-shadow: 0 8px 24px rgba(16,185,129,0.3);
+    }
+    .logo-text { font-size: 18px; font-weight: 800; letter-spacing: -0.4px; }
+    .logo-text span { color: var(--primary); }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+      animation: slideUp .45s cubic-bezier(0.34,1.1,0.64,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    @keyframes slideDown { from { opacity:0; transform: translateY(-16px); } to { opacity:1; transform: none; } }
+    @keyframes slideUp   { from { opacity:0; transform: translateY(24px);  } to { opacity:1; transform: none; } }
+
+    .card-icon {
+      width: 64px; height: 64px; border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; margin-bottom: 20px;
+    }
+    .card-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.4px; }
+    .card-subtitle { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+
+    /* Input */
+    .input-wrap { position: relative; margin-bottom: 14px; }
+    .input-wrap label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .input-wrap input {
+      width: 100%; padding: 13px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border .2s, box-shadow .2s;
+    }
+    .input-wrap input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(16,185,129,0.15);
+    }
+    .input-wrap .eye-btn {
+      position: absolute; right: 14px; bottom: 13px;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 16px; padding: 0;
+      transition: color .15s;
+    }
+    .input-wrap .eye-btn:hover { color: var(--text); }
+
+    /* Strength bar */
+    .strength-bar { display: flex; gap: 4px; margin-top: 8px; }
+    .strength-seg { flex: 1; height: 3px; border-radius: 2px; background: var(--surface2); transition: background .3s; }
+
+    /* Button */
+    .btn {
+      width: 100%; padding: 14px;
+      border-radius: 14px; border: none;
+      font-family: inherit; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: all .2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(16,185,129,0.3);
+    }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(16,185,129,0.4); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-ghost {
+      background: var(--surface2); color: var(--muted);
+      border: 1px solid var(--border); margin-top: 10px;
+      font-size: 14px;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+    /* Status messages */
+    .msg {
+      padding: 12px 16px; border-radius: 12px;
+      font-size: 14px; font-weight: 600; line-height: 1.5;
+      margin-bottom: 16px; display: none;
+    }
+    .msg.show { display: flex; align-items: flex-start; gap: 10px; }
+    .msg-error  { background: rgba(239,68,68,.12);  border: 1px solid rgba(239,68,68,.3);  color: #fca5a5; }
+    .msg-success{ background: rgba(16,185,129,.12); border: 1px solid rgba(16,185,129,.3); color: #6ee7b7; }
+    .msg-info   { background: rgba(139,92,246,.12); border: 1px solid rgba(139,92,246,.3); color: #c4b5fd; }
+
+    /* Loading spinner */
+    .spinner {
+      width: 20px; height: 20px; border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin .7s linear infinite; flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Success state */
+    .success-icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 34px; margin: 0 auto 20px;
+      box-shadow: 0 12px 32px rgba(16,185,129,0.35);
+      animation: popIn .5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+
+    /* Loading state */
+    #view-loading {
+      text-align: center; padding: 20px 0;
+    }
+    .big-spinner {
+      width: 48px; height: 48px; border: 3px solid rgba(16,185,129,0.2);
+      border-top-color: var(--primary); border-radius: 50%;
+      animation: spin .8s linear infinite; margin: 0 auto 16px;
+    }
+
+    /* Divider */
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    /* Footer */
+    .footer { margin-top: 24px; font-size: 12px; color: var(--muted); text-align: center; }
+    .footer a { color: var(--primary); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .card { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-blob bg-blob-1"></div>
+  <div class="bg-blob bg-blob-2"></div>
+
+  <!-- Logo -->
+  <div class="logo">
+    <div class="logo-icon">🏥</div>
+    <div class="logo-text">Ôn Tập <span>Y Khoa</span></div>
+  </div>
+
+  <!-- Card -->
+  <div class="card" id="main-card">
+    <!-- Loading view -->
+    <div id="view-loading">
+      <div class="big-spinner"></div>
+      <div style="color:var(--muted);font-size:14px">Đang xử lý yêu cầu...</div>
+    </div>
+
+    <!-- Reset Password view -->
+    <div id="view-reset" style="display:none">
+      <div class="card-icon" style="background:rgba(245,158,11,0.12)">🔑</div>
+      <div class="card-title">Tạo mật khẩu mới</div>
+      <div class="card-subtitle">Nhập mật khẩu mới cho tài khoản của bạn. Mật khẩu phải ít nhất 8 ký tự.</div>
+
+      <div class="msg msg-error" id="reset-error"><span>⚠️</span><span id="reset-error-text"></span></div>
+
+      <div class="input-wrap">
+        <label>Mật khẩu mới</label>
+        <input type="password" id="new-password" placeholder="Ít nhất 8 ký tự..." oninput="checkStrength(this.value)" autocomplete="new-password">
+        <button class="eye-btn" onclick="togglePw('new-password', this)" type="button">👁</button>
+        <div class="strength-bar">
+          <div class="strength-seg" id="s1"></div>
+          <div class="strength-seg" id="s2"></div>
+          <div class="strength-seg" id="s3"></div>
+          <div class="strength-seg" id="s4"></div>
+        </div>
+        <div id="strength-label" style="font-size:11px;color:var(--muted);margin-top:4px;height:14px"></div>
+      </div>
+
+      <div class="input-wrap" style="margin-bottom:20px">
+        <label>Xác nhận mật khẩu</label>
+        <input type="password" id="confirm-password" placeholder="Nhập lại mật khẩu..." autocomplete="new-password">
+        <button class="eye-btn" onclick="togglePw('confirm-password', this)" type="button">👁</button>
+      </div>
+
+      <button class="btn btn-primary" id="btn-reset" onclick="doResetPassword()">
+        🔒 Đặt mật khẩu mới
+      </button>
+      <a href="/" class="btn btn-ghost" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px">
+        ← Quay về trang chủ
+      </a>
+    </div>
+
+    <!-- Verify Email view -->
+    <div id="view-verify" style="display:none">
+      <div class="card-icon" style="background:rgba(16,185,129,0.12)">✉️</div>
+      <div class="card-title">Xác minh Email</div>
+      <div class="card-subtitle">Đang xác minh địa chỉ email của bạn...</div>
+      <div class="msg msg-error" id="verify-error"><span>⚠️</span><span id="verify-error-text"></span></div>
+    </div>
+
+    <!-- Email Change view -->
+    <div id="view-change-email" style="display:none">
+      <div class="card-icon" style="background:rgba(139,92,246,0.12)">📧</div>
+      <div class="card-title">Thay đổi Email</div>
+      <div class="card-subtitle">Đang xác nhận thay đổi địa chỉ email của bạn...</div>
+      <div class="msg msg-error" id="change-error"><span>⚠️</span><span id="change-error-text"></span></div>
+    </div>
+
+    <!-- Success view -->
+    <div id="view-success" style="display:none;text-align:center">
+      <div class="success-icon" id="success-icon">✓</div>
+      <div class="card-title" style="text-align:center" id="success-title">Thành công!</div>
+      <div class="card-subtitle" style="text-align:center" id="success-desc"></div>
+      <div style="text-align:center;margin-top:4px;margin-bottom:24px;font-size:13px;color:var(--muted)" id="success-countdown"></div>
+      <a href="/" class="btn btn-primary" style="text-decoration:none">
+        🏠 Về trang ôn tập
+      </a>
+    </div>
+
+    <!-- Error view -->
+    <div id="view-error" style="display:none;text-align:center">
+      <div style="font-size:56px;margin-bottom:16px">😓</div>
+      <div class="card-title" style="text-align:center">Có lỗi xảy ra</div>
+      <div class="card-subtitle" style="text-align:center" id="global-error-text">Link đã hết hạn hoặc không hợp lệ.</div>
+      <div class="divider"></div>
+      <a href="/" class="btn btn-primary" style="text-decoration:none;margin-bottom:8px">
+        🏠 Về trang chủ
+      </a>
+      <div style="font-size:13px;color:var(--muted);margin-top:12px">
+        Nếu gặp tiếp vấn đề, hãy thử <b style="color:var(--text)">gửi lại email</b> từ trang đăng nhập.
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <a href="/">nhmtontap.dpdns.org</a> · Ôn Tập Y Khoa Pro
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getAuth, verifyPasswordResetCode, confirmPasswordReset, applyActionCode, checkActionCode } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQOhMBlPUfOzBu2h0ljlaxdjVcpQJbBYw",
+      authDomain: "ontap-pro-mode.firebaseapp.com",
+      databaseURL: "https://ontap-pro-mode-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "ontap-pro-mode",
+      storageBucket: "ontap-pro-mode.firebasestorage.app",
+      messagingSenderId: "215082917090",
+      appId: "1:215082917090:web:ee378f14a65d67d9da12bb",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Parse URL params
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode');
+    const oobCode = params.get('oobCode');
+
+    function show(viewId) {
+      ['view-loading','view-reset','view-verify','view-change-email','view-success','view-error']
+        .forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
+      const el = document.getElementById(viewId);
+      if (el) el.style.display = '';
+    }
+
+    function showSuccess(icon, title, desc) {
+      document.getElementById('success-icon').textContent = icon;
+      document.getElementById('success-title').textContent = title;
+      document.getElementById('success-desc').textContent = desc;
+      show('view-success');
+      // Countdown redirect
+      let t = 5;
+      const cd = document.getElementById('success-countdown');
+      const tick = () => {
+        cd.textContent = `Tự động chuyển về trang chủ sau ${t} giây...`;
+        if (t-- <= 0) { clearInterval(timer); window.location.href = '/'; }
+      };
+      tick();
+      const timer = setInterval(tick, 1000);
+    }
+
+    function showError(msg) {
+      document.getElementById('global-error-text').textContent = msg;
+      show('view-error');
+    }
+
+    // Expose to global for onclick handlers
+    window._auth = auth;
+    window._oobCode = oobCode;
+    window._confirmPasswordReset = confirmPasswordReset;
+
+    // ── Handle each mode ──
+    if (!mode || !oobCode) {
+      showError('Link không hợp lệ. Vui lòng sử dụng link từ email.');
+    }
+    else if (mode === 'resetPassword') {
+      // Verify code first
+      verifyPasswordResetCode(auth, oobCode)
+        .then(email => {
+          document.querySelector('#view-reset .card-subtitle').textContent =
+            `Tạo mật khẩu mới cho tài khoản: ${email}`;
+          show('view-reset');
+          document.getElementById('new-password').focus();
+        })
+        .catch(err => {
+          const msg = err.code === 'auth/expired-action-code'
+            ? 'Link đặt lại mật khẩu đã hết hạn. Vui lòng gửi lại yêu cầu.'
+            : err.code === 'auth/invalid-action-code'
+            ? 'Link không hợp lệ hoặc đã được dùng rồi.'
+            : 'Không thể xác minh yêu cầu: ' + (err.message || '');
+          showError(msg);
+        });
+    }
+    else if (mode === 'verifyEmail') {
+      show('view-verify');
+      applyActionCode(auth, oobCode)
+        .then(() => showSuccess('✉️', 'Email đã được xác minh!', 'Địa chỉ email của bạn đã được xác nhận thành công. Bạn có thể đăng nhập bình thường.'))
+        .catch(err => {
+          const msg = err.code === 'auth/expired-action-code'
+            ? 'Link xác minh đã hết hạn.'
+            : err.code === 'auth/invalid-action-code'
+            ? 'Link không hợp lệ hoặc đã được dùng rồi.'
+            : 'Xác minh thất bại: ' + (err.message || '');
+          showError(msg);
+        });
+    }
+    else if (mode === 'recoverEmail') {
+      show('view-change-email');
+      checkActionCode(auth, oobCode)
+        .then(info => {
+          const oldEmail = info.data.email;
+          document.querySelector('#view-change-email .card-subtitle').textContent =
+            `Đang khôi phục về địa chỉ: ${oldEmail}`;
+          return applyActionCode(auth, oobCode);
+        })
+        .then(() => showSuccess('📧', 'Email đã được khôi phục!', 'Địa chỉ email của bạn đã được khôi phục thành công.'))
+        .catch(err => showError('Không thể xử lý: ' + (err.message || 'Lỗi không xác định')));
+    }
+    else {
+      showError(`Hành động không được hỗ trợ: "${mode}"`);
+    }
+  </script>
+
+  <script>
+    // ── UI helpers (non-module) ──
+    function togglePw(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+      else { input.type = 'password'; btn.textContent = '👁'; }
+    }
+
+    function checkStrength(val) {
+      const segs = [document.getElementById('s1'), document.getElementById('s2'),
+                    document.getElementById('s3'), document.getElementById('s4')];
+      const lbl = document.getElementById('strength-label');
+      const colors = ['#ef4444','#f59e0b','#3b82f6','#10b981'];
+      const labels = ['Quá yếu','Yếu','Khá tốt','Mạnh'];
+
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+
+      segs.forEach((s, i) => {
+        s.style.background = i < score ? colors[score - 1] : 'var(--surface2)';
+      });
+      lbl.textContent = val.length === 0 ? '' : labels[score - 1] || 'Quá yếu';
+      lbl.style.color = score > 0 ? colors[score - 1] : 'var(--muted)';
+    }
+
+    async function doResetPassword() {
+      const pw = document.getElementById('new-password').value;
+      const pw2 = document.getElementById('confirm-password').value;
+      const errEl = document.getElementById('reset-error');
+      const errText = document.getElementById('reset-error-text');
+      const btn = document.getElementById('btn-reset');
+
+      const showErr = (msg) => {
+        errText.textContent = msg;
+        errEl.className = 'msg msg-error show';
+      };
+
+      errEl.className = 'msg msg-error';
+
+      if (!pw || pw.length < 8) { showErr('Mật khẩu phải có ít nhất 8 ký tự.'); return; }
+      if (pw !== pw2) { showErr('Mật khẩu xác nhận không khớp.'); return; }
+
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner"></div> Đang xử lý...';
+
+      try {
+        await window._confirmPasswordReset(window._auth, window._oobCode, pw);
+        // Show success
+        document.getElementById('success-icon').textContent = '🔒';
+        document.getElementById('success-title').textContent = 'Mật khẩu đã được đặt lại!';
+        document.getElementById('success-desc').textContent = 'Mật khẩu mới của bạn đã được lưu. Đăng nhập ngay để tiếp tục ôn tập.';
+        ['view-loading','view-reset','view-verify','view-change-email','view-error']
+          .forEach(id => { const el = document.getElementById(id); if(el) el.style.display='none'; });
+        document.getElementById('view-success').style.display = '';
+        let t = 5;
+        const cd = document.getElementById('success-countdown');
+        const timer = setInterval(() => {
+          cd.textContent = `Tự động chuyển về trang chủ sau ${t} giây...`;
+          if (t-- <= 0) { clearInterval(timer); window.location.href = '/'; }
+        }, 1000);
+        cd.textContent = `Tự động chuyển về trang chủ sau ${t} giây...`;
+      } catch(err) {
+        btn.disabled = false;
+        btn.innerHTML = '🔒 Đặt mật khẩu mới';
+        const msg = err.code === 'auth/weak-password'
+          ? 'Mật khẩu quá yếu. Hãy dùng ít nhất 8 ký tự, kết hợp chữ và số.'
+          : err.code === 'auth/expired-action-code'
+          ? 'Link đã hết hạn. Vui lòng gửi lại yêu cầu đặt lại mật khẩu.'
+          : 'Có lỗi xảy ra: ' + (err.message || '');
+        document.getElementById('reset-error-text').textContent = msg;
+        document.getElementById('reset-error').className = 'msg msg-error show';
+      }
+    }
+
+    // Enter key support
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && document.getElementById('view-reset').style.display !== 'none') {
+        doResetPassword();
+      }
+    });
+  </script>
+</body>
+</html>
