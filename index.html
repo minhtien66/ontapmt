@@ -2592,7 +2592,7 @@ let progress = {
 
         // ── RĂNG HÀM MẶT ──
         "rang-ham-mat": [
-            // TODO: Thêm câu hỏi môn Răng hàm mặt vào đây
+             // TODO: Thêm câu hỏi môn Răng hàm mặt vào đây
            { text: "Hệ thống răng miệng đảm nhiệm các chức năng sống còn như nhai, phát âm và cảm nhận ______.", answer: "vị giác", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
 
 { text: "Răng và các mô quanh răng bắt đầu hình thành từ giai đoạn ______ rất sớm.", answer: "phôi thai", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
@@ -3307,8 +3307,9 @@ let progress = {
         }
         try {
             await sendPasswordResetEmail(auth, email);
-            alert('Đã gửi email đặt lại mật khẩu! Kiểm tra hộp thư (và thư rác).');
-            errorEl.textContent = '';
+            errorEl.style.color = '#10b981';
+            errorEl.textContent = '✅ Đã gửi! Kiểm tra hộp thư (kể cả thư rác).';
+            setTimeout(() => { errorEl.textContent = ''; errorEl.style.color = ''; }, 5000);
         } catch (err) {
             errorEl.textContent = 'Không thể gửi: ' + (err.message || 'Lỗi không xác định');
         }
@@ -3333,7 +3334,7 @@ let progress = {
             currentUser = credential.user;
             await loadUserData();
             modal.remove();
-            alert(isLogin ? 'Đăng nhập thành công!' : 'Đăng ký thành công! Bạn được tặng 100 Brain Coins.');
+            showToast(isLogin ? '👋 Đăng nhập thành công!' : '🎉 Đăng ký thành công! Bạn được tặng 100 🪙 Brain Coins.', 'success', 4000);
         } catch (err) {
     let msg = 'Có lỗi xảy ra. Vui lòng thử lại.';
     
@@ -3450,7 +3451,7 @@ const progressData = userData.progress || {};
         loadProfile();
     } catch (err) {
         console.error('Lỗi khi lưu lên Firebase:', err);
-        alert('Lỗi khi lưu hồ sơ: ' + (err.message || 'Không xác định. Kiểm tra console để xem chi tiết.'));
+        showToast('❌ Lỗi khi lưu hồ sơ: ' + (err.message || 'Không xác định'), 'error', 4000);
     }
 }
 
@@ -3473,6 +3474,55 @@ const progressData = userData.progress || {};
                 toast.style.animation = 'toastOut 0.3s ease forwards';
                 setTimeout(() => toast.remove(), 300);
             }, duration);
+        }
+
+        // ── CUSTOM CONFIRM DIALOG ──
+        function showConfirm(title, message, confirmText = 'Xác nhận', cancelText = 'Hủy', isDanger = false) {
+            return new Promise((resolve) => {
+                // Remove any existing
+                document.getElementById('custom-confirm')?.remove();
+
+                const overlay = document.createElement('div');
+                overlay.id = 'custom-confirm';
+                overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px;animation:fadeInOverlay .15s ease';
+
+                const box = document.createElement('div');
+                box.style.cssText = `background:${document.documentElement.classList.contains('dark') ? '#1f2937' : '#fff'};border-radius:20px;padding:28px 28px 24px;max-width:360px;width:100%;box-shadow:0 25px 60px rgba(0,0,0,0.35);animation:popIn .2s cubic-bezier(0.34,1.56,0.64,1)`;
+                box.innerHTML = `
+                    <div style="font-size:18px;font-weight:800;margin-bottom:10px;color:${document.documentElement.classList.contains('dark')?'#f9fafb':'#111'}">${title}</div>
+                    <div style="font-size:14px;line-height:1.65;color:${document.documentElement.classList.contains('dark')?'#9ca3af':'#555'};margin-bottom:22px">${message}</div>
+                    <div style="display:flex;gap:10px;justify-content:flex-end">
+                        <button id="cc-cancel" style="padding:10px 20px;border-radius:12px;border:1.5px solid ${document.documentElement.classList.contains('dark')?'#374151':'#e5e7eb'};background:transparent;color:${document.documentElement.classList.contains('dark')?'#9ca3af':'#666'};font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;transition:all .15s">${cancelText}</button>
+                        <button id="cc-confirm" style="padding:10px 22px;border-radius:12px;border:none;background:${isDanger?'#ef4444':'#10b981'};color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;transition:all .15s;box-shadow:0 4px 12px ${isDanger?'rgba(239,68,68,0.35)':'rgba(16,185,129,0.35)'}">${confirmText}</button>
+                    </div>`;
+                overlay.appendChild(box);
+                document.body.appendChild(overlay);
+
+                // Style injection for animation (once)
+                if (!document.getElementById('confirm-style')) {
+                    const s = document.createElement('style');
+                    s.id = 'confirm-style';
+                    s.textContent = '@keyframes fadeInOverlay{from{opacity:0}to{opacity:1}}@keyframes popIn{from{transform:scale(0.85);opacity:0}to{transform:scale(1);opacity:1}}';
+                    document.head.appendChild(s);
+                }
+
+                const close = (result) => {
+                    overlay.style.animation = 'fadeInOverlay .12s ease reverse forwards';
+                    setTimeout(() => overlay.remove(), 120);
+                    resolve(result);
+                };
+
+                box.querySelector('#cc-confirm').onclick = () => close(true);
+                box.querySelector('#cc-cancel').onclick = () => close(false);
+                overlay.onclick = (e) => { if (e.target === overlay) close(false); };
+                // Keyboard: Enter = confirm, Escape = cancel
+                const onKey = (e) => {
+                    if (e.key === 'Enter') { document.removeEventListener('keydown', onKey); close(true); }
+                    if (e.key === 'Escape') { document.removeEventListener('keydown', onKey); close(false); }
+                };
+                document.addEventListener('keydown', onKey);
+                setTimeout(() => box.querySelector('#cc-confirm').focus(), 50);
+            });
         }
 
         // ── NAV ACTIVE STATE ──
@@ -4022,7 +4072,7 @@ function nextQuestion(mode = '') {
         } // Đóng IF mode
     } 
     else if (mode === 'test' && !mockTestSubmitted) {
-        if (confirm('Bạn đã làm hết câu. Bạn muốn nộp bài ngay bây giờ?')) {
+        if (await showConfirm('📋 Nộp bài', 'Bạn đã làm hết câu. Muốn nộp bài ngay bây giờ?', 'Nộp bài', 'Tiếp tục làm')) {
             submitTest();
         }
     }
@@ -4070,11 +4120,11 @@ function updateProgressDisplay() {
 
 async function resetSubjectProgress() {
     if (!currentSubject) {
-        alert('Vui lòng chọn môn trước!');
+        showToast('⚠️ Vui lòng chọn môn trước!', 'error', 2500);
         return;
     }
 
-    if (!confirm(`Reset tiến độ môn ${currentSubject.toUpperCase()}?\nMọi thống kê (đúng/sai, câu đã làm) sẽ về 0.`)) {
+    if (!(await showConfirm('↺ Reset tiến độ', `Reset toàn bộ tiến độ môn <b>${currentSubject.toUpperCase()}</b>?<br><span style="color:#ef4444">Mọi thống kê sẽ về 0.</span>`, 'Reset', 'Hủy', true))) {
         return;
     }
 
@@ -4101,7 +4151,7 @@ async function resetSubjectProgress() {
             console.log('Đã reset tiến độ trên Firebase');
         } catch (err) {
             console.error('Lỗi reset Firebase:', err);
-            alert('Reset thành công cục bộ, nhưng không lưu được lên cloud. Kiểm tra kết nối.');
+            showToast('⚠️ Reset cục bộ xong, nhưng không lưu được cloud. Kiểm tra mạng!', 'error', 4000);
         }
     }
 
@@ -4109,7 +4159,7 @@ async function resetSubjectProgress() {
     updateProgressDisplay();
     loadQuestion();  // load lại câu đầu tiên
 
-    alert('Đã reset tiến độ môn này!');
+    showToast('✅ Đã reset tiến độ môn này!', 'success');
 }
 
         function loadSetSelect() {
@@ -4174,7 +4224,7 @@ async function resetSubjectProgress() {
             }
         }
 
-        function submitTest() {
+        async function submitTest() {
             clearInterval(timerInterval);
             mockTestSubmitted = true;
             let correctCount = 0;
@@ -4282,7 +4332,7 @@ async function resetSubjectProgress() {
             }
 
             // Confirm
-            if (!confirm(`Mua "${item.name}" với ${price.toLocaleString()} Brain Coins?`)) return;
+            if (!(await showConfirm('🛍️ Xác nhận mua', `Mua <b>${item.name}</b> với <b>${price.toLocaleString()} 🪙 Brain Coins</b>?`, 'Mua ngay', 'Hủy'))) return;
 
             brainCoins -= price;
             if (!Array.isArray(inventory)) inventory = [];
@@ -4510,8 +4560,8 @@ async function resetSubjectProgress() {
             }
         }
 
-        function clearWrongAnswers() {
-            if (!confirm('Xóa tất cả câu sai?')) return;
+        async function clearWrongAnswers() {
+            if (!(await showConfirm('🗑️ Xóa câu sai', 'Xóa toàn bộ danh sách câu sai?', 'Xóa tất cả', 'Hủy', true))) return;
             wrongAnswers = [];
             saveWrongAnswers();
             loadWrongReview();
