@@ -2764,7 +2764,7 @@ let progress = {
 
         // ── RĂNG HÀM MẶT ──
         "rang-ham-mat": [
-              // TODO: Thêm câu hỏi môn Răng hàm mặt vào đây
+                // TODO: Thêm câu hỏi môn Răng hàm mặt vào đây
            { text: "Hệ thống răng miệng đảm nhiệm các chức năng sống còn như nhai, phát âm và cảm nhận ______.", answer: "vị giác", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
 
 { text: "Răng và các mô quanh răng bắt đầu hình thành từ giai đoạn ______ rất sớm.", answer: "phôi thai", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
@@ -3540,12 +3540,22 @@ let progress = {
                 credential = await signInWithEmailAndPassword(auth, email, password);
             } else {
                 credential = await createUserWithEmailAndPassword(auth, email, password);
-                // Gửi email xác nhận
-                await sendEmailVerification(credential.user);
+                // Gửi email xác nhận - với actionCodeSettings trỏ về trang của mình
+                const actionCodeSettings = {
+                    url: 'https://nhmtontap.dpdns.org/action.html',
+                    handleCodeInApp: false
+                };
+                try {
+                    await sendEmailVerification(credential.user, actionCodeSettings);
+                    console.log('Email verification sent to:', credential.user.email);
+                } catch (verifyErr) {
+                    console.error('sendEmailVerification error:', verifyErr.code, verifyErr.message);
+                    showToast('⚠️ Tài khoản tạo xong nhưng không gửi được mail xác nhận: ' + verifyErr.message, 'warning', 8000);
+                }
                 // Đăng xuất ngay, chờ xác nhận email
                 await signOut(auth);
                 modal.remove();
-                showToast('📧 Đăng ký thành công! Vui lòng kiểm tra email và xác nhận tài khoản trước khi đăng nhập.', 'success', 8000);
+                showToast('📧 Đăng ký thành công! Vui lòng kiểm tra email (kể cả spam) và xác nhận tài khoản.', 'success', 8000);
                 return;
             }
             currentUser = credential.user;
