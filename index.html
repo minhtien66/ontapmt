@@ -1204,7 +1204,10 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
     sendEmailVerification,
     reauthenticateWithCredential,
     EmailAuthProvider,
-    deleteUser
+    deleteUser,
+    GoogleAuthProvider,
+    FacebookAuthProvider,
+    signInWithPopup
   } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
   // Realtime Database imports
@@ -2764,7 +2767,7 @@ let progress = {
 
         // ── RĂNG HÀM MẶT ──
         "rang-ham-mat": [
-                // TODO: Thêm câu hỏi môn Răng hàm mặt vào đây
+             // TODO: Thêm câu hỏi môn Răng hàm mặt vào đây
            { text: "Hệ thống răng miệng đảm nhiệm các chức năng sống còn như nhai, phát âm và cảm nhận ______.", answer: "vị giác", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
 
 { text: "Răng và các mô quanh răng bắt đầu hình thành từ giai đoạn ______ rất sớm.", answer: "phôi thai", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
@@ -3488,6 +3491,25 @@ let progress = {
             <div class="text-center mt-4">
                 <button id="toggle-mode" class="text-primary hover:underline">Chưa có tài khoản? Đăng ký ngay</button>
             </div>
+
+            <!-- Divider -->
+            <div class="flex items-center gap-3 my-5">
+                <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+                <span class="text-xs text-gray-400 font-medium">hoặc tiếp tục với</span>
+                <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+            </div>
+
+            <!-- Social buttons -->
+            <div class="flex gap-3">
+                <button id="btn-google" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition font-semibold text-sm">
+                    <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+                    Google
+                </button>
+                <button id="btn-facebook" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition font-semibold text-sm">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    Facebook
+                </button>
+            </div>
             <!-- ẨN nút × để buộc login -->
             <!-- <button id="close-modal" class="absolute top-3 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl">×</button> -->
         </div>
@@ -3506,6 +3528,40 @@ let progress = {
         title.textContent = isLogin ? 'Đăng nhập' : 'Đăng ký tài khoản';
         submitBtn.textContent = isLogin ? 'Đăng nhập' : 'Tạo tài khoản';
         toggleBtn.textContent = isLogin ? 'Chưa có tài khoản? Đăng ký ngay' : 'Đã có tài khoản? Đăng nhập';
+    };
+
+    // Đăng nhập Google
+    modal.querySelector('#btn-google').onclick = async () => {
+        try {
+            const provider = new GoogleAuthProvider();
+            const credential = await signInWithPopup(auth, provider);
+            currentUser = credential.user;
+            await loadUserData();
+            modal.remove();
+            showToast('👋 Đăng nhập Google thành công!', 'success', 4000);
+        } catch (err) {
+            if (err.code !== 'auth/popup-closed-by-user') {
+                errorEl.textContent = 'Lỗi Google: ' + (err.message || err.code);
+            }
+        }
+    };
+
+    // Đăng nhập Facebook
+    modal.querySelector('#btn-facebook').onclick = async () => {
+        try {
+            const provider = new FacebookAuthProvider();
+            const credential = await signInWithPopup(auth, provider);
+            currentUser = credential.user;
+            await loadUserData();
+            modal.remove();
+            showToast('👋 Đăng nhập Facebook thành công!', 'success', 4000);
+        } catch (err) {
+            if (err.code === 'auth/account-exists-with-different-credential') {
+                errorEl.textContent = 'Email này đã được đăng ký bằng phương thức khác. Hãy dùng Google hoặc Email/Password.';
+            } else if (err.code !== 'auth/popup-closed-by-user') {
+                errorEl.textContent = 'Lỗi Facebook: ' + (err.message || err.code);
+            }
+        }
     };
 
     // Quên mật khẩu
