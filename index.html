@@ -302,7 +302,28 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
 .mcq-label { font-weight: 800; color: #10b981; margin-right: 12px; min-width: 24px; }
 .dark .mcq-label { color: #34d399; }
 
-/* ── BADGES ── */
+/* ── LOGO ── */
+#app-logo-wrap {
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+#app-logo-wrap:hover {
+    transform: scale(1.1) rotate(-3deg);
+}
+#app-logo-img {
+    filter: drop-shadow(0 2px 8px rgba(16,185,129,0.35));
+    transition: filter 0.3s ease;
+}
+#app-logo-img:hover {
+    filter: drop-shadow(0 4px 14px rgba(16,185,129,0.6)) drop-shadow(0 0 20px rgba(139,92,246,0.4));
+}
+@keyframes logoPulse {
+    0%, 100% { filter: drop-shadow(0 2px 8px rgba(16,185,129,0.35)); }
+    50%       { filter: drop-shadow(0 4px 16px rgba(16,185,129,0.6)) drop-shadow(0 0 24px rgba(139,92,246,0.35)); }
+}
+#app-logo-img {
+    animation: logoPulse 3s ease-in-out infinite;
+}
+
 .badge-card { transition: all 0.2s; }
 .badge-card.locked { opacity: 0.4; filter: grayscale(1); }
 .badge-card.unlocked { animation: badgePop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
@@ -348,9 +369,32 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between flex-wrap gap-y-2 gap-x-3">
             <!-- Left: title + greeting + back btn -->
             <div class="flex items-center gap-3 flex-wrap">
-                <h1 id="app-title" class="text-lg md:text-xl font-extrabold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent whitespace-nowrap">
-                    Ôn Tập Pro Mode
-                </h1>
+                <!-- Logo + Title -->
+                <div class="flex items-center gap-2" id="app-logo-wrap" style="cursor:pointer" onclick="backToSubjectSelect ? backToSubjectSelect() : null">
+<svg id="app-logo-img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style="width:42px;height:42px;flex-shrink:0;">
+  <defs>
+    <linearGradient id="lgMT1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="lgMT2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <!-- Nền tròn gradient mờ -->
+  <circle cx="24" cy="24" r="23" fill="url(#lgMT1)" opacity="0.12"/>
+  <!-- Viền tròn -->
+  <circle cx="24" cy="24" r="22" fill="none" stroke="url(#lgMT1)" stroke-width="2"/>
+  <!-- Chữ M -->
+  <text x="5" y="32" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="url(#lgMT1)">M</text>
+  <!-- Chữ T -->
+  <text x="25" y="32" font-family="Georgia, serif" font-size="22" font-weight="bold" fill="url(#lgMT2)">T</text>
+  <!-- Gạch chân nhỏ trang trí -->
+  <line x1="8" y1="36" x2="40" y2="36" stroke="url(#lgMT1)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+</svg>
+                    <h1 id="app-title" style="display:none;"></h1>
+                </div>
                 <div id="user-greeting" class="text-sm font-medium text-gray-600 dark:text-gray-300 hidden">
                     Chào <span id="user-name-display" class="font-bold text-primary">bạn</span>
                 </div>
@@ -458,6 +502,110 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
                                 <span class="text-xs font-medium px-3 py-1 bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 rounded-full">MẮT</span>
                             </div>
                             <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Giải phẫu, bệnh lý mắt, khúc xạ và điều trị nhãn khoa</p>
+                        </div>
+                        <span class="text-gray-300 dark:text-gray-600 text-xl ml-2">→</span>
+                    </div>
+                </button>
+                <button onclick="selectSubject('ctytqg')" class="subject-card p-6 md:p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-emerald-400/30 hover:border-emerald-500 text-left">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-2xl flex-shrink-0">🏥</div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between flex-wrap gap-2">
+                                <h3 class="text-xl md:text-2xl font-bold text-emerald-600">Chương trình Y tế QG</h3>
+                                <span class="text-xs font-medium px-3 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 rounded-full">CTYTQG</span>
+                            </div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Các chương trình y tế quốc gia, phòng chống dịch bệnh</p>
+                        </div>
+                        <span class="text-gray-300 dark:text-gray-600 text-xl ml-2">→</span>
+                    </div>
+                </button>
+                <button onclick="selectSubject('tai-mui-hong')" class="subject-card p-6 md:p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-orange-400/30 hover:border-orange-500 text-left">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-2xl flex-shrink-0">👂</div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between flex-wrap gap-2">
+                                <h3 class="text-xl md:text-2xl font-bold text-orange-500">Tai Mũi Họng</h3>
+                                <span class="text-xs font-medium px-3 py-1 bg-orange-50 dark:bg-orange-900/20 text-orange-500 rounded-full">TMH</span>
+                            </div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Bệnh lý tai, mũi, họng và phẫu thuật đầu cổ</p>
+                        </div>
+                        <span class="text-gray-300 dark:text-gray-600 text-xl ml-2">→</span>
+                    </div>
+                </button>
+                <button onclick="selectSubject('ppnckh')" class="subject-card p-6 md:p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-indigo-400/30 hover:border-indigo-500 text-left">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-2xl flex-shrink-0">🔬</div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between flex-wrap gap-2">
+                                <h3 class="text-xl md:text-2xl font-bold text-indigo-600">PP Nghiên cứu KH</h3>
+                                <span class="text-xs font-medium px-3 py-1 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 rounded-full">PPNCKH</span>
+                            </div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Phương pháp nghiên cứu khoa học y học, thống kê</p>
+                        </div>
+                        <span class="text-gray-300 dark:text-gray-600 text-xl ml-2">→</span>
+                    </div>
+                </button>
+                <button onclick="selectSubject('tt-mat')" class="subject-card p-6 md:p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-sky-400/30 hover:border-sky-500 text-left">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center text-2xl flex-shrink-0">🏥</div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between flex-wrap gap-2">
+                                <h3 class="text-xl md:text-2xl font-bold text-sky-600">TT. Mắt</h3>
+                                <span class="text-xs font-medium px-3 py-1 bg-sky-50 dark:bg-sky-900/20 text-sky-600 rounded-full">TT.MẮT</span>
+                            </div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Thực tập lâm sàng chuyên khoa mắt</p>
+                        </div>
+                        <span class="text-gray-300 dark:text-gray-600 text-xl ml-2">→</span>
+                    </div>
+                </button>
+                <button onclick="selectSubject('tt-rang-ham-mat')" class="subject-card p-6 md:p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-blue-400/30 hover:border-blue-500 text-left">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-2xl flex-shrink-0">🏥</div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between flex-wrap gap-2">
+                                <h3 class="text-xl md:text-2xl font-bold text-blue-600">TT. Răng Hàm Mặt</h3>
+                                <span class="text-xs font-medium px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-full">TT.RHM</span>
+                            </div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Thực tập lâm sàng chuyên khoa răng hàm mặt</p>
+                        </div>
+                        <span class="text-gray-300 dark:text-gray-600 text-xl ml-2">→</span>
+                    </div>
+                </button>
+                <button onclick="selectSubject('tt-da-lieu')" class="subject-card p-6 md:p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-rose-400/30 hover:border-rose-500 text-left">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-rose-50 dark:bg-rose-900/20 flex items-center justify-center text-2xl flex-shrink-0">🏥</div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between flex-wrap gap-2">
+                                <h3 class="text-xl md:text-2xl font-bold text-rose-600">TT. Da Liễu</h3>
+                                <span class="text-xs font-medium px-3 py-1 bg-rose-50 dark:bg-rose-900/20 text-rose-600 rounded-full">TT.DL</span>
+                            </div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Thực tập lâm sàng chuyên khoa da liễu</p>
+                        </div>
+                        <span class="text-gray-300 dark:text-gray-600 text-xl ml-2">→</span>
+                    </div>
+                </button>
+                <button onclick="selectSubject('ttcd2')" class="subject-card p-6 md:p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-teal-400/30 hover:border-teal-500 text-left">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center text-2xl flex-shrink-0">🌿</div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between flex-wrap gap-2">
+                                <h3 class="text-xl md:text-2xl font-bold text-teal-600">TT. Cộng đồng 2</h3>
+                                <span class="text-xs font-medium px-3 py-1 bg-teal-50 dark:bg-teal-900/20 text-teal-600 rounded-full">TTCĐ2</span>
+                            </div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Thực tập cộng đồng, y tế cơ sở giai đoạn 2</p>
+                        </div>
+                        <span class="text-gray-300 dark:text-gray-600 text-xl ml-2">→</span>
+                    </div>
+                </button>
+                <button onclick="selectSubject('ttnk2')" class="subject-card p-6 md:p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-pink-400/30 hover:border-pink-500 text-left">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-pink-50 dark:bg-pink-900/20 flex items-center justify-center text-2xl flex-shrink-0">👶</div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between flex-wrap gap-2">
+                                <h3 class="text-xl md:text-2xl font-bold text-pink-600">TT. Nhi khoa 2</h3>
+                                <span class="text-xs font-medium px-3 py-1 bg-pink-50 dark:bg-pink-900/20 text-pink-600 rounded-full">TTNK2</span>
+                            </div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Thực tập lâm sàng nhi khoa giai đoạn 2</p>
                         </div>
                         <span class="text-gray-300 dark:text-gray-600 text-xl ml-2">→</span>
                     </div>
@@ -1089,7 +1237,15 @@ let progress = {
     "tt-lao": { currentIndex: 0, answered: 0, correct: 0, total: 0 },
     "ung-thu-dai-cuong": { currentIndex: 0, answered: 0, correct: 0, total: 0 },
     "rang-ham-mat": { currentIndex: 0, answered: 0, correct: 0, total: 0 },
-    "mat": { currentIndex: 0, answered: 0, correct: 0, total: 0 }
+    "mat": { currentIndex: 0, answered: 0, correct: 0, total: 0 },
+    "ctytqg": { currentIndex: 0, answered: 0, correct: 0, total: 0 },
+    "tai-mui-hong": { currentIndex: 0, answered: 0, correct: 0, total: 0 },
+    "ppnckh": { currentIndex: 0, answered: 0, correct: 0, total: 0 },
+    "tt-mat": { currentIndex: 0, answered: 0, correct: 0, total: 0 },
+    "tt-rang-ham-mat": { currentIndex: 0, answered: 0, correct: 0, total: 0 },
+    "tt-da-lieu": { currentIndex: 0, answered: 0, correct: 0, total: 0 },
+    "ttcd2": { currentIndex: 0, answered: 0, correct: 0, total: 0 },
+    "ttnk2": { currentIndex: 0, answered: 0, correct: 0, total: 0 }
 };
         let questions = [];
         let currentQuestionIndex = 0;
@@ -3234,8 +3390,46 @@ let progress = {
         // ── MẮT ──
         "mat": [
             // TODO: Thêm câu hỏi môn Mắt vào đây
-            // Ví dụ:
-            // { text: "Nhãn áp bình thường dao động trong khoảng ______ mmHg.", answer: "10–21", difficulty: 'Dễ' },
+        ],
+
+        // ── CHƯƠNG TRÌNH Y TẾ QUỐC GIA ──
+        "ctytqg": [
+            // TODO: Thêm câu hỏi môn Chương trình Y tế Quốc gia vào đây
+        ],
+
+        // ── TAI MŨI HỌNG ──
+        "tai-mui-hong": [
+            // TODO: Thêm câu hỏi môn Tai Mũi Họng vào đây
+        ],
+
+        // ── PHƯƠNG PHÁP NGHIÊN CỨU KHOA HỌC ──
+        "ppnckh": [
+            // TODO: Thêm câu hỏi môn PP Nghiên cứu KH vào đây
+        ],
+
+        // ── THỰC TẬP MẮT ──
+        "tt-mat": [
+            // TODO: Thêm câu hỏi môn TT. Mắt vào đây
+        ],
+
+        // ── THỰC TẬP RĂNG HÀM MẶT ──
+        "tt-rang-ham-mat": [
+            // TODO: Thêm câu hỏi môn TT. Răng Hàm Mặt vào đây
+        ],
+
+        // ── THỰC TẬP DA LIỄU ──
+        "tt-da-lieu": [
+            // TODO: Thêm câu hỏi môn TT. Da Liễu vào đây
+        ],
+
+        // ── THỰC TẬP CỘNG ĐỒNG 2 ──
+        "ttcd2": [
+            // TODO: Thêm câu hỏi môn TT. Cộng đồng 2 vào đây
+        ],
+
+        // ── THỰC TẬP NHI KHOA 2 ──
+        "ttnk2": [
+            // TODO: Thêm câu hỏi môn TT. Nhi khoa 2 vào đây
         ]
         };
 
@@ -3405,7 +3599,15 @@ const progressData = userData.progress || {};
         "tt-lao": progressData['tt-lao'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
         "ung-thu-dai-cuong": progressData['ung-thu-dai-cuong'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
         "rang-ham-mat": progressData['rang-ham-mat'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
-        "mat": progressData['mat'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null }
+        "mat": progressData['mat'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
+        "ctytqg": progressData['ctytqg'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
+        "tai-mui-hong": progressData['tai-mui-hong'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
+        "ppnckh": progressData['ppnckh'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
+        "tt-mat": progressData['tt-mat'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
+        "tt-rang-ham-mat": progressData['tt-rang-ham-mat'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
+        "tt-da-lieu": progressData['tt-da-lieu'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
+        "ttcd2": progressData['ttcd2'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null },
+        "ttnk2": progressData['ttnk2'] || { currentIndex: 0, answered: 0, correct: 0, total: 0, lastActive: null }
     };
 
     updateUI();
@@ -3677,7 +3879,7 @@ function loadProfile() {
     let totalAnswered = 0, totalCorrect = 0, latestActive = null;
     let strongest = { subject: null, accuracy: -1 };
     let weakest = { subject: null, accuracy: Infinity };
-    const subjectNames = { lao: 'Lao (TCDY035)', 'tt-lao': 'TT. Lao (TCDY036)', 'ung-thu-dai-cuong': 'Ung thư ĐC (TCDY117)', 'rang-ham-mat': 'Răng hàm mặt', 'mat': 'Mắt' };
+    const subjectNames = { lao: 'Lao (TCDY035)', 'tt-lao': 'TT. Lao (TCDY036)', 'ung-thu-dai-cuong': 'Ung thư ĐC (TCDY117)', 'rang-ham-mat': 'Răng hàm mặt', 'mat': 'Mắt', 'ctytqg': 'CT Y tế QG', 'tai-mui-hong': 'Tai Mũi Họng', 'ppnckh': 'PP NCKH', 'tt-mat': 'TT. Mắt', 'tt-rang-ham-mat': 'TT. Răng HM', 'tt-da-lieu': 'TT. Da Liễu', 'ttcd2': 'TT. Cộng đồng 2', 'ttnk2': 'TT. Nhi khoa 2' };
     const tableBody = document.getElementById('stats-table-body');
     tableBody.innerHTML = '';
 
@@ -3754,6 +3956,14 @@ function loadProfile() {
     subjectKey === 'ung-thu-dai-cuong' ? 'Ôn Tập Ung thư ĐC - TCDY117' :
     subjectKey === 'rang-ham-mat' ? 'Ôn Tập Răng Hàm Mặt' :
     subjectKey === 'mat' ? 'Ôn Tập Mắt' :
+    subjectKey === 'ctytqg' ? 'Ôn Tập CT Y Tế QG' :
+    subjectKey === 'tai-mui-hong' ? 'Ôn Tập Tai Mũi Họng' :
+    subjectKey === 'ppnckh' ? 'Ôn Tập PP NCKH' :
+    subjectKey === 'tt-mat' ? 'Ôn Tập TT. Mắt' :
+    subjectKey === 'tt-rang-ham-mat' ? 'Ôn Tập TT. Răng HM' :
+    subjectKey === 'tt-da-lieu' ? 'Ôn Tập TT. Da Liễu' :
+    subjectKey === 'ttcd2' ? 'Ôn Tập TT. Cộng đồng 2' :
+    subjectKey === 'ttnk2' ? 'Ôn Tập TT. Nhi khoa 2' :
     'Ôn Tập';
 
     document.getElementById('current-subject-display').textContent = 
@@ -3762,6 +3972,14 @@ function loadProfile() {
     subjectKey === 'ung-thu-dai-cuong' ? 'Ung thư đại cương (TCDY117)' :
     subjectKey === 'rang-ham-mat' ? 'Răng hàm mặt' :
     subjectKey === 'mat' ? 'Mắt' :
+    subjectKey === 'ctytqg' ? 'Chương trình Y tế QG' :
+    subjectKey === 'tai-mui-hong' ? 'Tai Mũi Họng' :
+    subjectKey === 'ppnckh' ? 'PP Nghiên cứu KH' :
+    subjectKey === 'tt-mat' ? 'TT. Mắt' :
+    subjectKey === 'tt-rang-ham-mat' ? 'TT. Răng Hàm Mặt' :
+    subjectKey === 'tt-da-lieu' ? 'TT. Da Liễu' :
+    subjectKey === 'ttcd2' ? 'TT. Cộng đồng 2' :
+    subjectKey === 'ttnk2' ? 'TT. Nhi khoa 2' :
     'Không xác định';
 
     // Ẩn phần chọn môn, hiện nav
@@ -4963,6 +5181,14 @@ async function resetSubjectProgress() {
                 'ung-thu-dai-cuong': { name: 'Ung thư ĐC', color: '#ef4444' },
                 'rang-ham-mat': { name: 'Răng hàm mặt', color: '#3b82f6' },
                 mat: { name: 'Mắt', color: '#06b6d4' },
+                ctytqg: { name: 'CT Y tế QG', color: '#10b981' },
+                'tai-mui-hong': { name: 'Tai Mũi Họng', color: '#f97316' },
+                ppnckh: { name: 'PP NCKH', color: '#6366f1' },
+                'tt-mat': { name: 'TT. Mắt', color: '#0ea5e9' },
+                'tt-rang-ham-mat': { name: 'TT. Răng HM', color: '#3b82f6' },
+                'tt-da-lieu': { name: 'TT. Da Liễu', color: '#f43f5e' },
+                ttcd2: { name: 'TT. Cộng đồng 2', color: '#14b8a6' },
+                ttnk2: { name: 'TT. Nhi khoa 2', color: '#ec4899' },
             };
             Object.entries(progress).forEach(([key, p]) => {
                 const meta = subjectMeta[key] || { name: key, color: '#10b981' };
