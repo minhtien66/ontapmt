@@ -3230,6 +3230,7 @@ let progress = {
 
         ],
 
+
         // ── MẮT ──
         "mat": [
             // TODO: Thêm câu hỏi môn Mắt vào đây
@@ -4050,7 +4051,7 @@ function prevQuestion(mode = '') {
 } // Đóng hàm prevQuestion
 
 // 4. Hàm nextQuestion đã sửa (Trước đó thiếu 2 dấu ngoặc)
-function nextQuestion(mode = '') {
+async function nextQuestion(mode = '') {
     const max = mode === 'set' ? currentSet.questions.length - 1 :
                 mode === 'test' ? mockTestQuestions.length - 1 : 
                 questions.length - 1;
