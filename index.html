@@ -47,9 +47,45 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+        body { font-family: 'Be Vietnam Pro', system-ui, sans-serif; }
+
+/* ══════════════════════════════════════════
+   UPGRADED DESIGN SYSTEM - Y Khoa MT Pro
+   ══════════════════════════════════════════ */
+
+/* ── AMBIENT BACKGROUND ── */
+body {
+    background: #f0fdf8;
+    min-height: 100vh;
+}
+.dark body, html.dark body {
+    background: #060d0b;
+}
+
+/* Animated mesh gradient background */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(ellipse 80% 50% at 10% 20%, rgba(16,185,129,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 90% 80%, rgba(139,92,246,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 50% 50%, rgba(6,182,212,0.04) 0%, transparent 70%);
+    animation: meshDrift 20s ease-in-out infinite alternate;
+}
+.dark body::before {
+    background:
+        radial-gradient(ellipse 80% 50% at 10% 20%, rgba(16,185,129,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 90% 80%, rgba(139,92,246,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 50% 50%, rgba(6,182,212,0.06) 0%, transparent 70%);
+}
+@keyframes meshDrift {
+    0%   { transform: scale(1) translate(0,0); }
+    100% { transform: scale(1.05) translate(1%, 1%); }
+}
 
 /* ── LAYOUT ── */
 main {
@@ -87,20 +123,46 @@ header .max-w-7xl {
     transition: all 0.2s ease !important;
     position: relative;
 }
-#main-nav button.nav-active {
+.nav-btn {
+    background: rgba(255,255,255,0.75);
+    color: #374151;
+    backdrop-filter: blur(8px);
+}
+.dark .nav-btn {
+    background: rgba(31,41,55,0.75);
+    color: #d1d5db;
+}
+.nav-btn:hover {
+    background: rgba(16,185,129,0.10) !important;
+    color: #10b981 !important;
+}
+.dark .nav-btn:hover {
+    background: rgba(16,185,129,0.18) !important;
+    color: #10b981 !important;
+}
+.nav-btn.nav-active {
     background: linear-gradient(135deg, #10b981, #059669) !important;
     color: white !important;
     box-shadow: 0 4px 14px rgba(16,185,129,0.35) !important;
     font-weight: 700 !important;
+    border-color: transparent !important;
 }
-#main-nav button:not(.nav-active):hover {
-    background: #f0fdf4 !important;
-    color: #10b981 !important;
+
+/* ── BET BUTTONS ── */
+.bet-btn {
+    background: rgba(255,255,255,0.8);
+    color: #374151;
+    border-color: #e5e7eb;
+    cursor: pointer;
 }
-.dark #main-nav button:not(.nav-active):hover {
-    background: rgba(16,185,129,0.15) !important;
-    color: #10b981 !important;
+.dark .bet-btn {
+    background: rgba(31,41,55,0.8);
+    color: #d1d5db;
+    border-color: #4b5563;
 }
+.bet-normal:hover { border-color: #10b981 !important; color: #10b981 !important; }
+.bet-x2:hover     { border-color: #3b82f6 !important; color: #3b82f6 !important; }
+.bet-don:hover    { border-color: #ef4444 !important; color: #ef4444 !important; }
 
 /* ── SUBJECT CARDS ── */
 #subject-select .grid { grid-template-columns: 1fr; }
@@ -110,18 +172,43 @@ header .max-w-7xl {
 .subject-card {
     position: relative;
     overflow: hidden;
-    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    border: 1px solid rgba(255,255,255,0.6);
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.85) !important;
+}
+.dark .subject-card {
+    background: rgba(17,24,39,0.7) !important;
+    border: 1px solid rgba(255,255,255,0.08);
 }
 .subject-card::before {
     content: '';
     position: absolute;
     inset: 0;
+    background: linear-gradient(135deg, rgba(16,185,129,0.08) 0%, rgba(139,92,246,0.06) 100%);
     opacity: 0;
-    transition: opacity 0.25s;
-    border-radius: inherit;
+    transition: opacity 0.4s ease;
+    z-index: 0;
 }
-.subject-card:hover { transform: translateY(-6px) !important; box-shadow: 0 20px 40px rgba(0,0,0,0.12) !important; }
+.subject-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent 0deg, rgba(16,185,129,0.06) 60deg, transparent 120deg);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    animation: none;
+}
+.subject-card:hover {
+    transform: translateY(-8px) scale(1.01) !important;
+    box-shadow: 0 24px 60px rgba(16,185,129,0.15), 0 8px 20px rgba(0,0,0,0.08) !important;
+    border-color: rgba(16,185,129,0.4) !important;
+}
 .subject-card:hover::before { opacity: 1; }
+.subject-card > * { position: relative; z-index: 1; }
 
 /* ── QUESTION CONTAINER ── */
 #question-container, #set-question-container, #test-container {
@@ -325,6 +412,79 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
     animation: logoPulse 3s ease-in-out infinite;
 }
 
+/* ══════════════════════════════════════════
+   UPGRADED DESIGN SYSTEM - Y Khoa MT Pro
+   ══════════════════════════════════════════ */
+
+/* ── ANIMATED MESH BACKGROUND ── */
+body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: -1;
+    background:
+        radial-gradient(ellipse 80% 50% at 10% 20%, rgba(16,185,129,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 90% 80%, rgba(139,92,246,0.06) 0%, transparent 60%);
+    animation: meshDrift 18s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+html.dark body::before {
+    background:
+        radial-gradient(ellipse 80% 50% at 10% 20%, rgba(16,185,129,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 90% 80%, rgba(139,92,246,0.08) 0%, transparent 60%);
+}
+@keyframes meshDrift {
+    0%   { transform: scale(1) translate(0,0); }
+    100% { transform: scale(1.04) translate(0.5%,0.5%); }
+}
+
+/* ── SCROLL REVEAL ── */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.subject-card { animation: slideUp 0.5s cubic-bezier(0.23,1,0.32,1) both; }
+.subject-card:nth-child(1)  { animation-delay: 0.04s; }
+.subject-card:nth-child(2)  { animation-delay: 0.08s; }
+.subject-card:nth-child(3)  { animation-delay: 0.12s; }
+.subject-card:nth-child(4)  { animation-delay: 0.16s; }
+.subject-card:nth-child(5)  { animation-delay: 0.20s; }
+.subject-card:nth-child(6)  { animation-delay: 0.24s; }
+.subject-card:nth-child(7)  { animation-delay: 0.28s; }
+.subject-card:nth-child(8)  { animation-delay: 0.32s; }
+.subject-card:nth-child(9)  { animation-delay: 0.36s; }
+.subject-card:nth-child(10) { animation-delay: 0.40s; }
+.subject-card:nth-child(11) { animation-delay: 0.44s; }
+.subject-card:nth-child(12) { animation-delay: 0.48s; }
+.subject-card:nth-child(13) { animation-delay: 0.52s; }
+
+/* ── SECTION TRANSITIONS ── */
+.section:not(.hidden) { animation: slideUp 0.35s cubic-bezier(0.23,1,0.32,1) both; }
+
+/* ── STAT CARDS 3D ── */
+.stat-card {
+    transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
+    cursor: default;
+}
+.stat-card:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 14px 30px rgba(16,185,129,0.13);
+}
+
+/* ── FONT DISPLAY ── */
+.font-display, h1, h2, h3 { font-family: 'Be Vietnam Pro', sans-serif !important; letter-spacing: -0.02em; }
+
+/* ── TOAST UPGRADE ── */
+.toast {
+    backdrop-filter: blur(14px) !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18) !important;
+    font-weight: 500 !important;
+}
+
+/* ── INPUT GLOW FOCUS ── */
+input:focus {
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.18) !important;
+}
+
 .badge-card { transition: all 0.2s; }
 .badge-card.locked { opacity: 0.4; filter: grayscale(1); }
 .badge-card.unlocked { animation: badgePop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
@@ -366,7 +526,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300">
 
-    <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-800">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/60 dark:bg-gray-950/60 backdrop-blur-xl border-b border-white/40 dark:border-white/5 shadow-[0_1px_40px_rgba(16,185,129,0.08)]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between flex-wrap gap-y-2 gap-x-3">
             <!-- Left: title + greeting + back btn -->
             <div class="flex items-center gap-3 flex-wrap">
@@ -411,7 +571,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
                 <button id="sound-toggle" onclick="toggleSound()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition" title="Âm thanh">
                     <span id="sound-icon">🔊</span>
                 </button>
-                <div id="coins" class="text-xs font-semibold px-3 py-1.5 bg-primary/10 dark:bg-primary/20 rounded-full text-primary whitespace-nowrap">🪙 0</div>
+                <div id="coins" class="text-xs font-semibold px-3 py-1.5 bg-primary/10 dark:bg-primary/20 rounded-full text-primary whitespace-nowrap border border-primary/20 backdrop-blur-sm">🪙 0</div>
                 <div id="streak" class="text-xs font-semibold px-3 py-1.5 bg-orange-50 dark:bg-orange-900/20 rounded-full text-orange-500 whitespace-nowrap">🔥 0 ngày</div>
                 <button id="logout-btn" class="hidden px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-semibold transition whitespace-nowrap">Đăng xuất</button>
             </div>
@@ -421,30 +581,36 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
     <main class="pt-24 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <nav class="flex flex-wrap justify-center gap-1.5 mb-8 md:mb-10 hidden" id="main-nav">
-            <button onclick="showSection('home')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">🏠 Home</button>
-            <button onclick="showSection('fill-blank')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">✏️ Điền Khuyết</button>
-            <button onclick="showSection('flashcard')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">🃏 Flashcard</button>
-            <button onclick="showSection('wrong-review')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">📝 Ôn Sai</button>
-            <button onclick="showSection('test-sets')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">📚 Bộ Đề</button>
-            <button onclick="showSection('mock-test')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">⏱ Thi Điền</button>
-            <button onclick="showSection('mcq-test')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">📋 Trắc Nghiệm</button>
-            <button onclick="showSection('shop')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">🛍️ Cửa Hàng</button>
-            <button onclick="showSection('badges')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">🏆 Thành Tích</button>
-            <button onclick="showSection('leaderboard')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">🏅 Xếp Hạng</button>
-            <button onclick="showSection('daily')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">☀️ Daily 5</button>
-            <button onclick="showSection('profile')" class="px-3 py-2 rounded-xl font-medium transition-all hover:scale-105 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-sm">👤 Hồ Sơ</button>
+            <button onclick="showSection('home')" data-section="home" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">🏠 Home</button>
+            <button onclick="showSection('fill-blank')" data-section="fill-blank" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">✏️ Điền Khuyết</button>
+            <button onclick="showSection('flashcard')" data-section="flashcard" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">🃏 Flashcard</button>
+            <button onclick="showSection('wrong-review')" data-section="wrong-review" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">📝 Ôn Sai</button>
+            <button onclick="showSection('test-sets')" data-section="test-sets" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">📚 Bộ Đề</button>
+            <button onclick="showSection('mock-test')" data-section="mock-test" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">⏱ Thi Điền</button>
+            <button onclick="showSection('mcq-test')" data-section="mcq-test" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">📋 Trắc Nghiệm</button>
+            <button onclick="showSection('shop')" data-section="shop" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">🛍️ Cửa Hàng</button>
+            <button onclick="showSection('badges')" data-section="badges" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">🏆 Thành Tích</button>
+            <button onclick="showSection('leaderboard')" data-section="leaderboard" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">🏅 Xếp Hạng</button>
+            <button onclick="showSection('daily')" data-section="daily" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">☀️ Daily 5</button>
+            <button onclick="showSection('profile')" data-section="profile" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">👤 Hồ Sơ</button>
         </nav>
 
         <!-- Chọn môn -->
         <section id="subject-select" class="section text-center max-w-4xl mx-auto pt-10 md:pt-14">
-            <div class="mb-8">
-                <h2 class="text-3xl md:text-4xl font-extrabold mb-3">Chọn môn bạn muốn ôn</h2>
-                <p class="text-gray-500 dark:text-gray-400 text-base">Chọn môn học để bắt đầu ôn tập với ngân hàng câu hỏi đầy đủ</p>
+            <div class="mb-10">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 dark:bg-primary/20 text-primary text-xs font-semibold mb-4 border border-primary/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                    Y KHOA MT · ÔN TẬP CHUYÊN SÂU
+                </div>
+                <h2 class="text-4xl md:text-5xl font-display font-extrabold mb-3 bg-gradient-to-br from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-200 dark:to-gray-400 bg-clip-text text-transparent leading-tight">
+                    Chọn môn<br>bạn muốn ôn
+                </h2>
+                <p class="text-gray-500 dark:text-gray-400 text-base max-w-md mx-auto">Ngân hàng câu hỏi được cập nhật liên tục · Theo dõi tiến độ cá nhân</p>
             </div>
-            <div class="grid grid-cols-1 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 <button onclick="selectSubject('lao')" class="subject-card p-6 md:p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-primary/30 hover:border-primary text-left">
                     <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-2xl flex-shrink-0">🫁</div>
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">🫁</div>
                         <div class="flex-1">
                             <div class="flex items-center justify-between flex-wrap gap-2">
                                 <h3 class="text-xl md:text-2xl font-bold text-primary">Lao</h3>
@@ -622,7 +788,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
                     <h2 class="text-2xl md:text-3xl font-extrabold" id="dash-greeting">Chào mừng bạn! 👋</h2>
                     <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Đang ôn: <span id="current-subject-display" class="font-bold text-primary">Chưa chọn môn</span></p>
                 </div>
-                <div id="daily-banner" class="hidden flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-2xl shadow-lg font-bold text-sm cursor-pointer hover:scale-105 transition" onclick="showSection('daily')">
+                <div id="daily-banner" class="hidden flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-2xl shadow-lg font-bold text-sm cursor-pointer hover:scale-105 transition" onclick="showSection('daily')" data-section="daily">
                     ✨ Câu hỏi hôm nay chờ bạn!
                 </div>
             </div>
@@ -674,22 +840,22 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
 
             <!-- Quick actions -->
             <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
-                <button onclick="showSection('fill-blank')" class="flex items-center gap-3 p-4 bg-gradient-to-br from-primary to-primaryDark text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
+                <button onclick="showSection('fill-blank')" data-section="fill-blank" class="flex items-center gap-3 p-4 bg-gradient-to-br from-primary to-primaryDark text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
                     <span class="text-2xl">✏️</span><span>Điền Khuyết</span>
                 </button>
-                <button onclick="showSection('flashcard')" class="flex items-center gap-3 p-4 bg-gradient-to-br from-purple-500 to-accent text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
+                <button onclick="showSection('flashcard')" data-section="flashcard" class="flex items-center gap-3 p-4 bg-gradient-to-br from-purple-500 to-accent text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
                     <span class="text-2xl">🃏</span><span>Flashcard</span>
                 </button>
-                <button onclick="showSection('mcq-test')" class="flex items-center gap-3 p-4 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
+                <button onclick="showSection('mcq-test')" data-section="mcq-test" class="flex items-center gap-3 p-4 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
                     <span class="text-2xl">📋</span><span>Trắc Nghiệm</span>
                 </button>
-                <button onclick="showSection('wrong-review')" class="flex items-center gap-3 p-4 bg-gradient-to-br from-red-400 to-rose-500 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
+                <button onclick="showSection('wrong-review')" data-section="wrong-review" class="flex items-center gap-3 p-4 bg-gradient-to-br from-red-400 to-rose-500 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
                     <span class="text-2xl">📝</span><span>Ôn Câu Sai <span id="dash-wrong-badge" class="ml-1 text-xs bg-white/30 px-1.5 py-0.5 rounded-full"></span></span>
                 </button>
-                <button onclick="showSection('leaderboard')" class="flex items-center gap-3 p-4 bg-gradient-to-br from-amber-400 to-yellow-500 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
+                <button onclick="showSection('leaderboard')" data-section="leaderboard" class="flex items-center gap-3 p-4 bg-gradient-to-br from-amber-400 to-yellow-500 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
                     <span class="text-2xl">🏅</span><span>Bảng Xếp Hạng</span>
                 </button>
-                <button onclick="showSection('daily')" class="flex items-center gap-3 p-4 bg-gradient-to-br from-teal-400 to-cyan-500 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
+                <button onclick="showSection('daily')" data-section="daily" class="flex items-center gap-3 p-4 bg-gradient-to-br from-teal-400 to-cyan-500 text-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all font-bold text-sm">
                     <span class="text-2xl">☀️</span><span>Daily 5</span>
                 </button>
             </div>
@@ -842,8 +1008,8 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
         </section>
 
         <!-- ── FLASHCARD ── -->
-        <section id="flashcard" class="section hidden max-w-2xl mx-auto">
-            <div class="flex items-center justify-between mb-6">
+        <section id="flashcard" class="section hidden w-full max-w-6xl mx-auto">
+            <div class="flex items-center justify-between mb-4">
                 <h2 class="text-2xl md:text-3xl font-extrabold">🃏 Flashcard</h2>
                 <div class="flex items-center gap-2">
                     <span id="fc-progress-text" class="text-sm font-semibold text-gray-500 dark:text-gray-400"></span>
@@ -851,8 +1017,19 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
                 </div>
             </div>
 
+            <div class="flex gap-4">
+            <!-- Sidebar danh sách -->
+            <div class="hidden md:flex flex-col w-64 flex-shrink-0">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden h-full" style="max-height:520px">
+                    <div id="fc-list-header" class="text-xs font-bold text-gray-500 dark:text-gray-400 px-3 py-2 border-b border-gray-100 dark:border-gray-700"></div>
+                    <ul id="fc-sidebar-list" class="overflow-y-auto" style="max-height:480px"></ul>
+                </div>
+            </div>
+
+            <!-- Main card area -->
+            <div class="flex-1 min-w-0">
             <!-- Progress bar -->
-            <div class="progress-bar-track mb-6">
+            <div class="progress-bar-track mb-4">
                 <div id="fc-progress-bar" class="progress-bar-fill transition-all duration-500" style="width:0%"></div>
             </div>
 
@@ -871,6 +1048,12 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
                         <div id="fc-answer" class="text-2xl md:text-3xl font-extrabold text-primary leading-relaxed"></div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Nav prev/next -->
+            <div class="flex gap-3 mb-3">
+                <button onclick="fcPrev()" class="flex-1 py-2.5 bg-gray-100 dark:bg-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition">← Trước</button>
+                <button onclick="fcNext()" class="flex-1 py-2.5 bg-gray-100 dark:bg-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition">Sau →</button>
             </div>
 
             <!-- Rating buttons (hidden until flipped) -->
@@ -892,11 +1075,13 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
                 <p id="fc-done-stats" class="text-gray-500 mb-6"></p>
                 <button onclick="restartFlashcards()" class="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition">Ôn lại từ đầu</button>
             </div>
+            </div><!-- end main card area -->
+            </div><!-- end flex -->
         </section>
 
         <!-- ── ÔN LẠI CÂU SAI ── -->
-        <section id="wrong-review" class="section hidden max-w-3xl mx-auto">
-            <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <section id="wrong-review" class="section hidden w-full max-w-6xl mx-auto">
+            <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
                 <div>
                     <h2 class="text-2xl md:text-3xl font-extrabold">📝 Ôn Lại Câu Sai</h2>
                     <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Câu bạn từng trả lời sai sẽ xuất hiện ở đây</p>
@@ -904,6 +1089,17 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
                 <button onclick="clearWrongAnswers()" class="px-4 py-2 text-sm bg-red-50 dark:bg-red-900/20 text-red-600 font-semibold rounded-xl hover:bg-red-100 transition">🗑 Xóa tất cả</button>
             </div>
 
+            <div class="flex gap-4">
+            <!-- Sidebar danh sách câu sai -->
+            <div class="hidden md:flex flex-col w-64 flex-shrink-0">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden" style="max-height:520px">
+                    <div class="text-xs font-bold text-gray-500 dark:text-gray-400 px-3 py-2 border-b border-gray-100 dark:border-gray-700" id="wr-list-header"></div>
+                    <ul id="wr-sidebar-list" class="overflow-y-auto" style="max-height:480px"></ul>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <div class="flex-1 min-w-0">
             <div id="wr-empty" class="hidden text-center py-16">
                 <div class="text-6xl mb-4">✨</div>
                 <h3 class="text-xl font-bold mb-2">Không có câu sai nào!</h3>
@@ -925,6 +1121,8 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
                 </div>
                 <div id="wr-result" class="text-base font-bold"></div>
             </div>
+            </div><!-- end main content -->
+            </div><!-- end flex -->
         </section>
 
         <!-- ── THI TRẮC NGHIỆM A/B/C/D ── -->
@@ -1006,7 +1204,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
         Hồ sơ cá nhân
     </h2>
 
-    <div class="bg-white dark:bg-gray-800/90 rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <div class="bg-white/80 dark:bg-gray-900/70 rounded-3xl shadow-2xl overflow-hidden border border-white/70 dark:border-white/8 backdrop-blur-xl">
 
         <!-- ── HEADER AVATAR BANNER ── -->
         <div class="bg-gradient-to-br from-primary/20 to-accent/20 dark:from-primary/10 dark:to-accent/10 p-8 md:p-10 text-center relative">
@@ -3818,12 +4016,15 @@ const progressData = userData.progress || {};
 
         // ── NAV ACTIVE STATE ──
         function setNavActive(id) {
-            document.querySelectorAll('#main-nav button').forEach(btn => btn.classList.remove('nav-active'));
-            document.querySelectorAll('#main-nav button').forEach(btn => {
-                if (btn.getAttribute('onclick')?.includes(`'${id}'`)) {
-                    btn.classList.add('nav-active');
-                }
+            // Reset tất cả về default
+            document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
+                btn.style.cssText = '';
             });
+            // Set active
+            const target = document.querySelector('#main-nav button[data-section="' + id + '"]');
+            if (target) {
+                target.style.cssText = 'background: linear-gradient(135deg, #10b981, #059669) !important; color: white !important; box-shadow: 0 4px 14px rgba(16,185,129,0.35) !important; font-weight: 700 !important; border-color: transparent !important;';
+            }
         }
 
         // ── KEYBOARD SHORTCUTS ──
@@ -4191,7 +4392,7 @@ function loadProfile() {
     // Hiển thị tiến độ ngay trên giao diện home hoặc fill-blank
     updateProgressDisplay();
 
-    showSection('home');           // hoặc 'fill-blank' nếu muốn vào thẳng ôn
+    showSection('home');           // hiện dashboard khi chọn môn
     setTimeout(loadDashboard, 50);
     loadQuestionList();
     loadSetSelect();
@@ -4256,9 +4457,10 @@ currentSubject = null;
                 const isCurrent = i === currentQuestionIndex;
                 li.className = `px-3 py-2 rounded-lg cursor-pointer transition text-sm flex items-start gap-2 ${
                     isCurrent 
-                    ? 'bg-primary/10 text-primary font-semibold' 
+                    ? 'active-question text-primary font-semibold' 
                     : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
                 }`;
+                if (isCurrent) li.style.background = 'rgba(16,185,129,0.12)';
                 li.innerHTML = `<span class="flex-shrink-0 w-6 h-6 rounded-full text-xs flex items-center justify-center font-bold mt-0.5 ${
                     isCurrent ? 'bg-primary text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                 }">${i+1}</span><span class="leading-snug">${q.text.substring(0, 55).trim()}${q.text.length > 55 ? '…' : ''}</span>`;
@@ -4270,6 +4472,12 @@ currentSubject = null;
                 };
                 list.appendChild(li);
             });
+
+            // Auto-scroll sidebar đến câu đang active
+            const activeLi = list.querySelector('li.active-question');
+            if (activeLi) {
+                activeLi.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }
         }
 
         function searchQuestions() {
@@ -4298,15 +4506,34 @@ currentSubject = null;
             }
 
             isJackpot = Math.random() < 0.05;
-            document.getElementById(prefix + 'difficulty').textContent = `Độ khó: ${q.difficulty}${isJackpot ? ' (Jackpot)' : ''}`;
-            document.getElementById(prefix + 'bet-options').innerHTML = `
-                <button onclick="placeBet(1, '${mode}')" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition">Cược Bình Thường (x1)</button>
-                <button onclick="placeBet(2, '${mode}')" class="px-4 py-2 bg-blue-200 dark:bg-blue-700 rounded-lg hover:bg-blue-300 dark:hover:bg-blue-600 transition">Cược X2</button>
-                <button onclick="placeBet(0, '${mode}')" class="px-4 py-2 bg-red-200 dark:bg-red-700 rounded-lg hover:bg-red-300 dark:hover:bg-red-600 transition">Double or Nothing</button>
+            const diffEl = document.getElementById(prefix + 'difficulty');
+            if (isJackpot) {
+                diffEl.innerHTML = `Độ khó: ${q.difficulty} <span style="background:linear-gradient(90deg,#f59e0b,#ef4444,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;animation:pulse 1s infinite;">⭐ JACKPOT x10!</span>`;
+            } else {
+                diffEl.textContent = `Độ khó: ${q.difficulty}`;
+            }
+            // Tính base reward để hiện cho user biết đặt bao nhiêu
+            const baseReward = 10 * Math.max(1, streak || 1);
+            const betEl = document.getElementById(prefix + 'bet-options');
+            betEl.style.display = '';
+            betEl.innerHTML = `
+                <button onclick="placeBet(1,'${mode}',this)" class="bet-btn bet-normal px-4 py-2 rounded-xl font-semibold text-sm border-2 transition-all" title="Thắng +${baseReward * (isJackpot?10:1)} xu">
+                    🎯 Bình thường <span class="text-xs opacity-70">+${baseReward * (isJackpot?10:1)}🪙</span>
+                </button>
+                <button onclick="placeBet(2,'${mode}',this)" class="bet-btn bet-x2 px-4 py-2 rounded-xl font-semibold text-sm border-2 transition-all" title="Thắng +${baseReward*2*(isJackpot?10:1)} xu, thua không mất">
+                    🔥 Cược X2 <span class="text-xs opacity-70">+${baseReward*2*(isJackpot?10:1)}🪙</span>
+                </button>
+                <button onclick="placeBet(0,'${mode}',this)" class="bet-btn bet-don px-4 py-2 rounded-xl font-semibold text-sm border-2 transition-all" title="Thắng +${baseReward*3*(isJackpot?10:1)} xu, thua mất ${baseReward} xu">
+                    💀 Double or Nothing <span class="text-xs opacity-70">+${baseReward*3*(isJackpot?10:1)} / -${baseReward}🪙</span>
+                </button>
             `;
+            // Auto-select bình thường
+            placeBet(1, '${mode}', betEl.querySelector('.bet-normal'));
             document.getElementById(prefix + 'question').innerHTML = q.text.replace('______', '<span style="border-bottom:1px solid black; width:100px;display:inline-block;"> </span>');
             document.getElementById(prefix + 'answer-input').value = mode === 'test' ? (mockTestAnswers[currentQuestionIndex] || '') : '';
-            document.getElementById(prefix + 'result').textContent = '';
+            const _res = document.getElementById(prefix + 'result');
+            _res.textContent = '';
+            _res.className = '';
             if (mode === 'test') updateTestProgress();
         if (mode === '' && currentSubject && currentUser) {
         progress[currentSubject].lastActive = new Date().toISOString();
@@ -4316,9 +4543,22 @@ currentSubject = null;
     }
 }
 
-        function placeBet(bet, mode = '') {
+        function placeBet(bet, mode = '', btnEl = null) {
             currentBet = bet;
-            document.getElementById((mode ? mode + '-' : '') + 'bet-options').style.display = 'none';
+            // Highlight button được chọn
+            const container = document.getElementById((mode ? mode + '-' : '') + 'bet-options');
+            if (container) {
+                container.querySelectorAll('.bet-btn').forEach(b => {
+                    b.style.cssText = '';
+                    b.classList.remove('bet-selected');
+                });
+                if (btnEl) {
+                    btnEl.classList.add('bet-selected');
+                    if (bet === 1) btnEl.style.cssText = 'background:#10b981;color:white;border-color:#059669;transform:scale(1.05);';
+                    if (bet === 2) btnEl.style.cssText = 'background:#3b82f6;color:white;border-color:#2563eb;transform:scale(1.05);';
+                    if (bet === 0) btnEl.style.cssText = 'background:#ef4444;color:white;border-color:#dc2626;transform:scale(1.05);';
+                }
+            }
         }
 
         // ────────────────────────────────────────────────
@@ -4355,17 +4595,23 @@ async function checkAnswer(mode = '') {
         const prog = progress[currentSubject];
         
         if (correct) {
-            let reward = 10 * (streak || 1);
+            let reward = 10 * Math.max(1, streak || 1);
+            const baseBefore = reward;
             if (currentBet === 2) reward *= 2;
-            if (currentBet === 0) reward *= 2;
+            if (currentBet === 0) reward *= 3;   // DoN thắng x3
             if (isJackpot) reward *= 10;
             brainCoins += reward;
-            showToast(`+${reward} 🪙 Brain Coins!`, isJackpot ? 'coin' : 'success');
-            // Remove from wrong list if it was there
+            const betLabel = currentBet === 2 ? '🔥 CƯỢC X2! ' : currentBet === 0 ? '💀 DOUBLE WIN! ' : '';
+            const jackLabel = isJackpot ? '⭐ JACKPOT! ' : '';
+            showToast(`${jackLabel}${betLabel}+${reward} 🪙`, isJackpot ? 'coin' : 'success');
+            if (isJackpot) launchConfetti && launchConfetti(80);
             removeFromWrong(q.text);
         } else if (currentBet === 0) {
-            brainCoins = Math.max(0, brainCoins - 20);
-            showToast('-20 🪙 Double or Nothing!', 'error');
+            const penalty = 10 * Math.max(1, streak || 1);
+            brainCoins = Math.max(0, brainCoins - penalty);
+            showToast(`💀 Double or Nothing! -${penalty} 🪙`, 'error');
+        } else if (currentBet === 2) {
+            showToast('❌ Sai rồi! Cược X2 không mất xu.', 'error');
         }
         // Track wrong answers for fill-blank mode
         if (!correct && mode === '') { addWrongAnswer(q); }
@@ -4417,6 +4663,7 @@ function prevQuestion(mode = '') {
     if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
         loadQuestion(mode);
+        if (mode === '') loadQuestionList(); // sync sidebar
 
         if (mode === '' && currentSubject && currentUser) {
             progress[currentSubject].currentIndex = currentQuestionIndex;
@@ -4441,6 +4688,7 @@ async function nextQuestion(mode = '') {
     if (currentQuestionIndex < max) {
         currentQuestionIndex++;
         loadQuestion(mode);
+        if (mode === '') loadQuestionList(); // sync sidebar
 
         if (mode === '' && currentSubject && currentUser) {
             progress[currentSubject].currentIndex = currentQuestionIndex;
@@ -4758,7 +5006,7 @@ async function resetSubjectProgress() {
             <div class="col-span-full text-center py-8 text-gray-400">
                 <div class="text-4xl mb-2">🛍️</div>
                 <p class="text-sm">Bạn chưa có vật phẩm nào.</p>
-                <button onclick="showSection('shop')" class="mt-3 text-sm text-primary hover:underline font-medium">Ghé cửa hàng →</button>
+                <button onclick="showSection('shop')" data-section="shop" class="mt-3 text-sm text-primary hover:underline font-medium">Ghé cửa hàng →</button>
             </div>`;
         return;
     }
@@ -4813,6 +5061,27 @@ async function resetSubjectProgress() {
             const pct = Math.round((fcIndex / fcCards.length) * 100);
             document.getElementById('fc-progress-bar').style.width = pct + '%';
             document.getElementById('fc-progress-text').textContent = `${fcIndex + 1} / ${fcCards.length}`;
+            renderFCSidebar();
+        }
+
+        function renderFCSidebar() {
+            const list = document.getElementById('fc-sidebar-list');
+            const header = document.getElementById('fc-list-header');
+            if (!list) return;
+            if (header) header.textContent = `${fcCards.length} thẻ`;
+            list.innerHTML = '';
+            fcCards.forEach((q, i) => {
+                const li = document.createElement('li');
+                const isCur = i === fcIndex;
+                li.className = `px-3 py-2 text-sm cursor-pointer flex items-start gap-2 transition ${isCur ? 'active-question font-semibold text-primary' : 'hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}`;
+                if (isCur) li.style.background = 'rgba(16,185,129,0.10)';
+                li.innerHTML = `<span class="flex-shrink-0 w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold mt-0.5 ${isCur ? 'bg-primary text-white' : 'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300'}">${i+1}</span><span class="leading-snug">${q.text.substring(0,50).trim()}${q.text.length>50?'…':''}</span>`;
+                li.onclick = () => { fcIndex = i; fcFlipped = false; renderFlashcard(); };
+                list.appendChild(li);
+            });
+            // Scroll to active
+            const active = list.querySelector('.active-question');
+            if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         }
 
         function flipCard() {
@@ -4836,6 +5105,13 @@ async function resetSubjectProgress() {
             renderFlashcard();
         }
 
+        function fcPrev() {
+            if (fcIndex > 0) { fcIndex--; fcFlipped = false; renderFlashcard(); }
+        }
+        function fcNext() {
+            if (fcIndex < fcCards.length - 1) { fcIndex++; fcFlipped = false; renderFlashcard(); }
+            else showFCDone && showFCDone();
+        }
         function shuffleFlashcards() {
             initFlashcards();
             showToast('🔀 Đã xáo thẻ!', 'info');
@@ -4887,8 +5163,29 @@ async function resetSubjectProgress() {
             document.getElementById('wr-question').innerHTML = item.text.replace(/______/g, '<span class="border-b-2 border-red-400 px-3">_____</span>');
             document.getElementById('wr-answer-input').value = '';
             document.getElementById('wr-result').textContent = '';
+            document.getElementById('wr-result').className = '';
             document.getElementById('wr-progress').textContent = `Câu ${wrIndex + 1} / ${wrongAnswers.length}`;
             document.getElementById('wr-count-badge').textContent = `${wrongAnswers.length} câu sai`;
+            renderWRSidebar();
+        }
+
+        function renderWRSidebar() {
+            const list = document.getElementById('wr-sidebar-list');
+            const header = document.getElementById('wr-list-header');
+            if (!list) return;
+            if (header) header.textContent = `${wrongAnswers.length} câu sai`;
+            list.innerHTML = '';
+            wrongAnswers.forEach((q, i) => {
+                const li = document.createElement('li');
+                const isCur = i === wrIndex;
+                li.className = `px-3 py-2 text-sm cursor-pointer flex items-start gap-2 transition ${isCur ? 'active-question font-semibold text-red-600' : 'hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}`;
+                if (isCur) li.style.background = 'rgba(239,68,68,0.08)';
+                li.innerHTML = `<span class="flex-shrink-0 w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold mt-0.5 ${isCur ? 'bg-red-500 text-white' : 'bg-red-100 dark:bg-red-900/30 text-red-500'}">✗</span><span class="leading-snug">${q.text.substring(0,50).trim()}${q.text.length>50?'…':''}</span>`;
+                li.onclick = () => { wrIndex = i; renderWrongQuestion(); };
+                list.appendChild(li);
+            });
+            const active = list.querySelector('.active-question');
+            if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         }
 
         function checkWrongAnswer() {
@@ -5181,7 +5478,7 @@ async function resetSubjectProgress() {
             openEditProfileModal, closeEditProfileModal, saveEditProfile,
             saveProfileChanges: saveEditProfile,
             updateUserGreeting, loadProfile, updateUI, loadInventory, loadShop,
-            flipCard, rateCard, shuffleFlashcards, restartFlashcards,
+            flipCard, rateCard, shuffleFlashcards, restartFlashcards, fcPrev, fcNext,
             checkWrongAnswer, showWrongAnswer, prevWrong, nextWrong, clearWrongAnswers,
             startMCQTest, submitMCQTest, nextMCQ, prevMCQ, skipMCQ, toggleMCQReview,
             checkBadges, renderBadges,
@@ -5417,7 +5714,7 @@ async function resetSubjectProgress() {
                         <h3 class="text-2xl font-extrabold mb-2">Hôm nay hoàn thành rồi!</h3>
                         <p class="text-gray-500 mb-2">Bạn đã trả lời đúng <span class="font-bold text-primary">${score}/5</span> câu hôm nay</p>
                         <p class="text-sm text-gray-400">Quay lại vào ngày mai 👋</p>
-                        <button onclick="showSection('home')" class="mt-6 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition">← Về trang chủ</button>
+                        <button onclick="showSection('home')" data-section="home" class="mt-6 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition">← Về trang chủ</button>
                     </div>`;
                 return;
             }
@@ -5502,7 +5799,7 @@ async function resetSubjectProgress() {
                     <p class="text-gray-500 mb-2">${dailyScore === 5 ? 'Hoàn hảo! 🎉' : dailyScore >= 3 ? 'Tốt lắm!' : 'Cố gắng hơn ngày mai!'}</p>
                     <p class="text-sm font-bold text-amber-600 mb-6">+${reward} 🪙 Brain Coins</p>
                     <div class="flex gap-3 justify-center">
-                        <button onclick="showSection('home')" class="px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition">← Trang chủ</button>
+                        <button onclick="showSection('home')" data-section="home" class="px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition">← Trang chủ</button>
                         <button onclick="openShareResult(${dailyScore}, 5, 'Daily 5')" class="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition">📤 Chia sẻ</button>
                     </div>
                 </div>`;
