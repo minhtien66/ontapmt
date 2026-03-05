@@ -959,6 +959,7 @@ input:focus {
                     <div class="kbd-hint mb-4">Nhấn <kbd>Enter</kbd> để kiểm tra · <kbd>←</kbd><kbd>→</kbd> để chuyển câu</div>
                     <div class="flex flex-wrap gap-3">
                         <button onclick="checkAnswer()" class="flex-1 py-2 md:py-3 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition">✓ Kiểm Tra</button>
+                        <button onclick="useHint()" id="hint-btn" class="py-2 md:py-3 px-3 bg-yellow-400 hover:bg-yellow-500 text-white font-bold rounded-xl transition text-sm" title="Dùng Hint">💡<span id="hint-count" class="ml-1 text-xs"></span></button>
                         <button onclick="showAnswer()" class="flex-1 py-2 md:py-3 bg-gray-500 text-white font-semibold rounded-xl hover:bg-gray-600 transition">👁 Đáp Án</button>
                         <button onclick="prevQuestion()" class="py-2 md:py-3 px-4 md:px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition font-medium">← Trước</button>
                         <button onclick="nextQuestion()" class="py-2 md:py-3 px-4 md:px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition font-medium">Sau →</button>
@@ -1014,6 +1015,8 @@ input:focus {
                 <input type="text" id="test-answer-input" placeholder="Nhập đáp án..." class="w-full p-3 md:p-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-primary mb-6">
                 <div class="flex flex-wrap gap-3 justify-center">
                     <button onclick="checkAnswer('test')" class="px-6 md:px-8 py-2 md:py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primaryDark transition">Kiểm Tra</button>
+                    <button onclick="useTimeFreeze()" id="freeze-btn" class="px-4 py-2 md:py-3 bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-xl transition text-sm" title="Đóng băng đồng hồ 30s">⏰<span id="freeze-count" class="ml-1 text-xs"></span></button>
+                    <button onclick="useSkipPass('test')" id="skip-btn" class="px-4 py-2 md:py-3 bg-orange-400 hover:bg-orange-500 text-white font-bold rounded-xl transition text-sm" title="Bỏ qua câu này">🎯<span id="skip-count" class="ml-1 text-xs"></span></button>
                     <button onclick="showAnswer('test')" class="px-6 md:px-8 py-2 md:py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700 transition">Hiện Đáp Án</button>
                     <button onclick="prevQuestion('test')" class="py-2 md:py-3 px-4 md:px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Trước</button>
                     <button onclick="nextQuestion('test')" class="py-2 md:py-3 px-4 md:px-6 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">Sau</button>
@@ -1204,7 +1207,7 @@ input:focus {
 
         <!-- Cửa hàng -->
         <section id="shop" class="section hidden">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 md:mb-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
                 <div>
                     <h2 class="text-2xl md:text-3xl font-extrabold">🛍️ Cửa Hàng</h2>
                     <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Dùng Brain Coins để sưu tầm vật phẩm</p>
@@ -1212,6 +1215,13 @@ input:focus {
                 <div class="px-4 py-2 bg-primary/10 dark:bg-primary/20 rounded-full text-primary font-bold text-sm flex items-center gap-2">
                     🪙 <span id="shop-coins-display">0</span> Coins hiện có
                 </div>
+            </div>
+            <!-- Tabs -->
+            <div class="flex gap-2 mb-6 flex-wrap">
+                <button onclick="switchShopTab('all')" id="shop-tab-all" class="shop-tab px-4 py-2 rounded-xl font-bold text-sm border-2 border-primary bg-primary text-white transition">🛍️ Tất cả</button>
+                <button onclick="switchShopTab('luxury')" id="shop-tab-luxury" class="shop-tab px-4 py-2 rounded-xl font-bold text-sm border-2 border-gray-200 dark:border-gray-700 hover:border-primary transition">💎 Luxury</button>
+                <button onclick="switchShopTab('powerup')" id="shop-tab-powerup" class="shop-tab px-4 py-2 rounded-xl font-bold text-sm border-2 border-gray-200 dark:border-gray-700 hover:border-primary transition">⚡ Power-ups</button>
+                <button onclick="switchShopTab('cosmetic')" id="shop-tab-cosmetic" class="shop-tab px-4 py-2 rounded-xl font-bold text-sm border-2 border-gray-200 dark:border-gray-700 hover:border-primary transition">🎨 Cosmetics</button>
             </div>
             <div id="shop-items" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
         </section>
@@ -3668,23 +3678,35 @@ let progress = {
         ]
         };
 
-        const shopItems = [ 
- { id: 1, name: "Đồng hồ Rolex vàng", price: 5000, image: "https://media.rolex.com/image/upload/q_auto:eco/f_auto/t_v7-majesty/c_limit,w_1920/v1/catalogue/2025/upright-c/m278288rbr-0005.jpg" },
-            { id: 2, name: "Xe Lamborghini Aventador", price: 25000, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/2023_Lamborghini_Aventador_Ultimae.jpg/1280px-2023_Lamborghini_Aventador_Ultimae.jpg" },
-            { id: 3, name: "Nhà biệt thự ven biển", price: 15000, image: "https://media.vrbo.com/lodging/73000000/72930000/72921200/72921133/eaab08f5.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill" },
-            { id: 4, name: "Nhẫn kim cương 5 carat", price: 8000, image: "https://www.blissdiamond.com/cdn/shop/files/823979_source_1730313841_large.jpg?v=1749592757" },
-            { id: 5, name: "Vòng cổ Ngọc trai", price: 3000, image: "https://manssion.com/cdn/shop/files/MNS0724056.png?v=1721498245" },
-            { id: 6, name: "Tai nghe Sony WH-1000XM5", price: 1200, image: "https://cdn.shopify.com/s/files/1/0397/7166/8635/products/WH1000XM5_Silver.png?v=1761235815" },
-            { id: 7, name: "Giày Jordan 1 Retro", price: 1800, image: "https://cdn-images.farfetch-contents.com/13/15/76/97/13157697_21516295_600.jpg" },
-            { id: 8, name: "Túi xách Gucci", price: 4500, image: "https://eteft.com/cdn/shop/files/700457HUHHG8565.jpg?v=1735353907" },
-            { id: 9, name: "Túi Louis Vuitton Neverfull", price: 6000, image: "https://eu.louisvuitton.com/images/is/image/LV_M1/images/as/women/handbags/neverfull/neverfull-mm-monogram-canvas/M41107_PM2_Front%20view.png?wid=1080&hei=1080" },
-            { id: 10, name: "Đồng hồ Patek Philippe Nautilus", price: 12000, image: "https://cdn2.chrono24.com/cdn-cgi/image/f=auto,metadata=none,q=85/images/topmodels/2869-vl7x0sy3tsmthtu9lfx4mhvy-Main.png" },
-            { id: 11, name: "Siêu xe Ferrari SF90 Stradale", price: 30000, image: "https://res.cloudinary.com/unix-center/image/upload/c_limit,dpr_3.0,f_auto,fl_progressive,g_center,h_240,q_auto:good,w_385/fl7hxq9rczontkgsvvw0.jpg" },
-            { id: 12, name: "Nhẫn Cartier Love vàng trắng", price: 9000, image: "https://dsfantiquejewelry.com/cdn/shop/files/Cartier_Love_Ring_in_18K_White_Gold4.jpg?v=1752106079&width=1000" },
-            { id: 13, name: "Máy ảnh Leica Q3", price: 7000, image: "https://bizweb.dktcdn.net/100/107/650/products/leica-q3-43-20.jpg?v=1727679706187" },
-            { id: 14, name: "Áo khoác Moncler Maya", price: 4000, image: "https://cdn-images.farfetch-contents.com/20/90/37/77/20903777_50929134_600.jpg" },
-            { id: 15, name: "Du thuyền sang trọng", price: 50000, image: "https://images.northropandjohnson.com/yacht/48efItZiNi/0DBC6EA0-794E-EC11-8C62-000D3A5BCC1B/1740997405-extra-large-4.jpg?auto=format&q=65&h=1&ar=16%3A9&fit=crop" }
-        
+        const shopItems = [
+            // ── LUXURY ──
+            { id:1,  cat:'luxury', name:'Đồng hồ Rolex vàng',         price:5000,  image:'https://media.rolex.com/image/upload/q_auto:eco/f_auto/t_v7-majesty/c_limit,w_1920/v1/catalogue/2025/upright-c/m278288rbr-0005.jpg',                                                                                   desc:'Biểu tượng đẳng cấp. Flex trên bảng xếp hạng.' },
+            { id:2,  cat:'luxury', name:'Xe Lamborghini Aventador',     price:25000, image:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/2023_Lamborghini_Aventador_Ultimae.jpg/1280px-2023_Lamborghini_Aventador_Ultimae.jpg',                                                                          desc:'Siêu xe mơ ước. Chỉ dành cho top scorer.' },
+            { id:3,  cat:'luxury', name:'Nhà biệt thự ven biển',       price:15000, image:'https://media.vrbo.com/lodging/73000000/72930000/72921200/72921133/eaab08f5.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill',                                                                                               desc:'Tài sản ảo giá trị cao. Hiển thị trong hồ sơ.' },
+            { id:4,  cat:'luxury', name:'Nhẫn kim cương 5 carat',      price:8000,  image:'https://www.blissdiamond.com/cdn/shop/files/823979_source_1730313841_large.jpg?v=1749592757',                                                                                                                              desc:'Xa xỉ phẩm sáng giá. Dành cho người kiên trì.' },
+            { id:5,  cat:'luxury', name:'Du thuyền sang trọng',        price:50000, image:'https://images.northropandjohnson.com/yacht/48efItZiNi/0DBC6EA0-794E-EC11-8C62-000D3A5BCC1B/1740997405-extra-large-4.jpg?auto=format&q=65&h=1&ar=16%3A9&fit=crop',                                                       desc:'Đỉnh cao tài sản ảo. Hiếm nhất cửa hàng.' },
+            { id:6,  cat:'luxury', name:'Ferrari SF90 Stradale',        price:30000, image:'https://res.cloudinary.com/unix-center/image/upload/c_limit,dpr_3.0,f_auto,fl_progressive,g_center,h_240,q_auto:good,w_385/fl7hxq9rczontkgsvvw0.jpg',                                                                    desc:'Siêu xe Italy. Chứng minh bạn ôn tập chăm chỉ.' },
+            { id:7,  cat:'luxury', name:'Đồng hồ Patek Philippe',      price:12000, image:'https://cdn2.chrono24.com/cdn-cgi/image/f=auto,metadata=none,q=85/images/topmodels/2869-vl7x0sy3tsmthtu9lfx4mhvy-Main.png',                                                                                               desc:'Đồng hồ danh giá nhất thế giới.' },
+            { id:8,  cat:'luxury', name:'Túi Hermès Birkin',           price:18000, image:'https://assets.hermes.com/is/image/hermesedito/HERMES-BIRKIN-25-VERT-CYPRESS?wid=960&hei=960&fmt=jpg&qlt=75&fit=hfit,1',                                                                                                   desc:'Túi hiệu xa xỉ đẳng cấp nhất thế giới.' },
+
+            // ── POWER-UPS ──
+            { id:101, cat:'powerup', name:'🛡️ Streak Shield',          price:500,   emoji:'🛡️', desc:'Bảo vệ streak 1 ngày nếu lỡ quên học. Sử dụng tự động.',          effect:'streak_shield' },
+            { id:102, cat:'powerup', name:'⚡ Double XP x24h',          price:800,   emoji:'⚡', desc:'Nhân đôi Coins kiếm được trong 24 giờ.',                            effect:'double_xp' },
+            { id:103, cat:'powerup', name:'💡 Hint Pack (x5)',           price:300,   emoji:'💡', desc:'5 lượt gợi ý đáp án trong bài điền khuyết.',                       effect:'hint_pack' },
+            { id:104, cat:'powerup', name:'⏰ Time Freeze (x3)',         price:400,   emoji:'⏰', desc:'Dừng đồng hồ 30 giây trong thi thử. Dùng 3 lần.',                  effect:'time_freeze' },
+            { id:105, cat:'powerup', name:'🎯 Skip Pass (x3)',           price:350,   emoji:'🎯', desc:'Bỏ qua 3 câu trong khi thi mà không bị trừ điểm.',                 effect:'skip_pass' },
+            { id:106, cat:'powerup', name:'🔄 Wrong Review Boost',       price:600,   emoji:'🔄', desc:'Xem đáp án đúng ngay sau khi trả lời sai trong thi.',              effect:'review_boost' },
+            { id:107, cat:'powerup', name:'🌟 XP Multiplier x3 (1h)',    price:1200,  emoji:'🌟', desc:'Nhân 3 Coins trong 1 giờ. Dành cho session ôn tập cật lực.',       effect:'triple_xp' },
+
+            // ── COSMETICS ──
+            { id:201, cat:'cosmetic', name:'🎨 Theme Tím Hoàng gia',    price:1500,  emoji:'💜', desc:'Đổi giao diện sang màu tím gradient sang trọng.',   color:'#8b5cf6,#6d28d9' },
+            { id:202, cat:'cosmetic', name:'🌊 Theme Đại Dương',        price:1500,  emoji:'🔵', desc:'Giao diện xanh dương mát mẻ như đại dương.',         color:'#0ea5e9,#0369a1' },
+            { id:203, cat:'cosmetic', name:'🌸 Theme Hoa Anh Đào',     price:1500,  emoji:'🌸', desc:'Giao diện hồng nhẹ nhàng dễ chịu.',                   color:'#ec4899,#db2777' },
+            { id:204, cat:'cosmetic', name:'🔥 Theme Lửa Đỏ',          price:1500,  emoji:'🔴', desc:'Giao diện đỏ cam mạnh mẽ đầy năng lượng.',            color:'#ef4444,#dc2626' },
+            { id:205, cat:'cosmetic', name:'🌙 Theme Hoàng Hôn',       price:2000,  emoji:'🌅', desc:'Gradient cam vàng tuyệt đẹp.',                        color:'#f59e0b,#d97706' },
+            { id:206, cat:'cosmetic', name:'👑 Frame Vương Miện',       price:2500,  emoji:'👑', desc:'Khung avatar vương miện vàng trên leaderboard.',      frame:'crown' },
+            { id:207, cat:'cosmetic', name:'💎 Frame Kim Cương',        price:3000,  emoji:'💎', desc:'Khung avatar kim cương hiếm. Cực kỳ nổi bật.',        frame:'diamond' },
+            { id:208, cat:'cosmetic', name:'🌟 Frame Ngôi Sao',        price:2000,  emoji:'🌟', desc:'Khung avatar ngôi sao lung linh.',                    frame:'star' },
         ];
 
         // Modal Đăng ký / Đăng nhập (có quên mật khẩu)
@@ -3915,7 +3937,19 @@ let progress = {
     const today = new Date().toDateString();
     if (userData.lastLogin !== today) {
         const yesterday = new Date(Date.now() - 86400000).toDateString();
-        userData.streak = (userData.lastLogin === yesterday) ? (userData.streak || 0) + 1 : 1;
+        if (userData.lastLogin === yesterday) {
+            userData.streak = (userData.streak || 0) + 1;
+        } else {
+            // Streak bị gián đoạn - kiểm tra Shield
+            const shieldCount = getPowerUp('streak_shield');
+            if (shieldCount > 0) {
+                usePowerUp('streak_shield');
+                userData.streak = (userData.streak || 1); // giữ nguyên
+                showToast('🛡️ Streak Shield kích hoạt! Streak được bảo vệ.', 'info', 4000);
+            } else {
+                userData.streak = 1;
+            }
+        }
         userData.lastLogin = today;
         await update(ref(db, `users/${currentUser.uid}`), {
             streak: userData.streak,
@@ -3993,6 +4027,18 @@ const progressData = userData.progress || {};
         showToast('❌ Lỗi khi lưu hồ sơ: ' + (err.message || 'Không xác định'), 'error', 4000);
     }
 }
+
+        function loadSavedCosmetics() {
+            try {
+                const theme = JSON.parse(localStorage.getItem('swm_theme') || 'null');
+                if (theme) {
+                    document.documentElement.style.setProperty('--color-primary', theme.c1);
+                    document.documentElement.style.setProperty('--color-primary-dark', theme.c2);
+                }
+                const frame = localStorage.getItem('swm_frame');
+                if (frame) setTimeout(function() { applyAvatarFrame(frame); }, 1000);
+            } catch(e) {}
+        }
 
         function updateUI() {
             document.getElementById('coins').innerHTML = `🪙 <span class="font-bold">${brainCoins.toLocaleString()}</span>`;
@@ -4469,7 +4515,7 @@ currentSubject = null;
             const section = document.getElementById(id);
             if (section) {
                 section.classList.remove('hidden');
-                if (id === 'fill-blank') loadQuestionList();
+                if (id === 'fill-blank') { loadQuestionList(); setTimeout(updatePowerUpUI, 100); }
                 if (id === 'test-sets') loadSetSelect();
                 if (id === 'shop') loadShop();
                 if (id === 'inventory') loadInventory();
@@ -4650,10 +4696,14 @@ async function checkAnswer(mode = '') {
             if (currentBet === 2) reward *= 2;
             if (currentBet === 0) reward *= 3;   // DoN thắng x3
             if (isJackpot) reward *= 10;
+            // ⚡ Power-up: Double/Triple XP
+            let xpLabel = '';
+            if (getPowerUp('triple_xp') > 0) { reward *= 3; xpLabel = '🌟x3 '; }
+            else if (getPowerUp('double_xp') > 0) { reward *= 2; xpLabel = '⚡x2 '; }
             brainCoins += reward;
             const betLabel = currentBet === 2 ? '🔥 CƯỢC X2! ' : currentBet === 0 ? '💀 DOUBLE WIN! ' : '';
             const jackLabel = isJackpot ? '⭐ JACKPOT! ' : '';
-            showToast(`${jackLabel}${betLabel}+${reward} 🪙`, isJackpot ? 'coin' : 'success');
+            showToast(`${jackLabel}${betLabel}${xpLabel}+${reward} 🪙`, isJackpot ? 'coin' : 'success');
             if (isJackpot) launchConfetti && launchConfetti(80);
             removeFromWrong(q.text);
         } else if (currentBet === 0) {
@@ -4892,6 +4942,7 @@ async function resetSubjectProgress() {
             updateTestProgress();
             clearInterval(timerInterval);
             timerInterval = setInterval(updateTimer, 1000);
+            setTimeout(updatePowerUpUI, 100);
         }
 
         function updateTimer() {
@@ -4909,7 +4960,10 @@ async function resetSubjectProgress() {
             clearInterval(timerInterval);
             mockTestSubmitted = true;
             let correctCount = 0;
+            // Đếm skip riêng
+            let skipCount = mockTestAnswers.filter(a => a === '__SKIP__').length;
             mockTestQuestions.forEach((q, i) => {
+                if (mockTestAnswers[i] === '__SKIP__') return; // bỏ qua
                 if (mockTestAnswers[i]?.trim().toLowerCase() === q.answer.toLowerCase()) correctCount++;
             });
             const score = Math.round((correctCount / 30) * 100);
@@ -4963,39 +5017,132 @@ async function resetSubjectProgress() {
         }
 
         // ── LOAD SHOP ──
-        function loadShop() {
-            // Sync coin display in shop header
-            const shopCoins = document.getElementById('shop-coins-display');
-            if (shopCoins) shopCoins.textContent = brainCoins.toLocaleString();
+        var shopCurrentTab = 'all';
 
+        function switchShopTab(tab) {
+            shopCurrentTab = tab;
+            document.querySelectorAll('.shop-tab').forEach(btn => {
+                btn.classList.remove('bg-primary','text-white','border-primary');
+                btn.classList.add('border-gray-200','dark:border-gray-700');
+            });
+            const active = document.getElementById('shop-tab-' + tab);
+            if (active) {
+                active.classList.add('bg-primary','text-white','border-primary');
+                active.classList.remove('border-gray-200','dark:border-gray-700');
+            }
+            renderShopItems();
+        }
+
+        function renderShopItems() {
             const container = document.getElementById('shop-items');
             container.innerHTML = '';
-            shopItems.forEach(item => {
+            const filtered = shopCurrentTab === 'all' ? shopItems : shopItems.filter(i => i.cat === shopCurrentTab);
+            filtered.forEach(item => {
                 const owned = Array.isArray(inventory) && inventory.includes(item.id);
                 const canAfford = brainCoins >= item.price;
                 const card = document.createElement('div');
                 card.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 flex flex-col transition hover:shadow-xl hover:-translate-y-1 duration-200';
-                card.innerHTML = `
-                    <div class="relative">
-                        <img src="${item.image}" alt="${item.name}" class="w-full h-44 object-cover"
-                             onerror="this.style.background='#f3f4f6';this.style.display='block'">
+
+                // Category badge
+                const catBadge = {
+                    luxury:   '<span class="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 text-xs font-bold px-2 py-0.5 rounded-full">💎 Luxury</span>',
+                    powerup:  '<span class="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-xs font-bold px-2 py-0.5 rounded-full">⚡ Power-up</span>',
+                    cosmetic: '<span class="bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400 text-xs font-bold px-2 py-0.5 rounded-full">🎨 Cosmetic</span>',
+                }[item.cat] || '';
+
+                const imgBlock = item.image
+                    ? `<div class="relative"><img src="${item.image}" alt="${item.name}" class="w-full h-40 object-cover" onerror="this.parentElement.innerHTML='<div class=\'w-full h-40 flex items-center justify-center bg-gradient-to-br from-primary/10 to-purple-500/10 text-6xl\'>${item.emoji||'🎁'}</div>'">
                         ${owned ? '<div class="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow">✓ Đã có</div>' : ''}
-                    </div>
+                       </div>`
+                    : `<div class="w-full h-32 flex items-center justify-center bg-gradient-to-br from-primary/10 to-purple-500/10 text-6xl relative">
+                        ${item.emoji||'🎁'}
+                        ${owned ? '<div class="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow">✓ Đã có</div>' : ''}
+                       </div>`;
+
+                card.innerHTML = `
+                    ${imgBlock}
                     <div class="p-4 flex flex-col flex-1">
-                        <h3 class="font-bold text-base mb-1 leading-snug">${item.name}</h3>
+                        <div class="mb-1">${catBadge}</div>
+                        <h3 class="font-bold text-sm mt-1 mb-1 leading-snug">${item.name}</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2 leading-relaxed">${item.desc||''}</p>
                         <p class="text-primary font-extrabold text-sm mb-3 flex items-center gap-1">🪙 ${item.price.toLocaleString()} Coins</p>
                         <div class="mt-auto">
                             ${owned
                                 ? `<button class="w-full py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-xl text-sm font-semibold cursor-not-allowed" disabled>✓ Đã sở hữu</button>`
                                 : canAfford
                                     ? `<button onclick="buyItem(${item.id}, ${item.price})" class="w-full py-2.5 bg-gradient-to-r from-primary to-primaryDark text-white font-bold rounded-xl hover:opacity-90 transition text-sm shadow-md">Mua ngay</button>`
-                                    : `<button class="w-full py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-400 rounded-xl text-sm font-semibold cursor-not-allowed" disabled title="Không đủ Coins">Không đủ Coins</button>`
+                                    : `<button class="w-full py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-400 rounded-xl text-sm font-semibold cursor-not-allowed" disabled>Không đủ Coins</button>`
                             }
                         </div>
                     </div>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function loadShop() {
+            const shopCoins = document.getElementById('shop-coins-display');
+            if (shopCoins) shopCoins.textContent = brainCoins.toLocaleString();
+            renderShopItems();
+        }
+
+        // ── APPLY SHOP ITEM EFFECTS ──
+        function applyShopItem(item) {
+            if (!item) return;
+            if (item.cat === 'cosmetic') {
+                if (item.color) {
+                    // Đổi theme màu primary
+                    const [c1, c2] = item.color.split(',');
+                    document.documentElement.style.setProperty('--color-primary', c1);
+                    document.documentElement.style.setProperty('--color-primary-dark', c2);
+                    // Lưu theme vào localStorage
+                    localStorage.setItem('swm_theme', JSON.stringify({c1, c2, itemId: item.id}));
+                }
+                if (item.frame) {
+                    localStorage.setItem('swm_frame', item.frame);
+                    applyAvatarFrame(item.frame);
+                }
+            }
+            if (item.cat === 'powerup') {
+                // Lưu power-up vào localStorage với expiry
+                const key = 'swm_pu_' + item.effect;
+                const existing = JSON.parse(localStorage.getItem(key) || '{"count":0}');
+                const addMap = { hint_pack: 5, time_freeze: 3, skip_pass: 3 };
+                const add = addMap[item.effect] || 1;
+                existing.count = (existing.count || 0) + add;
+                if (item.effect === 'double_xp') existing.expiry = Date.now() + 24*3600*1000;
+                if (item.effect === 'triple_xp') existing.expiry = Date.now() + 3600*1000;
+                localStorage.setItem(key, JSON.stringify(existing));
+            }
+        }
+
+        function applyAvatarFrame(frame) {
+            const avatarEl = document.getElementById('profile-avatar-initial')?.parentElement;
+            if (!avatarEl) return;
+            const frames = { crown: '👑', diamond: '💎', star: '🌟' };
+            let badge = avatarEl.querySelector('.frame-badge');
+            if (!badge) { badge = document.createElement('div'); badge.className = 'frame-badge absolute -top-2 -right-2 text-xl'; avatarEl.appendChild(badge); }
+            badge.textContent = frames[frame] || '';
+        }
+
+        function getPowerUp(effect) {
+            const key = 'swm_pu_' + effect;
+            try {
+                const data = JSON.parse(localStorage.getItem(key) || '{"count":0}');
+                if (data.expiry && Date.now() > data.expiry) { localStorage.removeItem(key); return 0; }
+                return data.count || 0;
+            } catch(e) { return 0; }
+        }
+
+        function usePowerUp(effect) {
+            const key = 'swm_pu_' + effect;
+            try {
+                const data = JSON.parse(localStorage.getItem(key) || '{"count":0}');
+                if ((data.count || 0) <= 0) return false;
+                data.count--;
+                localStorage.setItem(key, JSON.stringify(data));
+                return true;
+            } catch(e) { return false; }
         }
 
         // ── BUY ITEM ──
@@ -5023,7 +5170,10 @@ async function resetSubjectProgress() {
                 await saveUserData({ coins: brainCoins, inventory: inventory });
                 loadShop();
                 loadInventory();
-                showToast(`🎉 Đã mua "${item.name}"! Xem trong Kho vật phẩm.`, 'coin', 4000);
+                // Áp dụng hiệu ứng ngay
+                applyShopItem(item);
+                const catMsg = item.cat === 'powerup' ? '⚡ Power-up đã kích hoạt!' : item.cat === 'cosmetic' ? '🎨 Cosmetic đã áp dụng!' : '💎 Thêm vào bộ sưu tập!';
+                showToast(`🎉 Đã mua "${item.name}"! ${catMsg}`, 'coin', 4000);
             } catch (err) {
                 // rollback
                 brainCoins += price;
@@ -5829,12 +5979,100 @@ async function resetSubjectProgress() {
         function swmMusicNext() { swmMusicLoad(swmMusicIdx + 1, swmMusicPlaying); }
         function swmMusicPrev() { swmMusicLoad(swmMusicIdx - 1, swmMusicPlaying); }
 
+
+        // ══ POWER-UP GAMEPLAY ══
+        function updatePowerUpUI() {
+            // Hint count
+            const hc = document.getElementById('hint-count');
+            if (hc) {
+                const n = getPowerUp('hint_pack');
+                hc.textContent = n > 0 ? 'x'+n : '';
+                const btn = document.getElementById('hint-btn');
+                if (btn) btn.style.opacity = n > 0 ? '1' : '0.4';
+            }
+            // Time Freeze count
+            const fc = document.getElementById('freeze-count');
+            if (fc) {
+                const n = getPowerUp('time_freeze');
+                fc.textContent = n > 0 ? 'x'+n : '';
+                const btn = document.getElementById('freeze-btn');
+                if (btn) btn.style.opacity = n > 0 ? '1' : '0.4';
+            }
+            // Skip count
+            const sc = document.getElementById('skip-count');
+            if (sc) {
+                const n = getPowerUp('skip_pass');
+                sc.textContent = n > 0 ? 'x'+n : '';
+                const btn = document.getElementById('skip-btn');
+                if (btn) btn.style.opacity = n > 0 ? '1' : '0.4';
+            }
+        }
+
+        function useHint() {
+            const n = getPowerUp('hint_pack');
+            if (n <= 0) { showToast('Không có Hint! Mua 💡 Hint Pack trong Cửa Hàng.', 'error', 3000); return; }
+            const q = questions[currentQuestionIndex];
+            if (!q) return;
+            usePowerUp('hint_pack');
+            const inp = document.getElementById('answer-input');
+            if (inp) {
+                // Hiện chữ cái đầu + số ký tự
+                const hint = q.answer[0] + '_'.repeat(q.answer.length - 1) + ' (' + q.answer.length + ' ký tự)';
+                inp.placeholder = '💡 Gợi ý: ' + hint;
+            }
+            showToast('💡 Gợi ý đã dùng! Còn ' + (n-1) + ' lượt.', 'info', 3000);
+            updatePowerUpUI();
+        }
+
+        var freezeActive = false;
+        function useTimeFreeze() {
+            const n = getPowerUp('time_freeze');
+            if (n <= 0) { showToast('Không có Time Freeze! Mua ⏰ trong Cửa Hàng.', 'error', 3000); return; }
+            if (freezeActive) { showToast('Đang đóng băng rồi!', 'info'); return; }
+            usePowerUp('time_freeze');
+            freezeActive = true;
+            clearInterval(timerInterval);
+            showToast('⏰ Đồng hồ đóng băng 30 giây!', 'info', 3000);
+            const btn = document.getElementById('freeze-btn');
+            if (btn) { btn.style.background = '#1d4ed8'; btn.textContent = '⏰ 30s'; }
+            let countdown = 30;
+            const freezeInterval = setInterval(function() {
+                countdown--;
+                if (btn) btn.textContent = '⏰ ' + countdown + 's';
+                if (countdown <= 0) {
+                    clearInterval(freezeInterval);
+                    freezeActive = false;
+                    timerInterval = setInterval(updateTimer, 1000);
+                    if (btn) { btn.style.background = ''; btn.innerHTML = '⏰<span id="freeze-count" class="ml-1 text-xs">x' + getPowerUp('time_freeze') + '</span>'; }
+                    showToast('⏰ Hết đóng băng! Đồng hồ chạy lại.', 'info', 2000);
+                }
+            }, 1000);
+            updatePowerUpUI();
+        }
+
+        function useSkipPass(mode) {
+            const n = getPowerUp('skip_pass');
+            if (n <= 0) { showToast('Không có Skip Pass! Mua 🎯 trong Cửa Hàng.', 'error', 3000); return; }
+            usePowerUp('skip_pass');
+            // Đánh dấu câu hiện tại là skip (không tính sai)
+            if (mode === 'test') {
+                mockTestAnswers[currentQuestionIndex] = '__SKIP__';
+                if (currentQuestionIndex < mockTestQuestions.length - 1) {
+                    currentQuestionIndex++;
+                    loadQuestion('test');
+                    updateTestProgress();
+                }
+            }
+            showToast('🎯 Đã bỏ qua câu này! Còn ' + (n-1) + ' lượt.', 'info', 3000);
+            updatePowerUpUI();
+        }
+
         Object.assign(window, {
             showToast, selectSubject, backToSubjectSelect, showSection,
             loadQuestionList, searchQuestions, checkAnswer, showAnswer,
             prevQuestion, nextQuestion, resetSubjectProgress, updateProgressDisplay,
             loadSet, loadSetSelect, startMockTest, submitTest, showReview,
-            buyItem, placeBet, updateTestProgress,
+            buyItem, placeBet, updateTestProgress, switchShopTab,
             openEditProfileModal, closeEditProfileModal, saveEditProfile,
             saveProfileChanges: saveEditProfile,
             updateUserGreeting, loadProfile, updateUI, loadInventory, loadShop,
@@ -5845,12 +6083,14 @@ async function resetSubjectProgress() {
             // New features
             toggleSound, loadDashboard, loadDaily, loadLeaderboard, switchLB,
             swmToggle, swmSetMode, swmReset, swmSound, swmSetVolume, swmNextQuote, swmToggleWidget,
+            useHint, useTimeFreeze, useSkipPass, updatePowerUpUI,
             swmMusicToggle, swmMusicNext, swmMusicPrev,
             toggleNote, saveNote, openShareFromQuestion, closeShareModal, downloadShareCard, copyShareText,
         });
 
         // Khởi tạo
         updateUI();
+        loadSavedCosmetics();
 
 
         // ════════════════════════════════════════════
@@ -6524,5 +6764,4 @@ async function resetSubjectProgress() {
 
 </body>
 </html>
-
 
