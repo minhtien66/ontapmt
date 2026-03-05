@@ -568,6 +568,7 @@ input:focus {
             <button onclick="showSection('leaderboard')" data-section="leaderboard" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">🏅 Xếp Hạng</button>
             <button onclick="showSection('daily')" data-section="daily" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">☀️ Daily 5</button>
             <button onclick="showSection('profile')" data-section="profile" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">👤 Hồ Sơ</button>
+            <button onclick="showSection('study-with-me')" data-section="study-with-me" class="nav-btn px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md text-sm border border-gray-200/60 dark:border-gray-700/60">🎧 Study With Me</button>
         </nav>
 
         <!-- Chọn môn -->
@@ -1298,6 +1299,122 @@ input:focus {
         </div><!-- end body -->
     </div><!-- end card -->
 </section>
+
+<!-- ── STUDY WITH ME ── -->
+<section id="study-with-me" class="section hidden max-w-4xl mx-auto px-2">
+    <div class="text-center mb-8">
+        <h2 class="text-3xl md:text-4xl font-extrabold mb-2">🎧 Study With Me</h2>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">Học cùng nhau · Tập trung hơn · Hiệu quả hơn</p>
+        <div class="inline-flex items-center gap-2 mt-3 px-4 py-1.5 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-full text-sm">
+            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+            <span id="swm-online-count" class="font-semibold text-green-700 dark:text-green-400">-- người đang học cùng</span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- TIMER CARD -->
+        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 p-6 flex flex-col items-center">
+            <h3 class="font-extrabold text-lg mb-4">⏱ Pomodoro Timer</h3>
+
+            <!-- Mode selector -->
+            <div class="flex gap-2 mb-6 bg-gray-100 dark:bg-gray-700 rounded-xl p-1 w-full">
+                <button onclick="swmSetMode('focus')" id="swm-btn-focus" class="flex-1 py-2 rounded-lg text-sm font-bold transition">🧠 Học</button>
+                <button onclick="swmSetMode('short')" id="swm-btn-short" class="flex-1 py-2 rounded-lg text-sm font-bold transition">☕ Nghỉ ngắn</button>
+                <button onclick="swmSetMode('long')" id="swm-btn-long" class="flex-1 py-2 rounded-lg text-sm font-bold transition">🛌 Nghỉ dài</button>
+            </div>
+
+            <!-- Timer display -->
+            <div id="swm-timer-display" class="text-7xl font-black tabular-nums mb-2 bg-gradient-to-br from-primary to-purple-500 bg-clip-text text-transparent select-none">25:00</div>
+            <div id="swm-session-label" class="text-sm text-gray-500 dark:text-gray-400 mb-6">Phiên học #1</div>
+
+            <!-- Progress ring -->
+            <div class="relative w-40 h-40 mb-6">
+                <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="8" class="text-gray-200 dark:text-gray-700"/>
+                    <circle id="swm-progress-ring" cx="60" cy="60" r="54" fill="none" stroke="url(#swmGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="0" style="transition:stroke-dashoffset 1s linear"/>
+                    <defs><linearGradient id="swmGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <div id="swm-timer-center" class="text-2xl font-black">25:00</div>
+                    <div id="swm-mode-icon" class="text-2xl">🧠</div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex gap-3 w-full">
+                <button onclick="swmToggle()" id="swm-start-btn" class="flex-1 py-3 bg-gradient-to-r from-primary to-primaryDark text-white font-bold rounded-xl hover:opacity-90 transition text-lg">▶ Bắt đầu</button>
+                <button onclick="swmReset()" class="py-3 px-5 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition font-bold text-xl">↺</button>
+            </div>
+
+            <!-- Sessions done -->
+            <div class="mt-4 flex gap-2 items-center">
+                <span class="text-xs text-gray-500">Phiên hôm nay:</span>
+                <div id="swm-sessions-dots" class="flex gap-1"></div>
+            </div>
+        </div>
+
+        <!-- AMBIENT + INFO CARD -->
+        <div class="flex flex-col gap-4">
+            <!-- Ambient sound -->
+            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 p-6">
+                <h3 class="font-extrabold text-lg mb-4">🎵 Âm thanh tập trung</h3>
+                <div class="grid grid-cols-3 gap-3">
+                    <button onclick="swmSound('rain')" id="snd-rain" class="swm-snd-btn flex flex-col items-center gap-1 p-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 hover:border-primary transition">
+                        <span class="text-2xl">🌧️</span><span class="text-xs font-semibold">Mưa</span>
+                    </button>
+                    <button onclick="swmSound('cafe')" id="snd-cafe" class="swm-snd-btn flex flex-col items-center gap-1 p-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 hover:border-primary transition">
+                        <span class="text-2xl">☕</span><span class="text-xs font-semibold">Quán cà phê</span>
+                    </button>
+                    <button onclick="swmSound('forest')" id="snd-forest" class="swm-snd-btn flex flex-col items-center gap-1 p-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 hover:border-primary transition">
+                        <span class="text-2xl">🌲</span><span class="text-xs font-semibold">Rừng</span>
+                    </button>
+                    <button onclick="swmSound('ocean')" id="snd-ocean" class="swm-snd-btn flex flex-col items-center gap-1 p-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 hover:border-primary transition">
+                        <span class="text-2xl">🌊</span><span class="text-xs font-semibold">Biển</span>
+                    </button>
+                    <button onclick="swmSound('fire')" id="snd-fire" class="swm-snd-btn flex flex-col items-center gap-1 p-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 hover:border-primary transition">
+                        <span class="text-2xl">🔥</span><span class="text-xs font-semibold">Lửa</span>
+                    </button>
+                    <button onclick="swmSound('none')" id="snd-none" class="swm-snd-btn flex flex-col items-center gap-1 p-3 rounded-2xl border-2 border-primary bg-primary/10 transition">
+                        <span class="text-2xl">🔇</span><span class="text-xs font-semibold">Tắt</span>
+                    </button>
+                </div>
+                <!-- Volume -->
+                <div class="flex items-center gap-3 mt-4">
+                    <span class="text-sm">🔈</span>
+                    <input type="range" id="swm-volume" min="0" max="100" value="40" oninput="swmSetVolume(this.value)" class="flex-1 accent-primary">
+                    <span class="text-sm">🔊</span>
+                </div>
+            </div>
+
+            <!-- Today stats -->
+            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 p-6">
+                <h3 class="font-extrabold text-lg mb-4">📊 Hôm nay</h3>
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="bg-primary/10 rounded-2xl p-3">
+                        <div id="swm-stat-sessions" class="text-2xl font-extrabold text-primary">0</div>
+                        <div class="text-xs text-gray-500 mt-1">Phiên học</div>
+                    </div>
+                    <div class="bg-purple-100 dark:bg-purple-900/20 rounded-2xl p-3">
+                        <div id="swm-stat-minutes" class="text-2xl font-extrabold text-purple-600 dark:text-purple-400">0</div>
+                        <div class="text-xs text-gray-500 mt-1">Phút học</div>
+                    </div>
+                    <div class="bg-amber-100 dark:bg-amber-900/20 rounded-2xl p-3">
+                        <div id="swm-stat-streak" class="text-2xl font-extrabold text-amber-600">0</div>
+                        <div class="text-xs text-gray-500 mt-1">Ngày liên tiếp</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quote -->
+            <div id="swm-quote-card" class="bg-gradient-to-br from-primary/10 to-purple-500/10 dark:from-primary/20 dark:to-purple-500/20 rounded-3xl border border-primary/20 p-5 text-center">
+                <div id="swm-quote-text" class="text-sm font-medium italic text-gray-700 dark:text-gray-300 leading-relaxed"></div>
+                <button onclick="swmNextQuote()" class="mt-2 text-xs text-primary hover:underline">Câu khác →</button>
+            </div>
+        </div>
+    </div>
+</section>
+
 
 <!-- ── MODAL CHỈNH SỬA HỒ SƠ ── -->
 <div id="edit-profile-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-[300] backdrop-blur-sm hidden p-4">
@@ -4421,6 +4538,13 @@ currentSubject = null;
             document.getElementById('app-title').textContent = 'Ôn Tập Pro Mode';
  }
         function showSection(id) {
+            // Stop SWM timer & sound when leaving
+            if (id !== 'study-with-me' && swmRunning) { swmStop(); }
+            if (id !== 'study-with-me' && swmCurrentSound !== 'none') {
+                if (swmAudio) { swmAudio.pause(); swmAudio.src = ''; swmAudio = null; }
+                swmCurrentSound = 'none';
+            }
+            if (id === 'study-with-me') { loadStudyWithMe(); }
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             const section = document.getElementById(id);
             if (section) {
@@ -5475,6 +5599,272 @@ async function resetSubjectProgress() {
         const _origCheckAnswer = checkAnswer;
         // Patch: add wrong answer tracking into checkAnswer
         // (done by modifying checkAnswer directly below)
+
+        // ══════════════════════════════════════════════
+        //  STUDY WITH ME
+        // ══════════════════════════════════════════════
+        const SWM_MODES = {
+            focus: { label: '🧠 Học',      icon: '🧠', mins: 25, color: '#10b981' },
+            short: { label: '☕ Nghỉ ngắn', icon: '☕', mins: 5,  color: '#f59e0b' },
+            long:  { label: '🛌 Nghỉ dài',  icon: '🛌', mins: 15, color: '#8b5cf6' },
+        };
+        const SWM_QUOTES = [
+            'Học hôm nay, chữa bệnh ngày mai. 🩺',
+            'Mỗi câu hỏi đúng là một bước đến bác sĩ giỏi. 💪',
+            'Không có đường tắt đến nơi xứng đáng. 🎯',
+            'Kiến thức là liều thuốc tốt nhất. 📚',
+            'Bạn không cần động lực, bạn cần kỷ luật. ⚡',
+            'Hôm nay khó nhọc, ngày mai tự hào. 🌟',
+            'Y khoa là nghệ thuật học không ngừng. 🔬',
+            'Tập trung 25 phút hơn lướt mạng 2 tiếng. 📵',
+            'Mỗi phiên Pomodoro là một viên gạch xây tương lai. 🏥',
+        ];
+
+        let swmMode = 'focus';
+        let swmRunning = false;
+        let swmSeconds = 25 * 60;
+        let swmTotal = 25 * 60;
+        let swmInterval = null;
+        let swmSessionsDone = 0;
+        let swmMinutesTotal = 0;
+        let swmAudio = null;       // HTML Audio element for MP3 playback
+        let swmAudioCtx = null;    // (unused, kept for ding sound)
+        let swmCurrentSound = 'none';
+        let swmVolume = 0.4;
+        let swmQuoteIdx = Math.floor(Math.random() * SWM_QUOTES.length);
+
+        function swmSetMode(mode) {
+            if (swmRunning) swmStop();
+            swmMode = mode;
+            swmSeconds = SWM_MODES[mode].mins * 60;
+            swmTotal = swmSeconds;
+            swmUpdateDisplay();
+            // Update button styles
+            ['focus','short','long'].forEach(m => {
+                const btn = document.getElementById('swm-btn-' + m);
+                if (!btn) return;
+                if (m === mode) {
+                    btn.style.cssText = 'background:linear-gradient(135deg,#10b981,#8b5cf6);color:white;';
+                } else {
+                    btn.style.cssText = '';
+                }
+            });
+        }
+
+        function swmToggle() {
+            swmRunning ? swmStop() : swmStart();
+        }
+
+        function swmStart() {
+            swmRunning = true;
+            const btn = document.getElementById('swm-start-btn');
+            if (btn) btn.innerHTML = '⏸ Tạm dừng';
+            swmInterval = setInterval(() => {
+                swmSeconds--;
+                swmMinutesTotal += 1/60;
+                swmUpdateDisplay();
+                if (swmSeconds <= 0) {
+                    swmComplete();
+                }
+            }, 1000);
+            // Update online presence
+            swmUpdateOnline(1);
+        }
+
+        function swmStop() {
+            swmRunning = false;
+            clearInterval(swmInterval);
+            const btn = document.getElementById('swm-start-btn');
+            if (btn) btn.innerHTML = '▶ Tiếp tục';
+            swmUpdateOnline(-1);
+        }
+
+        function swmReset() {
+            swmStop();
+            swmSeconds = SWM_MODES[swmMode].mins * 60;
+            swmTotal = swmSeconds;
+            const btn = document.getElementById('swm-start-btn');
+            if (btn) btn.innerHTML = '▶ Bắt đầu';
+            swmUpdateDisplay();
+        }
+
+        function swmComplete() {
+            clearInterval(swmInterval);
+            swmRunning = false;
+            const btn = document.getElementById('swm-start-btn');
+            if (btn) btn.innerHTML = '▶ Bắt đầu';
+            swmUpdateOnline(-1);
+
+            if (swmMode === 'focus') {
+                swmSessionsDone++;
+                const mins = SWM_MODES['focus'].mins;
+                swmMinutesTotal = Math.round(swmMinutesTotal);
+                showToast(`🎉 Hoàn thành ${mins} phút học! Nghỉ một chút nhé.`, 'success', 5000);
+                swmPlayDing();
+                launchConfetti && launchConfetti(40);
+                // Auto switch to short break
+                setTimeout(() => swmSetMode(swmSessionsDone % 4 === 0 ? 'long' : 'short'), 1500);
+            } else {
+                showToast('💪 Hết giờ nghỉ! Sẵn sàng học tiếp chưa?', 'info', 4000);
+                swmPlayDing();
+                setTimeout(() => swmSetMode('focus'), 1500);
+            }
+            swmUpdateStats();
+        }
+
+        function swmUpdateDisplay() {
+            const m = String(Math.floor(swmSeconds / 60)).padStart(2, '0');
+            const s = String(swmSeconds % 60).padStart(2, '0');
+            const timeStr = `${m}:${s}`;
+            const disp = document.getElementById('swm-timer-display');
+            const center = document.getElementById('swm-timer-center');
+            const icon = document.getElementById('swm-mode-icon');
+            const label = document.getElementById('swm-session-label');
+            if (disp) disp.textContent = timeStr;
+            if (center) center.textContent = timeStr;
+            if (icon) icon.textContent = SWM_MODES[swmMode].icon;
+            if (label) label.textContent = `Phiên học #${swmSessionsDone + 1}`;
+            // Progress ring
+            const ring = document.getElementById('swm-progress-ring');
+            if (ring) {
+                const pct = swmSeconds / swmTotal;
+                const circumference = 2 * Math.PI * 54;
+                ring.style.strokeDashoffset = circumference * pct;
+            }
+            // Page title
+            document.title = swmRunning ? `${timeStr} ⏱ Đang học - Y Khoa MT` : 'Ôn Tập Y Khoa Pro - Sinh Viên';
+        }
+
+        function swmUpdateStats() {
+            const s = document.getElementById('swm-stat-sessions');
+            const m = document.getElementById('swm-stat-minutes');
+            const st = document.getElementById('swm-stat-streak');
+            if (s) s.textContent = swmSessionsDone;
+            if (m) m.textContent = Math.round(swmMinutesTotal);
+            if (st) st.textContent = streak || 0;
+            // Session dots
+            const dots = document.getElementById('swm-sessions-dots');
+            if (dots) {
+                dots.innerHTML = Array.from({length: Math.min(swmSessionsDone, 8)}, (_, i) =>
+                    `<span class="w-3 h-3 rounded-full ${i < swmSessionsDone ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600'}"></span>`
+                ).join('');
+            }
+        }
+
+        function swmPlayDing() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                [523, 659, 784].forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.frequency.value = freq;
+                    osc.type = 'sine';
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.5);
+                    osc.start(ctx.currentTime + i * 0.15);
+                    osc.stop(ctx.currentTime + i * 0.15 + 0.5);
+                });
+            } catch(e) {}
+        }
+
+        // ── Ambient sounds (Web Audio API - không cần file) ──
+        // ── Ambient sounds: dùng file MP3 thật ──
+        // Đặt các file MP3 vào thư mục root: rain.mp3, cafe.mp3, forest.mp3, ocean.mp3, fire.mp3
+        const SWM_SOUNDS = {
+            rain:   { file: '/rain.mp3',   emoji: '🌧️', label: 'Mưa' },
+            cafe:   { file: '/cafe.mp3',   emoji: '☕', label: 'Quán cà phê' },
+            forest: { file: '/forest.mp3', emoji: '🌲', label: 'Rừng' },
+            ocean:  { file: '/ocean.mp3',  emoji: '🌊', label: 'Biển' },
+            fire:   { file: '/fire.mp3',   emoji: '🔥', label: 'Lửa' },
+        };
+
+        let swmAudio = null; // HTML Audio element
+
+        function swmSound(type) {
+            // Update button UI
+            document.querySelectorAll('.swm-snd-btn').forEach(b => {
+                b.style.cssText = '';
+            });
+            const activeBtn = document.getElementById('snd-' + type);
+            if (activeBtn) activeBtn.style.cssText = 'border-color:#10b981;background:rgba(16,185,129,0.1);';
+
+            // Stop existing audio
+            if (swmAudio) {
+                swmAudio.pause();
+                swmAudio.src = '';
+                swmAudio = null;
+            }
+            swmCurrentSound = type;
+            if (type === 'none') return;
+
+            // Play MP3 file
+            const soundInfo = SWM_SOUNDS[type];
+            if (!soundInfo) return;
+
+            swmAudio = new Audio(soundInfo.file);
+            swmAudio.loop = true;
+            swmAudio.volume = swmVolume;
+
+            // Fade in
+            swmAudio.volume = 0;
+            swmAudio.play().then(() => {
+                let vol = 0;
+                const fadeIn = setInterval(() => {
+                    vol = Math.min(vol + 0.05, swmVolume);
+                    swmAudio.volume = vol;
+                    if (vol >= swmVolume) clearInterval(fadeIn);
+                }, 50);
+            }).catch(err => {
+                console.warn('Audio play failed:', err);
+                showToast(`⚠️ Không thể phát ${soundInfo.file} — kiểm tra file đã upload chưa?`, 'error', 5000);
+                swmAudio = null;
+                swmCurrentSound = 'none';
+                document.querySelectorAll('.swm-snd-btn').forEach(b => b.style.cssText = '');
+                const noneBtn = document.getElementById('snd-none');
+                if (noneBtn) noneBtn.style.cssText = 'border-color:#10b981;background:rgba(16,185,129,0.1);';
+            });
+        }
+        function swmSetVolume(val) {
+            swmVolume = val / 100;
+            if (swmAudio) swmAudio.volume = swmVolume;
+        }
+
+        // ── Online counter (Firebase realtime) ──
+        let swmPresenceRef = null;
+        function swmUpdateOnline(delta) {
+            try {
+                if (typeof ref !== 'undefined' && typeof db !== 'undefined' && typeof runTransaction !== 'undefined') {
+                    const countRef = ref(db, 'swm_online');
+                    runTransaction(countRef, cur => Math.max(0, (cur || 0) + delta));
+                }
+            } catch(e) {}
+        }
+
+        function swmNextQuote() {
+            swmQuoteIdx = (swmQuoteIdx + 1) % SWM_QUOTES.length;
+            const el = document.getElementById('swm-quote-text');
+            if (el) el.textContent = SWM_QUOTES[swmQuoteIdx];
+        }
+
+        function loadStudyWithMe() {
+            swmSetMode('focus');
+            swmUpdateStats();
+            swmNextQuote();
+            // Try get online count
+            try {
+                if (typeof ref !== 'undefined' && typeof db !== 'undefined' && typeof onValue !== 'undefined') {
+                    onValue(ref(db, 'swm_online'), snap => {
+                        const el = document.getElementById('swm-online-count');
+                        if (el) el.textContent = `${snap.val() || 0} người đang học cùng`;
+                    });
+                }
+            } catch(e) {}
+        }
+
+        // Stop sounds/timer when leaving
+        const _origShowSection = showSection;
+
         Object.assign(window, {
             showToast, selectSubject, backToSubjectSelect, showSection,
             loadQuestionList, searchQuestions, checkAnswer, showAnswer,
@@ -5490,6 +5880,7 @@ async function resetSubjectProgress() {
             checkBadges, renderBadges,
             // New features
             toggleSound, loadDashboard, loadDaily, loadLeaderboard, switchLB,
+            loadStudyWithMe, swmToggle, swmSetMode, swmReset, swmSound, swmSetVolume, swmNextQuote,
             toggleNote, saveNote, openShareFromQuestion, closeShareModal, downloadShareCard, copyShareText,
         });
 
