@@ -35,8 +35,8 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#10b981',
-                        primaryDark: '#059669',
+                        primary: 'var(--p)',
+                        primaryDark: 'var(--pd)',
                         accent: '#8b5cf6',
                     }
                 }
@@ -45,6 +45,10 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --p: #10b981;
+            --pd: #059669;
+        }
         body { font-family: 'Be Vietnam Pro', system-ui, sans-serif; }
 
 /* ══════════════════════════════════════════
@@ -145,8 +149,8 @@ header .max-w-7xl {
     color: #d1d5db;
 }
 .swm-mode-btn.active-focus {
-    border-color: #10b981 !important;
-    background: linear-gradient(135deg,#10b981,#059669) !important;
+    border-color: var(--p) !important;
+    background: linear-gradient(135deg,var(--p),var(--pd)) !important;
     color: white !important;
     box-shadow: 0 2px 8px rgba(16,185,129,0.3) !important;
 }
@@ -173,14 +177,14 @@ header .max-w-7xl {
 }
 .nav-btn:hover {
     background: rgba(16,185,129,0.10) !important;
-    color: #10b981 !important;
+    color: var(--p) !important;
 }
 .dark .nav-btn:hover {
     background: rgba(16,185,129,0.18) !important;
-    color: #10b981 !important;
+    color: var(--p) !important;
 }
 .nav-btn.nav-active {
-    background: linear-gradient(135deg, #10b981, #059669) !important;
+    background: linear-gradient(135deg, var(--p), var(--pd)) !important;
     color: white !important;
     box-shadow: 0 4px 14px rgba(16,185,129,0.35) !important;
     font-weight: 700 !important;
@@ -199,7 +203,7 @@ header .max-w-7xl {
     color: #d1d5db;
     border-color: #4b5563;
 }
-.bet-normal:hover { border-color: #10b981 !important; color: #10b981 !important; }
+.bet-normal:hover { border-color: var(--p) !important; color: var(--p) !important; }
 .bet-x2:hover     { border-color: #3b82f6 !important; color: #3b82f6 !important; }
 .bet-don:hover    { border-color: #ef4444 !important; color: #ef4444 !important; }
 
@@ -261,7 +265,7 @@ header .max-w-7xl {
 /* ── BLANK UNDERLINE ── */
 .blank-fill {
     display: inline-block;
-    border-bottom: 2.5px solid #10b981;
+    border-bottom: 2.5px solid var(--p);
     min-width: 90px;
     margin: 0 4px;
     border-radius: 2px;
@@ -311,7 +315,7 @@ header .max-w-7xl {
     pointer-events: auto;
     max-width: 280px;
 }
-.toast-success { background: #10b981; color: white; }
+.toast-success { background: var(--p); color: white; }
 .toast-error   { background: #ef4444; color: white; }
 .toast-info    { background: #8b5cf6; color: white; }
 .toast-warning { background: #f59e0b; color: white; }
@@ -335,7 +339,7 @@ header .max-w-7xl {
 .dark .progress-bar-track { background: #374151; }
 .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #10b981, #059669);
+    background: linear-gradient(90deg, var(--p), var(--pd));
     border-radius: 999px;
     transition: width 0.6s ease;
 }
@@ -382,7 +386,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #10b981, #8b5cf6);
+    background: linear-gradient(90deg, var(--p), #8b5cf6);
 }
 
 /* ── PROFILE EDIT BUTTON ── */
@@ -420,13 +424,13 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, inp
     transition: all 0.15s; background: white; text-align: left; width: 100%; font-weight: 500;
 }
 .dark .mcq-option { background: #1f2937; border-color: #374151; color: #f9fafb; }
-.mcq-option:hover:not(:disabled) { border-color: #10b981; background: #f0fdf4; transform: translateX(4px); }
+.mcq-option:hover:not(:disabled) { border-color: var(--p); background: #f0fdf4; transform: translateX(4px); }
 .dark .mcq-option:hover:not(:disabled) { background: rgba(16,185,129,0.1); }
-.mcq-option.selected { border-color: #10b981; background: #ecfdf5; font-weight: 700; }
+.mcq-option.selected { border-color: var(--p); background: #ecfdf5; font-weight: 700; }
 .dark .mcq-option.selected { background: rgba(16,185,129,0.15); }
 .mcq-option.correct { border-color: #22c55e !important; background: #dcfce7 !important; color: #166534 !important; }
 .mcq-option.wrong { border-color: #ef4444 !important; background: #fee2e2 !important; color: #991b1b !important; }
-.mcq-label { font-weight: 800; color: #10b981; margin-right: 12px; min-width: 24px; }
+.mcq-label { font-weight: 800; color: var(--p); margin-right: 12px; min-width: 24px; }
 .dark .mcq-label { color: #34d399; }
 
 /* ── LOGO ── */
@@ -545,10 +549,10 @@ input:focus {
 .heatmap-cell { width: 13px; height: 13px; border-radius: 3px; background: #f3f4f6; transition: transform 0.1s; }
 .dark .heatmap-cell { background: #374151; }
 .heatmap-cell:hover { transform: scale(1.4); }
-.heatmap-cell.lvl1 { background: rgba(16,185,129,0.25); }
-.heatmap-cell.lvl2 { background: rgba(16,185,129,0.55); }
-.heatmap-cell.lvl3 { background: rgba(16,185,129,0.85); }
-.heatmap-cell.lvl4 { background: #059669; }
+.heatmap-cell.lvl1 { background: color-mix(in srgb, var(--p) 25%, transparent); }
+.heatmap-cell.lvl2 { background: color-mix(in srgb, var(--p) 55%, transparent); }
+.heatmap-cell.lvl3 { background: color-mix(in srgb, var(--p) 85%, transparent); }
+.heatmap-cell.lvl4 { background: var(--pd); }
 
 /* ── LEADERBOARD ── */
 .lb-row { transition: all 0.2s; }
@@ -911,7 +915,7 @@ input:focus {
                     <button onclick="closeShareModal()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-200 transition text-gray-500">✕</button>
                 </div>
                 <!-- Share card preview -->
-                <div id="share-card" class="rounded-2xl p-6 mb-5 text-white text-center" style="background:linear-gradient(135deg,#10b981,#8b5cf6)">
+                <div id="share-card" class="rounded-2xl p-6 mb-5 text-white text-center" style="background:linear-gradient(135deg,var(--p),#8b5cf6)">
                     <div class="text-3xl mb-2" id="sc-icon">🎯</div>
                     <div class="text-xl font-extrabold mb-1" id="sc-title"></div>
                     <div class="text-4xl font-black mb-2" id="sc-score"></div>
@@ -1228,8 +1232,8 @@ input:focus {
 
         <!-- Hồ sơ cá nhân -->
 <section id="profile" class="section hidden max-w-4xl mx-auto pt-6 md:pt-8">
-    <h2 class="text-3xl md:text-4xl font-extrabold mb-6 md:mb-8 text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-        Hồ sơ cá nhân
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-6 md:mb-8 text-center" style="color:white;text-shadow:0 2px 8px rgba(0,0,0,0.4),0 1px 3px rgba(0,0,0,0.6);">
+        🧑‍💼 Hồ sơ cá nhân
     </h2>
 
     <div class="bg-white/80 dark:bg-gray-900/70 rounded-3xl shadow-2xl overflow-hidden border border-white/70 dark:border-white/8 backdrop-blur-xl">
@@ -3961,6 +3965,20 @@ let progress = {
     brainCoins = userData.coins || 0;
     streak = userData.streak || 0;
     inventory = Array.isArray(userData.inventory) ? userData.inventory : [];  // fix undefined.length
+    // Load active theme từ Firebase
+    if (userData.activeTheme) {
+        const themeItem = shopItems.find(i => i.id === userData.activeTheme);
+        if (themeItem && themeItem.color) {
+            const [c1, c2] = themeItem.color.split(',');
+            localStorage.setItem('swm_theme', JSON.stringify({c1, c2, itemId: themeItem.id}));
+            applyTheme(c1, c2);
+        }
+    } else {
+        // Không có theme đã chọn → xóa localStorage để về mặc định
+        localStorage.removeItem('swm_theme');
+        var oldStyle = document.getElementById('swm-theme-style');
+        if (oldStyle) oldStyle.remove();
+    }
     userData.displayName = userData.displayName || null;
     userData.avatarUrl = userData.avatarUrl || null;
 const progressData = userData.progress || {};
@@ -4028,13 +4046,77 @@ const progressData = userData.progress || {};
     }
 }
 
+        function applyTheme(c1, c2) {
+            // Đổi CSS variables - áp dụng cho tất cả hardcoded var(--p) trong web
+            document.documentElement.style.setProperty('--p', c1);
+            document.documentElement.style.setProperty('--pd', c2);
+            // Đồng thời inject style cho Tailwind classes
+            var old = document.getElementById('swm-theme-style');
+            if (old) old.remove();
+            var style = document.createElement('style');
+            style.id = 'swm-theme-style';
+            // Override tất cả class dùng primary/primaryDark bằng regex thực tế của Tailwind JIT
+            var css = `
+                /* Backgrounds */
+                .bg-primary { background-color: ${c1} !important; }
+                .bg-primaryDark { background-color: ${c2} !important; }
+                .hover\:bg-primary:hover { background-color: ${c1} !important; }
+                .hover\:bg-primaryDark:hover { background-color: ${c2} !important; }
+                .bg-primary\/10 { background-color: ${c1}1a !important; }
+                .bg-primary\/20 { background-color: ${c1}33 !important; }
+                .dark\:bg-primary\/20 { background-color: ${c1}33 !important; }
+
+                /* Text */
+                .text-primary { color: ${c1} !important; }
+                .dark\:text-primary { color: ${c1} !important; }
+
+                /* Border */
+                .border-primary { border-color: ${c1} !important; }
+                .hover\:border-primary:hover { border-color: ${c1} !important; }
+                .focus\:ring-primary:focus { --tw-ring-color: ${c1} !important; }
+
+                /* Gradients - override trực tiếp bằng background shorthand */
+                .from-primary { --tw-gradient-from: ${c1} !important; }
+                .to-primaryDark { --tw-gradient-to: ${c2} !important; }
+                .to-primary { --tw-gradient-to: ${c1} !important; }
+
+                /* Các gradient button/banner thực tế */
+                .bg-gradient-to-r.from-primary,
+                [class*="from-primary"][class*="bg-gradient"] {
+                    background: linear-gradient(135deg, ${c1}, ${c2}) !important;
+                }
+                .bg-gradient-to-br.from-primary {
+                    background: linear-gradient(to bottom right, ${c1}, ${c2}) !important;
+                }
+
+                /* Nav active */
+                .nav-btn.nav-active,
+                .nav-active {
+                    background: linear-gradient(135deg, ${c1}, ${c2}) !important;
+                    border-color: ${c1} !important;
+                    color: white !important;
+                }
+
+                /* Chữ clip gradient (bg-clip-text) - fix màu chữ bị ẩn */
+                .bg-clip-text.text-transparent.from-primary {
+                    background-image: linear-gradient(135deg, ${c1}, ${c2}) !important;
+                    -webkit-background-clip: text !important;
+                    color: transparent !important;
+                }
+
+                /* Misc */
+                input[type=range] { accent-color: ${c1} !important; }
+                .accent-primary { accent-color: ${c1} !important; }
+                .swm-mode-btn.active-focus { border-color: ${c1} !important; background: linear-gradient(135deg,${c1},${c2}) !important; }
+            `;
+            style.textContent = css;
+            document.head.appendChild(style);
+        }
+
         function loadSavedCosmetics() {
             try {
                 const theme = JSON.parse(localStorage.getItem('swm_theme') || 'null');
-                if (theme) {
-                    document.documentElement.style.setProperty('--color-primary', theme.c1);
-                    document.documentElement.style.setProperty('--color-primary-dark', theme.c2);
-                }
+                if (theme) applyTheme(theme.c1, theme.c2);
                 const frame = localStorage.getItem('swm_frame');
                 if (frame) setTimeout(function() { applyAvatarFrame(frame); }, 1000);
             } catch(e) {}
@@ -4078,7 +4160,7 @@ const progressData = userData.progress || {};
                     <div style="font-size:14px;line-height:1.65;color:${document.documentElement.classList.contains('dark')?'#9ca3af':'#555'};margin-bottom:22px">${message}</div>
                     <div style="display:flex;gap:10px;justify-content:flex-end">
                         <button id="cc-cancel" style="padding:10px 20px;border-radius:12px;border:1.5px solid ${document.documentElement.classList.contains('dark')?'#374151':'#e5e7eb'};background:transparent;color:${document.documentElement.classList.contains('dark')?'#9ca3af':'#666'};font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;transition:all .15s">${cancelText}</button>
-                        <button id="cc-confirm" style="padding:10px 22px;border-radius:12px;border:none;background:${isDanger?'#ef4444':'#10b981'};color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;transition:all .15s;box-shadow:0 4px 12px ${isDanger?'rgba(239,68,68,0.35)':'rgba(16,185,129,0.35)'}">${confirmText}</button>
+                        <button id="cc-confirm" style="padding:10px 22px;border-radius:12px;border:none;background:${isDanger?'#ef4444':'var(--p)'};color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;transition:all .15s;box-shadow:0 4px 12px ${isDanger?'rgba(239,68,68,0.35)':'rgba(16,185,129,0.35)'}">${confirmText}</button>
                     </div>`;
                 overlay.appendChild(box);
                 document.body.appendChild(overlay);
@@ -4115,11 +4197,13 @@ const progressData = userData.progress || {};
             // Reset tất cả về default
             document.querySelectorAll('#main-nav button[data-section]').forEach(btn => {
                 btn.style.cssText = '';
+                btn.classList.remove('nav-active');
             });
             // Set active
             const target = document.querySelector('#main-nav button[data-section="' + id + '"]');
             if (target) {
-                target.style.cssText = 'background: linear-gradient(135deg, #10b981, #059669) !important; color: white !important; box-shadow: 0 4px 14px rgba(16,185,129,0.35) !important; font-weight: 700 !important; border-color: transparent !important;';
+                target.style.cssText = '';
+                target.classList.add('nav-active');
             }
         }
 
@@ -4283,7 +4367,7 @@ function loadProfile() {
         row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/50 transition';
         row.innerHTML = `
             <td class="p-3 font-medium text-sm">${subjectNames[key]}</td>
-            <td class="p-3 text-center text-sm"><div class="font-bold">${prog.answered}/${prog.total||0}</div><div class="progress-bar-track mt-1" style="height:4px"><div class="progress-bar-fill" style="width:${bar}%"></div></div></td>
+            <td class="p-3 text-center text-sm"><div class="font-bold">${prog.answered||0}/${prog.total||0}</div><div class="progress-bar-track mt-1" style="height:4px"><div class="progress-bar-fill" style="width:${bar}%"></div></div></td>
             <td class="p-3 text-center text-green-600 font-bold text-sm">${prog.correct||0}</td>
             <td class="p-3 text-center text-sm"><span class="px-2 py-0.5 rounded-full text-xs font-bold ${accuracy>=70?'bg-green-100 text-green-700':accuracy>=40?'bg-yellow-100 text-yellow-700':'bg-red-100 text-red-700'}">${accuracy}%</span></td>
             <td class="p-3 text-right text-xs text-gray-500 hidden md:table-cell">${prog.lastActive?new Date(prog.lastActive).toLocaleDateString('vi-VN'):'Chưa học'}</td>
@@ -5018,6 +5102,33 @@ async function resetSubjectProgress() {
 
         // ── LOAD SHOP ──
         var shopCurrentTab = 'all';
+        var activeThemeId = null;
+
+        async function switchTheme(itemId) {
+            const item = shopItems.find(i => i.id === itemId);
+            if (!item || !item.color) return;
+            const [c1, c2] = item.color.split(',');
+            activeThemeId = itemId;
+            localStorage.setItem('swm_theme', JSON.stringify({c1, c2, itemId}));
+            applyTheme(c1, c2);
+            try { await saveUserData({ activeTheme: itemId }); } catch(e) {}
+            showToast('🎨 Đã đổi sang ' + item.name + '!', 'success', 3000);
+            loadShop(); // refresh để update nút
+        }
+
+        async function resetTheme() {
+            activeThemeId = null;
+            localStorage.removeItem('swm_theme');
+            // Reset CSS variables về mặc định
+            document.documentElement.style.setProperty('--p', '#10b981');
+            document.documentElement.style.setProperty('--pd', '#059669');
+            var old = document.getElementById('swm-theme-style');
+            if (old) old.remove();
+            try { await saveUserData({ activeTheme: null }); } catch(e) {}
+            showToast('🎨 Đã về theme mặc định!', 'success', 3000);
+            loadShop();
+        }
+ // ID theme đang dùng
 
         function switchShopTab(tab) {
             shopCurrentTab = tab;
@@ -5067,11 +5178,15 @@ async function resetSubjectProgress() {
                         <p class="text-gray-500 dark:text-gray-400 text-xs mb-2 leading-relaxed">${item.desc||''}</p>
                         <p class="text-primary font-extrabold text-sm mb-3 flex items-center gap-1">🪙 ${item.price.toLocaleString()} Coins</p>
                         <div class="mt-auto">
-                            ${owned
-                                ? `<button class="w-full py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-xl text-sm font-semibold cursor-not-allowed" disabled>✓ Đã sở hữu</button>`
-                                : canAfford
-                                    ? `<button onclick="buyItem(${item.id}, ${item.price})" class="w-full py-2.5 bg-gradient-to-r from-primary to-primaryDark text-white font-bold rounded-xl hover:opacity-90 transition text-sm shadow-md">Mua ngay</button>`
-                                    : `<button class="w-full py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-400 rounded-xl text-sm font-semibold cursor-not-allowed" disabled>Không đủ Coins</button>`
+                            ${item.cat === 'cosmetic' && item.color && owned
+                                ? (activeThemeId === item.id
+                                    ? `<button onclick="resetTheme()" class="w-full py-2.5 bg-primary text-white font-bold rounded-xl text-sm shadow-md flex items-center justify-center gap-2">✓ Đang dùng <span class="text-xs opacity-80">(Bấm để về mặc định)</span></button>`
+                                    : `<button onclick="switchTheme(${item.id})" class="w-full py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl hover:opacity-90 transition text-sm shadow-md">🎨 Dùng theme này</button>`)
+                                : owned
+                                    ? `<button class="w-full py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-xl text-sm font-semibold cursor-not-allowed" disabled>✓ Đã sở hữu</button>`
+                                    : canAfford
+                                        ? `<button onclick="buyItem(${item.id}, ${item.price})" class="w-full py-2.5 bg-gradient-to-r from-primary to-primaryDark text-white font-bold rounded-xl hover:opacity-90 transition text-sm shadow-md">Mua ngay</button>`
+                                        : `<button class="w-full py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-400 rounded-xl text-sm font-semibold cursor-not-allowed" disabled>Không đủ Coins</button>`
                             }
                         </div>
                     </div>
@@ -5083,20 +5198,24 @@ async function resetSubjectProgress() {
         function loadShop() {
             const shopCoins = document.getElementById('shop-coins-display');
             if (shopCoins) shopCoins.textContent = brainCoins.toLocaleString();
+            // Sync activeThemeId từ localStorage
+            try {
+                const saved = JSON.parse(localStorage.getItem('swm_theme') || 'null');
+                activeThemeId = saved ? saved.itemId : null;
+            } catch(e) { activeThemeId = null; }
             renderShopItems();
         }
 
         // ── APPLY SHOP ITEM EFFECTS ──
-        function applyShopItem(item) {
+        async function applyShopItem(item) {
             if (!item) return;
             if (item.cat === 'cosmetic') {
                 if (item.color) {
-                    // Đổi theme màu primary
                     const [c1, c2] = item.color.split(',');
-                    document.documentElement.style.setProperty('--color-primary', c1);
-                    document.documentElement.style.setProperty('--color-primary-dark', c2);
-                    // Lưu theme vào localStorage
                     localStorage.setItem('swm_theme', JSON.stringify({c1, c2, itemId: item.id}));
+                    applyTheme(c1, c2);
+                    // Lưu lên Firebase
+                    try { await saveUserData({ activeTheme: item.id }); } catch(e) {}
                 }
                 if (item.frame) {
                     localStorage.setItem('swm_frame', item.frame);
@@ -6084,6 +6203,7 @@ async function resetSubjectProgress() {
             toggleSound, loadDashboard, loadDaily, loadLeaderboard, switchLB,
             swmToggle, swmSetMode, swmReset, swmSound, swmSetVolume, swmNextQuote, swmToggleWidget,
             useHint, useTimeFreeze, useSkipPass, updatePowerUpUI,
+            switchTheme, resetTheme,
             swmMusicToggle, swmMusicNext, swmMusicPrev,
             toggleNote, saveNote, openShareFromQuestion, closeShareModal, downloadShareCard, copyShareText,
         });
@@ -6239,12 +6359,12 @@ async function resetSubjectProgress() {
             if (!wrap) return;
             wrap.innerHTML = '';
             const subjectMeta = {
-                lao: { name: 'Lao', color: '#10b981' },
+                lao: { name: 'Lao', color: 'var(--p)' },
                 'tt-lao': { name: 'TT. Lao', color: '#8b5cf6' },
                 'ung-thu-dai-cuong': { name: 'Ung thư ĐC', color: '#ef4444' },
                 'rang-ham-mat': { name: 'Răng hàm mặt', color: '#3b82f6' },
                 mat: { name: 'Mắt', color: '#06b6d4' },
-                ctytqg: { name: 'CT Y tế QG', color: '#10b981' },
+                ctytqg: { name: 'CT Y tế QG', color: 'var(--p)' },
                 'tai-mui-hong': { name: 'Tai Mũi Họng', color: '#f97316' },
                 ppnckh: { name: 'PP NCKH', color: '#6366f1' },
                 'tt-mat': { name: 'TT. Mắt', color: '#0ea5e9' },
@@ -6254,7 +6374,7 @@ async function resetSubjectProgress() {
                 ttnk2: { name: 'TT. Nhi khoa 2', color: '#ec4899' },
             };
             Object.entries(progress).forEach(([key, p]) => {
-                const meta = subjectMeta[key] || { name: key, color: '#10b981' };
+                const meta = subjectMeta[key] || { name: key, color: 'var(--p)' };
                 const pct = p.total > 0 ? Math.round(p.answered / p.total * 100) : 0;
                 const acc = p.answered > 0 ? Math.round(p.correct / p.answered * 100) : 0;
                 const row = document.createElement('div');
@@ -6635,7 +6755,7 @@ async function resetSubjectProgress() {
     <!-- Collapsed button -->
     <button id="swm-fab" onclick="swmToggleWidget()" style="
         width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;
-        background:linear-gradient(135deg,#10b981,#8b5cf6);
+        background:linear-gradient(135deg,var(--p),#8b5cf6);
         box-shadow:0 4px 20px rgba(16,185,129,0.4);
         display:flex;align-items:center;justify-content:center;
         font-size:22px;transition:transform 0.2s;
@@ -6661,7 +6781,7 @@ async function resetSubjectProgress() {
         margin-bottom:12px;
     " class="dark:bg-gray-800 dark:border-gray-700">
         <!-- Header -->
-        <div style="background:linear-gradient(135deg,#10b981,#8b5cf6);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="background:linear-gradient(135deg,var(--p),#8b5cf6);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:8px;">
                 <span style="font-size:18px;">🎧</span>
                 <span style="color:white;font-weight:800;font-size:14px;">Study With Me</span>
@@ -6683,11 +6803,11 @@ async function resetSubjectProgress() {
 
             <!-- Timer -->
             <div style="text-align:center;margin-bottom:14px;">
-                <div id="swm-timer-display" style="font-size:52px;font-weight:900;line-height:1;background:linear-gradient(135deg,#10b981,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">25:00</div>
+                <div id="swm-timer-display" style="font-size:52px;font-weight:900;line-height:1;background:linear-gradient(135deg,var(--p),#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">25:00</div>
                 <div id="swm-session-label" style="font-size:11px;color:#6b7280;margin-top:4px;">Phiên học #1</div>
                 <!-- Mini progress bar -->
                 <div style="height:4px;background:#e5e7eb;border-radius:99px;margin-top:8px;overflow:hidden;">
-                    <div id="swm-progress-bar" style="height:100%;width:100%;background:linear-gradient(90deg,#10b981,#8b5cf6);border-radius:99px;transition:width 1s linear;"></div>
+                    <div id="swm-progress-bar" style="height:100%;width:100%;background:linear-gradient(90deg,var(--p),#8b5cf6);border-radius:99px;transition:width 1s linear;"></div>
                 </div>
             </div>
 
@@ -6695,7 +6815,7 @@ async function resetSubjectProgress() {
             <div style="display:flex;gap:8px;margin-bottom:14px;">
                 <button onclick="swmToggle()" id="swm-start-btn" style="
                     flex:1;padding:10px;border:none;border-radius:12px;cursor:pointer;
-                    background:linear-gradient(135deg,#10b981,#059669);color:white;
+                    background:linear-gradient(135deg,var(--p),var(--pd));color:white;
                     font-weight:800;font-size:14px;
                 ">▶ Bắt đầu</button>
                 <button onclick="swmReset()" style="
@@ -6708,7 +6828,7 @@ async function resetSubjectProgress() {
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
                 <span style="font-size:11px;color:#9ca3af;">Hôm nay:</span>
                 <div id="swm-sessions-dots" style="display:flex;gap:4px;"></div>
-                <span id="swm-stat-sessions" style="font-size:11px;font-weight:700;color:#10b981;"></span>
+                <span id="swm-stat-sessions" style="font-size:11px;font-weight:700;color:var(--p);"></span>
                 <span style="font-size:11px;color:#9ca3af;"> phiên ·</span>
                 <span id="swm-stat-minutes" style="font-size:11px;font-weight:700;color:#8b5cf6;"></span>
                 <span style="font-size:11px;color:#9ca3af;"> phút</span>
@@ -6731,7 +6851,7 @@ async function resetSubjectProgress() {
                 <!-- Controls -->
                 <div style="display:flex;align-items:center;gap:6px;">
                     <button onclick="swmMusicPrev()" style="border:none;border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:13px;background:#e5e7eb;color:#374151;" class="dark:bg-gray-600 dark:text-gray-200" title="Bài trước">⏮</button>
-                    <button onclick="swmMusicToggle()" id="swm-music-btn" style="border:none;background:linear-gradient(135deg,#10b981,#059669);color:white;border-radius:8px;flex:1;height:28px;cursor:pointer;font-size:12px;font-weight:700;">▶ Phát</button>
+                    <button onclick="swmMusicToggle()" id="swm-music-btn" style="border:none;background:linear-gradient(135deg,var(--p),var(--pd));color:white;border-radius:8px;flex:1;height:28px;cursor:pointer;font-size:12px;font-weight:700;">▶ Phát</button>
                     <button onclick="swmMusicNext()" style="border:none;border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:13px;background:#e5e7eb;color:#374151;" class="dark:bg-gray-600 dark:text-gray-200" title="Bài tiếp">⏭</button>
                 </div>
             </div>
@@ -6740,21 +6860,21 @@ async function resetSubjectProgress() {
 
             <!-- Sound -->
             <div style="margin-bottom:10px;">
-                <div style="font-size:11px;font-weight:700;color:#6b7280;margin-bottom:8px;">🎧 Âm thanh môi trường</div>
                 <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;">
                     <button onclick="swmSound('rain')"   id="snd-rain"   class="swm-snd-btn" style="border:2px solid #e5e7eb;background:none;border-radius:8px;padding:6px 2px;cursor:pointer;font-size:16px;transition:all 0.15s;" title="Mưa">🌧️</button>
                     <button onclick="swmSound('cafe')"   id="snd-cafe"   class="swm-snd-btn" style="border:2px solid #e5e7eb;background:none;border-radius:8px;padding:6px 2px;cursor:pointer;font-size:16px;transition:all 0.15s;" title="Cà phê">☕</button>
                     <button onclick="swmSound('forest')" id="snd-forest" class="swm-snd-btn" style="border:2px solid #e5e7eb;background:none;border-radius:8px;padding:6px 2px;cursor:pointer;font-size:16px;transition:all 0.15s;" title="Rừng">🌲</button>
                     <button onclick="swmSound('ocean')"  id="snd-ocean"  class="swm-snd-btn" style="border:2px solid #e5e7eb;background:none;border-radius:8px;padding:6px 2px;cursor:pointer;font-size:16px;transition:all 0.15s;" title="Biển">🌊</button>
                     <button onclick="swmSound('fire')"   id="snd-fire"   class="swm-snd-btn" style="border:2px solid #e5e7eb;background:none;border-radius:8px;padding:6px 2px;cursor:pointer;font-size:16px;transition:all 0.15s;" title="Lửa">🔥</button>
-                    <button onclick="swmSound('none')"   id="snd-none"   class="swm-snd-btn" style="border:2px solid #10b981;background:rgba(16,185,129,0.1);border-radius:8px;padding:6px 2px;cursor:pointer;font-size:16px;transition:all 0.15s;" title="Tắt">🔇</button>
+                    <button onclick="swmSound('none')"   id="snd-none"   class="swm-snd-btn" style="border:2px solid var(--p);background:rgba(16,185,129,0.1);border-radius:8px;padding:6px 2px;cursor:pointer;font-size:16px;transition:all 0.15s;" title="Tắt">🔇</button>
                 </div>
             </div>
             <!-- Volume -->
             <div style="margin-top:8px;">
+                <div style="font-size:10px;color:#9ca3af;margin-bottom:4px;">🔉 Âm lượng chung (nhạc + môi trường)</div>
                 <div style="display:flex;align-items:center;gap:8px;">
                     <span style="font-size:12px;">🔈</span>
-                    <input type="range" id="swm-volume" min="0" max="100" value="40" oninput="swmSetVolume(this.value)" style="flex:1;accent-color:#10b981;">
+                    <input type="range" id="swm-volume" min="0" max="100" value="40" oninput="swmSetVolume(this.value)" style="flex:1;accent-color:var(--p);">
                     <span style="font-size:12px;">🔊</span>
                 </div>
             </div>
