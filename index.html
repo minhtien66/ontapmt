@@ -4538,13 +4538,15 @@ currentSubject = null;
             document.getElementById('app-title').textContent = 'Ôn Tập Pro Mode';
  }
         function showSection(id) {
-            // Stop SWM timer & sound when leaving
-            if (id !== 'study-with-me' && swmRunning) { swmStop(); }
-            if (id !== 'study-with-me' && swmCurrentSound !== 'none') {
-                if (swmAudio) { swmAudio.pause(); swmAudio.src = ''; swmAudio = null; }
-                swmCurrentSound = 'none';
+            // Stop SWM timer & sound when leaving (safe check)
+            if (id !== 'study-with-me') {
+                try {
+                    if (typeof swmRunning !== 'undefined' && swmRunning) swmStop();
+                    if (typeof swmAudio !== 'undefined' && swmAudio) { swmAudio.pause(); swmAudio.src = ''; swmAudio = null; }
+                    if (typeof swmCurrentSound !== 'undefined') swmCurrentSound = 'none';
+                } catch(e) {}
             }
-            if (id === 'study-with-me') { loadStudyWithMe(); }
+            if (id === 'study-with-me') { try { loadStudyWithMe(); } catch(e) {} }
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             const section = document.getElementById(id);
             if (section) {
