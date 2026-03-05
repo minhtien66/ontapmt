@@ -2965,7 +2965,7 @@ let progress = {
 
         // ── RĂNG HÀM MẶT ──
         "rang-ham-mat": [
-             // TODO: Thêm câu hỏi môn Răng hàm mặt vào đây
+            // TODO: Thêm câu hỏi môn Răng hàm mặt vào đây
            { text: "Hệ thống răng miệng đảm nhiệm các chức năng sống còn như nhai, phát âm và cảm nhận ______.", answer: "vị giác", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
 
 { text: "Răng và các mô quanh răng bắt đầu hình thành từ giai đoạn ______ rất sớm.", answer: "phôi thai", difficulty: Math.random() > 0.5 ? 'Dễ' : 'Khó' },
@@ -3673,171 +3673,187 @@ let progress = {
     const modal = document.createElement('div');
     modal.id = 'auth-modal';
     modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[100] backdrop-blur-sm';
+
+    const socialBtns = `
+        <div class="flex items-center gap-3 my-5">
+            <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+            <span class="text-xs text-gray-400 font-medium">hoặc tiếp tục với</span>
+            <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+        </div>
+        <div class="flex gap-3">
+            <button id="btn-google" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition font-semibold text-sm">
+                <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+                Google
+            </button>
+            <button id="btn-facebook" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition font-semibold text-sm">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Facebook
+            </button>
+        </div>`;
+
+    // ── 3 views: login | register | forgot ──
     modal.innerHTML = `
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4 relative">
-            <h2 id="modal-title" class="text-2xl font-bold mb-6 text-center">Đăng nhập / Đăng ký</h2>
-            <p class="text-center text-gray-600 dark:text-gray-400 mb-6 text-sm">
-                Bạn cần đăng nhập để sử dụng đầy đủ tính năng ôn tập và lưu tiến độ.
-            </p>
-            <div id="error-msg" class="text-red-600 mb-4 text-center min-h-[24px]"></div>
-            <input id="email" type="email" placeholder="Email" class="w-full p-4 mb-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
-            <input id="password" type="password" placeholder="Mật khẩu (ít nhất 6 ký tự)" class="w-full p-4 mb-4 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary">
-            <div class="text-right mb-6">
-                <button id="forgot-password" class="text-primary hover:underline text-sm">Quên mật khẩu?</button>
-            </div>
-            <button id="submit-auth" class="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition">Đăng nhập</button>
-            <div class="text-center mt-4">
-                <button id="toggle-mode" class="text-primary hover:underline">Chưa có tài khoản? Đăng ký ngay</button>
+
+            <!-- VIEW: ĐĂNG NHẬP -->
+            <div id="view-login">
+                <h2 class="text-2xl font-bold mb-2 text-center">Đăng nhập</h2>
+                <p class="text-center text-gray-500 dark:text-gray-400 mb-5 text-sm">Chào mừng trở lại! 👋</p>
+                <div id="login-error" class="text-red-600 mb-3 text-center min-h-[20px] text-sm"></div>
+                <input id="login-email" type="email" placeholder="Email" class="w-full p-4 mb-3 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary outline-none">
+                <input id="login-password" type="password" placeholder="Mật khẩu" class="w-full p-4 mb-2 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary outline-none">
+                <div class="text-right mb-5">
+                    <button id="go-forgot" class="text-primary hover:underline text-sm">Quên mật khẩu?</button>
+                </div>
+                <button id="btn-login" class="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition mb-4">Đăng nhập</button>
+                <div class="text-center">
+                    <button id="go-register" class="text-primary hover:underline text-sm">Chưa có tài khoản? Đăng ký ngay</button>
+                </div>
+                ${socialBtns}
             </div>
 
-            <!-- Divider -->
-            <div class="flex items-center gap-3 my-5">
-                <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-                <span class="text-xs text-gray-400 font-medium">hoặc tiếp tục với</span>
-                <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+            <!-- VIEW: ĐĂNG KÝ -->
+            <div id="view-register" class="hidden">
+                <h2 class="text-2xl font-bold mb-2 text-center">Tạo tài khoản</h2>
+                <p class="text-center text-gray-500 dark:text-gray-400 mb-5 text-sm">Tham gia cùng cộng đồng ôn tập! 🎓</p>
+                <div id="register-error" class="text-red-600 mb-3 text-center min-h-[20px] text-sm"></div>
+                <input id="register-email" type="email" placeholder="Email" class="w-full p-4 mb-3 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary outline-none">
+                <input id="register-password" type="password" placeholder="Mật khẩu (ít nhất 6 ký tự)" class="w-full p-4 mb-3 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary outline-none">
+                <input id="register-confirm" type="password" placeholder="Xác nhận mật khẩu" class="w-full p-4 mb-5 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary outline-none">
+                <button id="btn-register" class="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition mb-4">Tạo tài khoản</button>
+                <div class="text-center">
+                    <button id="go-login-from-register" class="text-primary hover:underline text-sm">Đã có tài khoản? Đăng nhập</button>
+                </div>
+                ${socialBtns}
             </div>
 
-            <!-- Social buttons -->
-            <div class="flex gap-3">
-                <button id="btn-google" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition font-semibold text-sm">
-                    <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-                    Google
+            <!-- VIEW: QUÊN MẬT KHẨU -->
+            <div id="view-forgot" class="hidden">
+                <button id="back-to-login" class="flex items-center gap-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 text-sm mb-5 transition">
+                    ← Quay lại đăng nhập
                 </button>
-                <button id="btn-facebook" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition font-semibold text-sm">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                    Facebook
-                </button>
+                <h2 class="text-2xl font-bold mb-2 text-center">Quên mật khẩu</h2>
+                <p class="text-center text-gray-500 dark:text-gray-400 mb-5 text-sm">Nhập email để nhận link đặt lại mật khẩu</p>
+                <div id="forgot-error" class="mb-3 text-center min-h-[20px] text-sm"></div>
+                <input id="forgot-email" type="email" placeholder="Email của bạn" class="w-full p-4 mb-5 rounded-xl border dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-primary outline-none">
+                <button id="btn-forgot" class="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primaryDark transition">Gửi link đặt lại</button>
+                <div id="forgot-success" class="hidden mt-5 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-xl text-center">
+                    <div class="text-3xl mb-2">📧</div>
+                    <p class="text-green-700 dark:text-green-400 font-semibold text-sm">Đã gửi! Kiểm tra hộp thư của bạn</p>
+                    <p class="text-gray-500 text-xs mt-1">(Kể cả thư mục spam)</p>
+                </div>
             </div>
-            <!-- ẨN nút × để buộc login -->
-            <!-- <button id="close-modal" class="absolute top-3 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl">×</button> -->
+
         </div>
     `;
     document.body.appendChild(modal);
 
-    const title = modal.querySelector('#modal-title');
-    const submitBtn = modal.querySelector('#submit-auth');
-    const toggleBtn = modal.querySelector('#toggle-mode');
-    const forgotBtn = modal.querySelector('#forgot-password');
-    const errorEl = modal.querySelector('#error-msg');
-    let isLogin = true;
-
-    toggleBtn.onclick = () => {
-        isLogin = !isLogin;
-        title.textContent = isLogin ? 'Đăng nhập' : 'Đăng ký tài khoản';
-        submitBtn.textContent = isLogin ? 'Đăng nhập' : 'Tạo tài khoản';
-        toggleBtn.textContent = isLogin ? 'Chưa có tài khoản? Đăng ký ngay' : 'Đã có tài khoản? Đăng nhập';
+    // ── Helpers: switch view ──
+    const showView = (v) => {
+        ['login','register','forgot'].forEach(n => {
+            modal.querySelector('#view-' + n).classList.toggle('hidden', n !== v);
+        });
     };
 
-    // Đăng nhập Google
-    modal.querySelector('#btn-google').onclick = async () => {
+    // ── Navigation ──
+    modal.querySelector('#go-register').onclick       = () => showView('register');
+    modal.querySelector('#go-login-from-register').onclick = () => showView('login');
+    modal.querySelector('#go-forgot').onclick         = () => showView('forgot');
+    modal.querySelector('#back-to-login').onclick     = () => showView('login');
+
+    // ── Social login (shared) ──
+    const handleSocial = async (providerFn, name) => {
         try {
-            const provider = new GoogleAuthProvider();
-            const credential = await signInWithPopup(auth, provider);
+            const credential = await signInWithPopup(auth, providerFn());
             currentUser = credential.user;
             await loadUserData();
             modal.remove();
-            showToast('👋 Đăng nhập Google thành công!', 'success', 4000);
-        } catch (err) {
-            if (err.code !== 'auth/popup-closed-by-user') {
-                errorEl.textContent = 'Lỗi Google: ' + (err.message || err.code);
-            }
-        }
-    };
-
-    // Đăng nhập Facebook
-    modal.querySelector('#btn-facebook').onclick = async () => {
-        try {
-            const provider = new FacebookAuthProvider();
-            const credential = await signInWithPopup(auth, provider);
-            currentUser = credential.user;
-            await loadUserData();
-            modal.remove();
-            showToast('👋 Đăng nhập Facebook thành công!', 'success', 4000);
+            showToast(`👋 Đăng nhập ${name} thành công!`, 'success', 4000);
         } catch (err) {
             if (err.code === 'auth/account-exists-with-different-credential') {
-                errorEl.textContent = 'Email này đã được đăng ký bằng phương thức khác. Hãy dùng Google hoặc Email/Password.';
+                ['login-error','register-error'].forEach(id => {
+                    const el = modal.querySelector('#' + id);
+                    if (el) el.textContent = 'Email này đã đăng ký bằng phương thức khác.';
+                });
             } else if (err.code !== 'auth/popup-closed-by-user') {
-                errorEl.textContent = 'Lỗi Facebook: ' + (err.message || err.code);
+                console.error(name, err);
             }
         }
     };
+    modal.querySelectorAll('#btn-google').forEach(btn =>
+        btn.onclick = () => handleSocial(() => new GoogleAuthProvider(), 'Google'));
+    modal.querySelectorAll('#btn-facebook').forEach(btn =>
+        btn.onclick = () => handleSocial(() => new FacebookAuthProvider(), 'Facebook'));
 
-    // Quên mật khẩu
-    forgotBtn.onclick = async () => {
-        const email = modal.querySelector('#email').value.trim();
-        if (!email) {
-            errorEl.textContent = 'Vui lòng nhập email trước';
-            return;
-        }
-        try {
-            await sendPasswordResetEmail(auth, email);
-            errorEl.style.color = '#10b981';
-            errorEl.textContent = '✅ Đã gửi! Kiểm tra hộp thư (kể cả thư rác).';
-            setTimeout(() => { errorEl.textContent = ''; errorEl.style.color = ''; }, 5000);
-        } catch (err) {
-            errorEl.textContent = 'Không thể gửi: ' + (err.message || 'Lỗi không xác định');
-        }
-    };
-
-    submitBtn.onclick = async () => {
-        const email = modal.querySelector('#email').value.trim();
-        const password = modal.querySelector('#password').value.trim();
-        if (!email || !password) {
-            errorEl.textContent = 'Vui lòng nhập đầy đủ thông tin';
-            return;
-        }
-
+    // ── ĐĂNG NHẬP ──
+    modal.querySelector('#btn-login').onclick = async () => {
+        const email    = modal.querySelector('#login-email').value.trim();
+        const password = modal.querySelector('#login-password').value.trim();
+        const errorEl  = modal.querySelector('#login-error');
+        if (!email || !password) { errorEl.textContent = 'Vui lòng nhập đầy đủ thông tin'; return; }
         errorEl.textContent = '';
         try {
-            let credential;
-            if (isLogin) {
-                credential = await signInWithEmailAndPassword(auth, email, password);
-            } else {
-                credential = await createUserWithEmailAndPassword(auth, email, password);
-                // Gửi email xác nhận - với actionCodeSettings trỏ về trang của mình
-                const actionCodeSettings = {
-                    url: 'https://nhmtontap.dpdns.org/action.html',
-                    handleCodeInApp: false
-                };
-                try {
-                    await sendEmailVerification(credential.user, actionCodeSettings);
-                    console.log('Email verification sent to:', credential.user.email);
-                } catch (verifyErr) {
-                    console.error('sendEmailVerification error:', verifyErr.code, verifyErr.message);
-                    showToast('⚠️ Tài khoản tạo xong nhưng không gửi được mail xác nhận: ' + verifyErr.message, 'warning', 8000);
-                }
-                // Đăng xuất ngay, chờ xác nhận email
-                await signOut(auth);
-                modal.remove();
-                showToast('📧 Đăng ký thành công! Vui lòng kiểm tra email (kể cả spam) và xác nhận tài khoản.', 'success', 8000);
-                return;
-            }
+            const credential = await signInWithEmailAndPassword(auth, email, password);
             currentUser = credential.user;
             await loadUserData();
             modal.remove();
             showToast('👋 Đăng nhập thành công!', 'success', 4000);
         } catch (err) {
-    let msg = 'Có lỗi xảy ra. Vui lòng thử lại.';
-    
-    if (err.code === 'auth/invalid-credential') {
-        msg = 'Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại!';
-    } else if (err.code === 'auth/invalid-email') {
-        msg = 'Email không hợp lệ. Vui lòng nhập đúng định dạng.';
-    } else if (err.code === 'auth/user-disabled') {
-        msg = 'Tài khoản này đã bị khóa.';
-    } else if (err.code === 'auth/too-many-requests') {
-        msg = 'Bạn đã thử quá nhiều lần. Vui lòng chờ một lúc rồi thử lại.';
-    } else {
-        msg = err.message || 'Lỗi không xác định. Kiểm tra kết nối mạng.';
-    }
-    
-    errorEl.textContent = msg;
-}
+            const msgs = {
+                'auth/invalid-credential': 'Email hoặc mật khẩu không đúng.',
+                'auth/invalid-email':      'Email không hợp lệ.',
+                'auth/user-disabled':      'Tài khoản bị khóa.',
+                'auth/too-many-requests':  'Thử quá nhiều lần. Chờ một lúc rồi thử lại.',
+            };
+            errorEl.textContent = msgs[err.code] || err.message || 'Lỗi không xác định.';
+        }
     };
 
-            // close-modal button is hidden (login required), skip if not present
-            const closeModalBtn = modal.querySelector('#close-modal');
-            if (closeModalBtn) closeModalBtn.onclick = () => modal.remove();
+    // ── ĐĂNG KÝ ──
+    modal.querySelector('#btn-register').onclick = async () => {
+        const email    = modal.querySelector('#register-email').value.trim();
+        const password = modal.querySelector('#register-password').value.trim();
+        const confirm  = modal.querySelector('#register-confirm').value.trim();
+        const errorEl  = modal.querySelector('#register-error');
+        if (!email || !password || !confirm) { errorEl.textContent = 'Vui lòng nhập đầy đủ thông tin'; return; }
+        if (password !== confirm) { errorEl.textContent = '❌ Mật khẩu xác nhận không khớp!'; return; }
+        if (password.length < 6)  { errorEl.textContent = 'Mật khẩu phải ít nhất 6 ký tự'; return; }
+        errorEl.textContent = '';
+        try {
+            const credential = await createUserWithEmailAndPassword(auth, email, password);
+            const actionCodeSettings = { url: 'https://nhmtontap.dpdns.org/action.html', handleCodeInApp: false };
+            try { await sendEmailVerification(credential.user, actionCodeSettings); } catch(e) {}
+            await signOut(auth);
+            modal.remove();
+            showToast('📧 Đăng ký thành công! Kiểm tra email để xác nhận tài khoản.', 'success', 8000);
+        } catch (err) {
+            const msgs = {
+                'auth/email-already-in-use': 'Email này đã được đăng ký. Hãy đăng nhập!',
+                'auth/invalid-email':        'Email không hợp lệ.',
+                'auth/weak-password':        'Mật khẩu quá yếu.',
+            };
+            errorEl.textContent = msgs[err.code] || err.message || 'Lỗi không xác định.';
+        }
+    };
+
+    // ── QUÊN MẬT KHẨU ──
+    modal.querySelector('#btn-forgot').onclick = async () => {
+        const email   = modal.querySelector('#forgot-email').value.trim();
+        const errorEl = modal.querySelector('#forgot-error');
+        const successEl = modal.querySelector('#forgot-success');
+        if (!email) { errorEl.textContent = 'Vui lòng nhập email'; errorEl.className = 'mb-3 text-center min-h-[20px] text-sm text-red-600'; return; }
+        errorEl.textContent = '';
+        try {
+            await sendPasswordResetEmail(auth, email);
+            successEl.classList.remove('hidden');
+            modal.querySelector('#forgot-email').value = '';
+            modal.querySelector('#btn-forgot').disabled = true;
+            modal.querySelector('#btn-forgot').classList.add('opacity-50');
+        } catch (err) {
+            errorEl.textContent = err.code === 'auth/user-not-found' ? 'Email này chưa được đăng ký.' : (err.message || 'Lỗi gửi email.');
+            errorEl.className = 'mb-3 text-center min-h-[20px] text-sm text-red-600';
+        }
+    };
         }
 
         // Load & Save User Data
@@ -4505,7 +4521,7 @@ currentSubject = null;
                 if (miniBar) miniBar.style.width = `${Math.round(((idx + 1) / total) * 100)}%`;
             }
 
-            isJackpot = Math.random() < 0.05;
+            isJackpot = Math.random() < 0.35;
             const diffEl = document.getElementById(prefix + 'difficulty');
             if (isJackpot) {
                 diffEl.innerHTML = `Độ khó: ${q.difficulty} <span style="background:linear-gradient(90deg,#f59e0b,#ef4444,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;animation:pulse 1s infinite;">⭐ JACKPOT x10!</span>`;
