@@ -1083,6 +1083,7 @@ body.sb-active #main-nav {
                 <div id="coins" class="text-xs font-semibold px-3 py-1.5 bg-primary/10 dark:bg-primary/20 rounded-full text-primary whitespace-nowrap border border-primary/20 backdrop-blur-sm">🪙 0</div>
                 <div id="streak" class="text-xs font-semibold px-3 py-1.5 bg-orange-50 dark:bg-orange-900/20 rounded-full text-orange-500 whitespace-nowrap">🔥 0 ngày</div>
                 <button id="logout-btn" class="hidden px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-semibold transition whitespace-nowrap">Đăng xuất</button>
+                <button id="guest-login-btn" class="px-3 py-1.5 bg-primary hover:bg-primaryDark text-white rounded-xl text-xs font-semibold transition whitespace-nowrap">🔑 Đăng nhập</button>
             </div>
         </div>
     </header>
@@ -2020,6 +2021,8 @@ body.sb-active #main-nav {
         // Biến toàn cục
         let currentUser = null;
         let userData = { coins: 0, streak: 0, lastLogin: null, inventory: [] };
+        let guestAnswerCount = 0;
+        const GUEST_LIMIT = 3;
         let brainCoins = 0;
         let streak = 0;
         let inventory = [];
@@ -4257,7 +4260,82 @@ let progress = {
         ];
 
         // Modal Đăng ký / Đăng nhập (có quên mật khẩu)
-        function showAuthModal() {
+        // ════════════════════════════════════════════
+        // 👤 CHẾ ĐỘ KHÁCH
+        // ════════════════════════════════════════════
+        function updateGuestUI() {
+            const greeting = document.getElementById('user-greeting');
+            if (greeting) {
+                greeting.classList.remove('hidden');
+                const nameSpan = document.getElementById('user-name-display');
+                if (nameSpan) nameSpan.textContent = 'Khách';
+            }
+            // Ẩn các nút yêu cầu đăng nhập
+            document.getElementById('logout-btn')?.classList.add('hidden');
+        }
+
+        function trackGuestAnswer() {
+            if (currentUser) return false; // đã đăng nhập, không cần track
+            guestAnswerCount++;
+            if (guestAnswerCount >= GUEST_LIMIT) {
+                setTimeout(() => showGuestRegisterModal(), 400);
+                return true; // đã hiện modal
+            }
+            return false;
+        }
+
+        function showGuestRegisterModal() {
+            if (document.getElementById('guest-register-modal')) return;
+            const isDark = document.documentElement.classList.contains('dark');
+            const modal = document.createElement('div');
+            modal.id = 'guest-register-modal';
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+
+            modal.innerHTML = `
+            <div style="background:${isDark?'#1f2937':'#ffffff'};border-radius:24px;padding:32px 28px;max-width:380px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,0.4);text-align:center;position:relative">
+                <div style="font-size:52px;margin-bottom:12px">🔒</div>
+                <h2 style="font-size:22px;font-weight:800;color:${isDark?'#f9fafb':'#111827'};margin-bottom:8px">Bạn đã dùng ${GUEST_LIMIT} câu miễn phí!</h2>
+                <p style="font-size:14px;color:${isDark?'#9ca3af':'#6b7280'};margin-bottom:20px;line-height:1.6">Đăng ký <b>miễn phí</b> để tiếp tục học không giới hạn, lưu tiến độ và nhận Brain Coins 🪙</p>
+
+                <div style="background:${isDark?'#111827':'#f9fafb'};border-radius:16px;padding:14px 16px;margin-bottom:22px;text-align:left">
+                    <div style="font-size:13px;color:${isDark?'#d1d5db':'#374151'};display:flex;flex-direction:column;gap:8px">
+                        <div>✅ <b>Không giới hạn</b> câu hỏi</div>
+                        <div>✅ <b>Lưu tiến độ</b> học tập</div>
+                        <div>✅ <b>Brain Coins & phần thưởng</b></div>
+                        <div>✅ <b>Streak hằng ngày</b> 🔥</div>
+                        <div>✅ <b>Bảng xếp hạng</b> cộng đồng</div>
+                    </div>
+                </div>
+
+                <button id="guest-go-register" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:white;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;margin-bottom:10px">
+                    🚀 Đăng ký miễn phí ngay
+                </button>
+                <button id="guest-go-login" style="width:100%;padding:12px;background:transparent;color:${isDark?'#9ca3af':'#6b7280'};font-size:14px;font-weight:600;border:1.5px solid ${isDark?'#374151':'#e5e7eb'};border-radius:14px;cursor:pointer;margin-bottom:16px">
+                    Đã có tài khoản? Đăng nhập
+                </button>
+                <button id="guest-continue" style="background:none;border:none;color:${isDark?'#6b7280':'#9ca3af'};font-size:12px;cursor:pointer;text-decoration:underline">
+                    Tiếp tục xem (không lưu dữ liệu)
+                </button>
+            </div>`;
+
+            document.body.appendChild(modal);
+
+            modal.querySelector('#guest-go-register').onclick = () => {
+                modal.remove();
+                showAuthModal('register');
+            };
+            modal.querySelector('#guest-go-login').onclick = () => {
+                modal.remove();
+                showAuthModal('login');
+            };
+            modal.querySelector('#guest-continue').onclick = () => {
+                modal.remove();
+                guestAnswerCount = 0; // reset thêm 3 câu nữa
+                showToast('⚠️ Tiến độ sẽ không được lưu khi chơi khách', 'warning', 3000);
+            };
+        }
+
+        function showAuthModal(defaultView = 'login') {
     const modal = document.createElement('div');
     modal.id = 'auth-modal';
     modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[100] backdrop-blur-sm';
@@ -4342,6 +4420,9 @@ let progress = {
             modal.querySelector('#view-' + n).classList.toggle('hidden', n !== v);
         });
     };
+
+    // Mở đúng view theo tham số
+    if (defaultView === 'register') showView('register');
 
     // ── Navigation ──
     modal.querySelector('#go-register').onclick       = () => showView('register');
@@ -4942,13 +5023,19 @@ function loadProfile() {
             }
             currentUser = user;
             if (user) {
+                guestAnswerCount = 0; // reset counter khi đăng nhập thành công
                 await loadUserData();
                 document.getElementById('logout-btn')?.classList.remove('hidden');
+                document.getElementById('guest-login-btn')?.classList.add('hidden');
                 document.getElementById('auth-modal')?.remove();
+                document.getElementById('guest-register-modal')?.remove();
                 updateUserGreeting();
             } else {
+                // Chế độ khách: cho vào app, không bắt đăng nhập ngay
+                currentUser = null;
                 document.getElementById('logout-btn')?.classList.add('hidden');
-                showAuthModal();
+                document.getElementById('guest-login-btn')?.classList.remove('hidden');
+                updateGuestUI();
             }
         });
 
@@ -5141,7 +5228,53 @@ currentSubject = null;
             // Hide sidebar
             if (typeof sbHide === 'function') sbHide();
  }
+        // Các section yêu cầu đăng nhập
+        const LOGIN_REQUIRED_SECTIONS = ['mock-test', 'wrong-review', 'profile', 'badges', 'leaderboard', 'shop', 'inventory', 'daily', 'test-sets'];
+
+        function showLoginRequired(sectionName) {
+            // Xóa modal cũ nếu có
+            document.getElementById('login-required-modal')?.remove();
+            const isDark = document.documentElement.classList.contains('dark');
+            const modal = document.createElement('div');
+            modal.id = 'login-required-modal';
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+            modal.innerHTML = `
+            <div style="background:${isDark?'#1f2937':'#ffffff'};border-radius:20px;padding:28px 24px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.35);text-align:center">
+                <div style="font-size:44px;margin-bottom:10px">🔐</div>
+                <h3 style="font-size:18px;font-weight:800;color:${isDark?'#f9fafb':'#111827'};margin-bottom:8px">Yêu cầu đăng nhập</h3>
+                <p style="font-size:13px;color:${isDark?'#9ca3af':'#6b7280'};margin-bottom:20px;line-height:1.5">Bạn cần đăng nhập để sử dụng tính năng <b>${sectionName}</b>.</p>
+                <button id="lrm-register" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;font-size:15px;font-weight:800;border:none;border-radius:12px;cursor:pointer;margin-bottom:8px">🚀 Đăng ký miễn phí</button>
+                <button id="lrm-login" style="width:100%;padding:11px;background:transparent;color:${isDark?'#d1d5db':'#374151'};font-size:14px;font-weight:600;border:1.5px solid ${isDark?'#374151':'#e5e7eb'};border-radius:12px;cursor:pointer;margin-bottom:14px">Đã có tài khoản? Đăng nhập</button>
+                <button id="lrm-close" style="background:none;border:none;color:${isDark?'#6b7280':'#9ca3af'};font-size:12px;cursor:pointer">Để sau</button>
+            </div>`;
+            document.body.appendChild(modal);
+            modal.querySelector('#lrm-register').onclick = () => { modal.remove(); showAuthModal('register'); };
+            modal.querySelector('#lrm-login').onclick    = () => { modal.remove(); showAuthModal('login'); };
+            modal.querySelector('#lrm-close').onclick    = () => modal.remove();
+            modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+        }
+
+        const SECTION_LABELS = {
+            'mock-test':    'Thi Điền',
+            'wrong-review': 'Ôn Câu Sai',
+            'profile':      'Hồ Sơ Cá Nhân',
+            'badges':       'Thành Tích',
+            'leaderboard':  'Bảng Xếp Hạng',
+            'shop':         'Cửa Hàng',
+            'inventory':    'Túi Đồ',
+            'daily':        'Daily 5',
+            'test-sets':    'Bộ Đề',
+        };
+
+        // Fix nút Đăng nhập cho khách (không dùng onclick inline vì module scope)
+        document.getElementById('guest-login-btn')?.addEventListener('click', () => showAuthModal('login'));
+
         function showSection(id) {
+            // Chặn section yêu cầu đăng nhập nếu là khách
+            if (!currentUser && LOGIN_REQUIRED_SECTIONS.includes(id)) {
+                showLoginRequired(SECTION_LABELS[id] || id);
+                return;
+            }
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             const section = document.getElementById(id);
             if (section) {
@@ -5318,6 +5451,12 @@ async function checkAnswer(mode = '') {
     resultEl.className = correct
         ? 'mt-4 text-base font-bold text-green-700 dark:text-green-400 result-correct'
         : 'mt-4 text-base font-bold text-red-700 dark:text-red-400 result-wrong';
+
+    // Kiểm tra giới hạn khách (chỉ ở mode điền khuyết thường)
+    if (mode === '' && !currentUser) {
+        trackGuestAnswer();
+        return;
+    }
 
     // Xử lý tiến độ & coins
     if (mode === '' && currentSubject && currentUser) {
@@ -5971,6 +6110,8 @@ async function resetSubjectProgress() {
             card.classList.toggle('flipped', fcFlipped);
             if (fcFlipped) {
                 document.getElementById('fc-rating').classList.remove('hidden');
+                // Đếm lần lật (mặt sau) cho khách
+                if (!currentUser) { trackGuestAnswer(); }
             }
         }
 
@@ -6214,6 +6355,11 @@ async function resetSubjectProgress() {
             document.querySelectorAll('.mcq-option').forEach((btn, idx) => {
                 btn.classList.toggle('selected', idx === i);
             });
+            // Kiểm tra giới hạn khách
+            if (!currentUser) {
+                trackGuestAnswer();
+                return;
+            }
             // Auto-advance after short delay
             setTimeout(() => { if (mcqIndex < mcqQuestions.length - 1) nextMCQ(); }, 350);
         }
