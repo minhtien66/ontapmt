@@ -39,6 +39,16 @@
     <!-- ═══ Google Analytics ═══ -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-70F3KYBBLJ"></script>
 
+    <script>
+        // Apply saved theme BEFORE Tailwind loads to prevent color flash
+        try {
+            var _t = JSON.parse(localStorage.getItem('swm_theme') || 'null');
+            if (_t && _t.c1) {
+                document.documentElement.style.setProperty('--p', _t.c1);
+                document.documentElement.style.setProperty('--pd', _t.c2 || _t.c1);
+            }
+        } catch(e) {}
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
@@ -1129,263 +1139,772 @@ body.sb-active #main-nav {
         <!-- ══════════════════════════════════════════ -->
         <!-- 🏠 LANDING PAGE                            -->
         <!-- ══════════════════════════════════════════ -->
-        <section id="landing-page" class="hidden fixed inset-0 z-50 overflow-y-auto" style="background:#04111d;">
+        <section id="landing-page" class="hidden fixed inset-0 z-50 overflow-y-auto" style="background:#030712;">
             <style>
                 #landing-page {
-                    font-family: 'Be Vietnam Pro', 'Segoe UI', sans-serif;
+                    font-family: 'Be Vietnam Pro', sans-serif;
                     color: #e2e8f0;
+                    --lp-green: #10b981;
+                    --lp-green-2: #34d399;
+                    --lp-green-3: #6ee7b7;
+                    --lp-purple: #8b5cf6;
+                    --lp-blue: #3b82f6;
                 }
-                .lp-glow {
+
+                /* ── Aurora mesh background ── */
+                #lp-aurora {
+                    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+                }
+                #lp-aurora::before {
+                    content: '';
                     position: absolute;
-                    border-radius: 50%;
-                    filter: blur(80px);
-                    pointer-events: none;
+                    width: 900px; height: 900px;
+                    top: -300px; left: -200px;
+                    background: radial-gradient(ellipse, rgba(16,185,129,0.13) 0%, transparent 70%);
+                    animation: lp-aurora-1 12s ease-in-out infinite alternate;
                 }
-                .lp-btn-primary {
-                    display: inline-flex; align-items: center; gap: 10px;
-                    padding: 16px 36px; border-radius: 100px;
-                    background: linear-gradient(135deg, #10b981, #059669);
-                    color: white; font-weight: 800; font-size: 17px;
-                    border: none; cursor: pointer;
-                    box-shadow: 0 0 40px rgba(16,185,129,0.4), 0 4px 20px rgba(0,0,0,0.3);
-                    transition: all 0.25s; text-decoration: none;
-                    position: relative; overflow: hidden;
+                #lp-aurora::after {
+                    content: '';
+                    position: absolute;
+                    width: 700px; height: 700px;
+                    bottom: -200px; right: -100px;
+                    background: radial-gradient(ellipse, rgba(139,92,246,0.1) 0%, transparent 70%);
+                    animation: lp-aurora-2 15s ease-in-out infinite alternate;
                 }
-                .lp-btn-primary::before {
-                    content: ''; position: absolute; inset: 0;
-                    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-                    opacity: 0; transition: opacity 0.2s;
+                .lp-aurora-mid {
+                    position: absolute;
+                    width: 500px; height: 500px;
+                    top: 40%; left: 50%; transform: translate(-50%,-50%);
+                    background: radial-gradient(ellipse, rgba(59,130,246,0.07) 0%, transparent 65%);
+                    animation: lp-aurora-3 10s ease-in-out infinite alternate;
                 }
-                .lp-btn-primary:hover { transform: translateY(-2px) scale(1.02);
-                    box-shadow: 0 0 60px rgba(16,185,129,0.5), 0 8px 30px rgba(0,0,0,0.4); }
-                .lp-btn-primary:hover::before { opacity: 1; }
-                .lp-btn-ghost {
-                    display: inline-flex; align-items: center; gap: 8px;
-                    padding: 14px 28px; border-radius: 100px;
-                    background: rgba(255,255,255,0.06); backdrop-filter: blur(10px);
-                    color: #cbd5e1; font-weight: 600; font-size: 15px;
-                    border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
-                    transition: all 0.2s; text-decoration: none;
+                @keyframes lp-aurora-1 { from{transform:translate(0,0) scale(1)} to{transform:translate(80px,60px) scale(1.15)} }
+                @keyframes lp-aurora-2 { from{transform:translate(0,0) scale(1)} to{transform:translate(-60px,-40px) scale(1.1)} }
+                @keyframes lp-aurora-3 { from{opacity:0.6;transform:translate(-50%,-50%) scale(1)} to{opacity:1;transform:translate(-50%,-55%) scale(1.2)} }
+
+                /* ── Noise texture overlay ── */
+                #lp-noise {
+                    position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.025;
+                    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
                 }
-                .lp-btn-ghost:hover { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.2); }
-                .lp-feature-card {
-                    background: rgba(255,255,255,0.04);
-                    border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: 20px; padding: 28px;
-                    transition: all 0.3s;
-                    backdrop-filter: blur(10px);
+
+                /* ── Grid lines ── */
+                #lp-grid {
+                    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+                    background-image:
+                        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+                    background-size: 80px 80px;
+                    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
                 }
-                .lp-feature-card:hover {
-                    background: rgba(16,185,129,0.06);
-                    border-color: rgba(16,185,129,0.2);
-                    transform: translateY(-4px);
-                }
-                .lp-stat-card {
-                    background: rgba(255,255,255,0.04);
-                    border: 1px solid rgba(255,255,255,0.08);
-                    border-radius: 16px; padding: 24px;
-                    text-align: center;
-                }
-                @keyframes lp-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-                @keyframes lp-fadein { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
-                .lp-hero-anim { animation: lp-fadein 0.7s ease both; }
-                .lp-hero-anim-2 { animation: lp-fadein 0.7s 0.15s ease both; }
-                .lp-hero-anim-3 { animation: lp-fadein 0.7s 0.3s ease both; }
-                .lp-hero-anim-4 { animation: lp-fadein 0.7s 0.45s ease both; }
-                .lp-float { animation: lp-float 4s ease-in-out infinite; }
+
+                /* ── NAV ── */
                 .lp-nav {
                     position: sticky; top: 0; z-index: 100;
                     display: flex; align-items: center; justify-content: space-between;
-                    padding: 16px 32px;
-                    background: rgba(4,17,29,0.8); backdrop-filter: blur(20px);
+                    padding: 0 32px; height: 64px;
+                    background: rgba(3,7,18,0.75);
+                    backdrop-filter: blur(20px) saturate(180%);
                     border-bottom: 1px solid rgba(255,255,255,0.06);
                 }
-                .lp-section { padding: 80px 24px; max-width: 1100px; margin: 0 auto; }
+                .lp-nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+                .lp-nav-links { display:flex; align-items:center; gap:6px; }
+                .lp-nav-link {
+                    padding: 7px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 500;
+                    color: #94a3b8; text-decoration: none; transition: all 0.15s; cursor: pointer;
+                    background: none; border: none;
+                }
+                .lp-nav-link:hover { color: white; background: rgba(255,255,255,0.06); }
+                .lp-nav-actions { display:flex; align-items:center; gap:8px; }
+
+                /* ── BUTTONS ── */
+                .lp-btn-primary {
+                    display: inline-flex; align-items: center; gap: 8px;
+                    padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 700;
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    color: white; border: none; cursor: pointer;
+                    box-shadow: 0 0 0 1px rgba(16,185,129,0.3), 0 4px 24px rgba(16,185,129,0.3);
+                    transition: all 0.2s; text-decoration: none; position: relative; overflow: hidden;
+                }
+                .lp-btn-primary::after {
+                    content: ''; position:absolute; inset:0;
+                    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+                    opacity:0; transition: opacity 0.2s;
+                }
+                .lp-btn-primary:hover { transform:translateY(-1px); box-shadow: 0 0 0 1px rgba(16,185,129,0.5), 0 8px 32px rgba(16,185,129,0.4); }
+                .lp-btn-primary:hover::after { opacity:1; }
+                .lp-btn-primary.lp-btn-lg { padding: 16px 36px; font-size: 16px; border-radius: 12px; }
+
+                .lp-btn-ghost {
+                    display: inline-flex; align-items: center; gap: 8px;
+                    padding: 12px 22px; border-radius: 10px; font-size: 14px; font-weight: 600;
+                    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+                    color: #cbd5e1; cursor: pointer; transition: all 0.2s; text-decoration: none;
+                }
+                .lp-btn-ghost:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); color: white; }
+
+                /* ── BADGE ── */
                 .lp-badge {
                     display: inline-flex; align-items: center; gap: 6px;
-                    padding: 6px 14px; border-radius: 100px;
-                    background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25);
-                    color: #10b981; font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+                    padding: 5px 12px; border-radius: 100px;
+                    background: rgba(16,185,129,0.08);
+                    border: 1px solid rgba(16,185,129,0.2);
+                    color: #34d399; font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em;
                 }
-                .lp-mockup {
-                    background: rgba(255,255,255,0.04);
-                    border: 1px solid rgba(255,255,255,0.1);
-                    border-radius: 20px; padding: 20px;
-                    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+                .lp-badge-dot {
+                    width: 6px; height: 6px; border-radius: 50%; background: #10b981;
+                    box-shadow: 0 0 6px #10b981; animation: lp-pulse 2s infinite;
                 }
-                .lp-progress-bar {
-                    height: 8px; border-radius: 100px;
-                    background: rgba(255,255,255,0.08); overflow: hidden;
+                @keyframes lp-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+                /* ── HERO ── */
+                .lp-hero {
+                    position: relative; z-index: 2;
+                    padding: 120px 24px 80px; text-align: center;
                 }
-                .lp-progress-fill {
-                    height: 100%; border-radius: 100px;
-                    background: linear-gradient(90deg, #10b981, #34d399);
+                .lp-hero h1 {
+                    font-size: clamp(48px, 8vw, 88px);
+                    font-weight: 900; line-height: 1.02;
+                    letter-spacing: -0.04em; margin-bottom: 24px;
+                    color: white;
                 }
-                @media (max-width: 768px) {
-                    .lp-nav { padding: 12px 16px; }
-                    .lp-section { padding: 60px 16px; }
-                    .lp-btn-primary { font-size: 15px; padding: 14px 28px; }
+                .lp-hero h1 .lp-gradient-text {
+                    background: linear-gradient(135deg, #10b981 0%, #34d399 40%, #6ee7b7 70%, #a7f3d0 100%);
+                    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }
+                .lp-hero p {
+                    font-size: clamp(16px, 2vw, 19px); color: #64748b;
+                    max-width: 560px; margin: 0 auto 44px; line-height: 1.75;
+                }
+
+                /* ── SOCIAL PROOF ── */
+                .lp-avatars { display:flex; align-items:center; gap:0; margin-right:10px; }
+                .lp-avatar {
+                    width: 28px; height: 28px; border-radius: 50%;
+                    border: 2px solid #030712; margin-left: -8px;
+                    font-size: 12px; display:flex; align-items:center; justify-content:center;
+                }
+                .lp-avatar:first-child { margin-left:0; }
+
+                /* ── MARQUEE ── */
+                .lp-marquee-wrap {
+                    overflow: hidden; position:relative; z-index:2;
+                    border-top: 1px solid rgba(255,255,255,0.05);
+                    border-bottom: 1px solid rgba(255,255,255,0.05);
+                    padding: 16px 0; background: rgba(255,255,255,0.015);
+                }
+                .lp-marquee-wrap::before, .lp-marquee-wrap::after {
+                    content:''; position:absolute; top:0; width:120px; height:100%; z-index:2;
+                }
+                .lp-marquee-wrap::before { left:0; background:linear-gradient(90deg, #030712, transparent); }
+                .lp-marquee-wrap::after  { right:0; background:linear-gradient(-90deg, #030712, transparent); }
+                .lp-marquee-track {
+                    display:flex; gap:40px; white-space:nowrap;
+                    animation: lp-marquee 25s linear infinite;
+                    width: max-content;
+                }
+                @keyframes lp-marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+                .lp-marquee-item {
+                    display:inline-flex; align-items:center; gap:8px;
+                    font-size:13px; font-weight:600; color:#334155;
+                }
+                .lp-marquee-item span { font-size:16px; }
+
+                /* ── STATS ── */
+                .lp-stats-section {
+                    position:relative; z-index:2;
+                    max-width: 900px; margin: 0 auto;
+                    padding: 80px 24px;
+                    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 2px;
+                    background: rgba(255,255,255,0.04); border-radius: 24px;
+                    border: 1px solid rgba(255,255,255,0.07);
+                    overflow: hidden;
+                }
+                .lp-stat-item {
+                    padding: 36px 28px; text-align:center;
+                    background: rgba(3,7,18,0.6); backdrop-filter:blur(10px);
+                    transition: background 0.2s;
+                }
+                .lp-stat-item:hover { background: rgba(16,185,129,0.05); }
+                .lp-stat-num {
+                    font-size: 44px; font-weight: 900; line-height:1;
+                    background: linear-gradient(135deg, white, #94a3b8);
+                    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }
+                .lp-stat-label { font-size:13px; color:#475569; margin-top:8px; font-weight:600; }
+
+                /* ── BENTO FEATURES ── */
+                .lp-bento {
+                    position:relative; z-index:2;
+                    max-width: 1100px; margin: 0 auto; padding: 100px 24px;
+                }
+                .lp-bento-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    grid-template-rows: auto auto;
+                    gap: 16px;
+                }
+                .lp-bento-card {
+                    background: rgba(255,255,255,0.03);
+                    border: 1px solid rgba(255,255,255,0.07);
+                    border-radius: 20px; padding: 32px;
+                    transition: all 0.3s; position:relative; overflow:hidden;
+                }
+                .lp-bento-card::before {
+                    content:''; position:absolute; inset:0; border-radius:20px;
+                    background: linear-gradient(135deg, rgba(16,185,129,0.05), transparent);
+                    opacity:0; transition: opacity 0.3s;
+                }
+                .lp-bento-card:hover { border-color: rgba(16,185,129,0.2); transform:translateY(-2px); }
+                .lp-bento-card:hover::before { opacity:1; }
+                .lp-bento-card.lp-bento-wide { grid-column: span 2; }
+                .lp-bento-card.lp-bento-tall { grid-row: span 2; }
+                .lp-bento-icon {
+                    width:48px; height:48px; border-radius:14px; margin-bottom:20px;
+                    display:flex; align-items:center; justify-content:center; font-size:22px;
+                    background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);
+                }
+                .lp-bento-card h3 { font-size:18px; font-weight:800; color:white; margin-bottom:10px; }
+                .lp-bento-card p { font-size:14px; color:#475569; line-height:1.7; }
+
+                /* ── TESTIMONIALS ── */
+                .lp-testimonials {
+                    position:relative; z-index:2;
+                    max-width:1100px; margin:0 auto; padding:100px 24px;
+                }
+                .lp-testi-grid {
+                    display:grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap:16px;
+                    margin-top:60px;
+                }
+                .lp-testi-card {
+                    background: rgba(255,255,255,0.03);
+                    border: 1px solid rgba(255,255,255,0.07);
+                    border-radius: 18px; padding: 28px;
+                    transition: all 0.25s;
+                }
+                .lp-testi-card:hover { border-color:rgba(16,185,129,0.15); background:rgba(16,185,129,0.03); }
+                .lp-testi-stars { color:#f59e0b; font-size:13px; margin-bottom:14px; letter-spacing:2px; }
+                .lp-testi-text { font-size:14.5px; color:#94a3b8; line-height:1.75; margin-bottom:20px; font-style:italic; }
+                .lp-testi-author { display:flex; align-items:center; gap:12px; }
+                .lp-testi-avatar {
+                    width:38px; height:38px; border-radius:50%;
+                    display:flex; align-items:center; justify-content:center;
+                    font-size:16px; font-weight:800; flex-shrink:0;
+                }
+                .lp-testi-name { font-size:13.5px; font-weight:700; color:white; }
+                .lp-testi-role { font-size:12px; color:#475569; }
+
+                /* ── COMPARISON ── */
+                .lp-compare {
+                    position:relative; z-index:2;
+                    max-width:860px; margin:0 auto; padding:100px 24px;
+                }
+                .lp-compare-table {
+                    border: 1px solid rgba(255,255,255,0.07);
+                    border-radius: 20px; overflow:hidden;
+                }
+                .lp-compare-header {
+                    display:grid; grid-template-columns:1fr 1fr 1fr;
+                    background: rgba(255,255,255,0.03);
+                    border-bottom: 1px solid rgba(255,255,255,0.07);
+                }
+                .lp-compare-col { padding:20px 24px; text-align:center; }
+                .lp-compare-col.lp-compare-ours {
+                    background: rgba(16,185,129,0.08);
+                    border-left:1px solid rgba(16,185,129,0.2);
+                    border-right:1px solid rgba(16,185,129,0.2);
+                }
+                .lp-compare-row {
+                    display:grid; grid-template-columns:1fr 1fr 1fr;
+                    border-bottom: 1px solid rgba(255,255,255,0.05);
+                    transition: background 0.15s;
+                }
+                .lp-compare-row:last-child { border-bottom:none; }
+                .lp-compare-row:hover { background: rgba(255,255,255,0.02); }
+                .lp-compare-cell { padding:16px 24px; font-size:14px; color:#64748b; text-align:center; display:flex; align-items:center; justify-content:center; }
+                .lp-compare-cell.lp-compare-feature { text-align:left; justify-content:flex-start; font-weight:600; color:#94a3b8; }
+                .lp-compare-cell.lp-compare-ours { background:rgba(16,185,129,0.04); border-left:1px solid rgba(16,185,129,0.1); border-right:1px solid rgba(16,185,129,0.1); }
+                .lp-check { color:#10b981; font-size:17px; }
+                .lp-cross { color:#334155; font-size:17px; }
+
+                /* ── CTA FINAL ── */
+                .lp-cta-final {
+                    position:relative; z-index:2;
+                    padding:120px 24px; text-align:center; overflow:hidden;
+                }
+                .lp-cta-glow {
+                    position:absolute; width:800px; height:400px;
+                    top:50%; left:50%; transform:translate(-50%,-50%);
+                    background: radial-gradient(ellipse, rgba(16,185,129,0.1), transparent 70%);
+                    pointer-events:none;
+                }
+
+                /* ── FOOTER ── */
+                .lp-footer {
+                    position:relative; z-index:2;
+                    border-top:1px solid rgba(255,255,255,0.06);
+                    padding:28px 32px;
+                    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+                    font-size:13px; color:#334155;
+                }
+                .lp-footer a { color:#334155; text-decoration:none; transition:color 0.15s; }
+                .lp-footer a:hover { color:#94a3b8; }
+
+                /* ── SECTION HEADERS ── */
+                .lp-section-label {
+                    text-align:center; margin-bottom:20px;
+                }
+                .lp-section-h2 {
+                    text-align:center; font-size:clamp(30px,4.5vw,50px); font-weight:900;
+                    letter-spacing:-0.03em; color:white; margin-bottom:16px; line-height:1.1;
+                }
+                .lp-section-sub {
+                    text-align:center; font-size:16px; color:#475569; max-width:520px;
+                    margin:0 auto; line-height:1.7;
+                }
+
+                /* ── ANIMATIONS ── */
+                @keyframes lp-fadein { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:none} }
+                .lp-anim-1 { animation: lp-fadein 0.65s ease both; }
+                .lp-anim-2 { animation: lp-fadein 0.65s 0.12s ease both; }
+                .lp-anim-3 { animation: lp-fadein 0.65s 0.24s ease both; }
+                .lp-anim-4 { animation: lp-fadein 0.65s 0.36s ease both; }
+                .lp-anim-5 { animation: lp-fadein 0.65s 0.48s ease both; }
+                @keyframes lp-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+                .lp-float { animation: lp-float 5s ease-in-out infinite; }
+
+                /* ── SCROLL REVEAL ── */
+                .lp-reveal { opacity:0; transform:translateY(32px); transition: all 0.7s cubic-bezier(0.16,1,0.3,1); }
+                .lp-reveal.lp-visible { opacity:1; transform:none; }
+                .lp-reveal-delay-1 { transition-delay:0.1s; }
+                .lp-reveal-delay-2 { transition-delay:0.2s; }
+                .lp-reveal-delay-3 { transition-delay:0.3s; }
+                .lp-reveal-delay-4 { transition-delay:0.4s; }
+
+                @media(max-width:768px) {
+                    .lp-nav { padding:0 16px; }
+                    .lp-nav-links { display:none; }
+                    .lp-bento-grid { grid-template-columns:1fr; }
+                    .lp-bento-card.lp-bento-wide { grid-column:span 1; }
+                    .lp-hero { padding:80px 20px 60px; }
+                    .lp-compare-header, .lp-compare-row { grid-template-columns:1.2fr 1fr 1fr; }
+                    .lp-footer { justify-content:center; text-align:center; }
                 }
             </style>
 
-            <!-- Nav -->
-            <nav class="lp-nav">
-                <div style="display:flex;align-items:center;gap:10px">
-                    <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;font-weight:900;color:white;font-size:14px">YK</div>
-                    <span style="font-weight:800;font-size:17px;color:white">Y Khoa <span style="color:#10b981">MT</span></span>
+            <!-- BG layers -->
+            <div id="lp-aurora"><div class="lp-aurora-mid"></div></div>
+            <div id="lp-noise"></div>
+            <div id="lp-grid"></div>
+
+            <!-- ── NAV ── -->
+            <nav class="lp-nav" style="position:sticky;top:0;z-index:100;">
+                <a class="lp-nav-logo" href="/">
+                    <img src="data:image/png;base64,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" style="width:34px;height:34px;border-radius:9px;object-fit:cover;" alt="Y Khoa MT">
+                    <span style="font-weight:800;font-size:16px;color:white;">Y Khoa <span style="color:#10b981;">MT</span></span>
+                </a>
+                <div class="lp-nav-links">
+                    <a class="lp-nav-link" onclick="document.getElementById('lp-features').scrollIntoView({behavior:'smooth'})">Tính năng</a>
+                    <a class="lp-nav-link" onclick="document.getElementById('lp-testimonials').scrollIntoView({behavior:'smooth'})">Đánh giá</a>
+                    <a class="lp-nav-link" onclick="document.getElementById('lp-compare').scrollIntoView({behavior:'smooth'})">So sánh</a>
                 </div>
-                <div style="display:flex;align-items:center;gap:10px">
-                    <button class="lp-btn-ghost" onclick="landingShowLogin()" style="padding:10px 20px;font-size:14px">Đăng nhập</button>
-                    <button class="lp-btn-primary" onclick="landingShowRegister()" style="padding:10px 22px;font-size:14px">Bắt đầu miễn phí</button>
+                <div class="lp-nav-actions">
+                    <button class="lp-btn-ghost" onclick="landingShowLogin()" style="padding:8px 18px;font-size:13px;">Đăng nhập</button>
+                    <button class="lp-btn-primary" onclick="landingShowRegister()" style="padding:8px 18px;font-size:13px;">Bắt đầu miễn phí</button>
                 </div>
             </nav>
 
-            <!-- Hero -->
-            <div style="position:relative;overflow:hidden;padding:100px 24px 80px;text-align:center;">
-                <!-- Glow effects -->
-                <div class="lp-glow" style="width:600px;height:400px;top:-100px;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse,rgba(16,185,129,0.15),transparent 70%)"></div>
-                <div class="lp-glow" style="width:300px;height:300px;top:50%;left:10%;background:radial-gradient(ellipse,rgba(99,102,241,0.1),transparent 70%)"></div>
-                <div class="lp-glow" style="width:300px;height:300px;top:30%;right:10%;background:radial-gradient(ellipse,rgba(236,72,153,0.08),transparent 70%)"></div>
+            <!-- ── HERO ── -->
+            <div class="lp-hero">
+                <div class="lp-anim-1" style="margin-bottom:28px;">
+                    <span class="lp-badge"><span class="lp-badge-dot"></span> Hoàn toàn miễn phí · Không quảng cáo</span>
+                </div>
+                <h1 class="lp-anim-2">
+                    Ôn thi y khoa<br>
+                    <span class="lp-gradient-text">chưa bao giờ dễ vậy</span>
+                </h1>
+                <p class="lp-anim-3">
+                    Flashcard, điền khuyết, trắc nghiệm có đếm giờ — mọi thứ cần để thi đậu trong một nơi. Theo dõi tiến độ, ôn câu sai, xem bảng xếp hạng.
+                </p>
+                <div class="lp-anim-4" style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:28px;">
+                    <button class="lp-btn-primary lp-btn-lg" onclick="landingEnterApp()">
+                        Bắt đầu học ngay &nbsp;→
+                    </button>
+                    <button class="lp-btn-ghost" onclick="landingShowLogin()" style="padding:16px 28px;font-size:16px;">
+                        Đã có tài khoản
+                    </button>
+                </div>
+                <div class="lp-anim-5" style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;font-size:13px;color:#334155;">
+                    <span>✓ Miễn phí 100%</span>
+                    <span style="color:#1e293b;">·</span>
+                    <span>✓ Không cần thẻ</span>
+                    <span style="color:#1e293b;">·</span>
+                    <span>✓ 3,500+ câu hỏi</span>
+                    <span style="color:#1e293b;">·</span>
+                    <span>✓ 13 môn học</span>
+                </div>
 
-                <div style="position:relative;max-width:780px;margin:0 auto;">
-                    <div class="lp-hero-anim" style="margin-bottom:24px">
-                        <span class="lp-badge">✦ NỀN TẢNG ÔN TẬP Y KHOA MIỄN PHÍ</span>
+                <!-- Social proof -->
+                <div class="lp-anim-5" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:24px;">
+                    <div class="lp-avatars">
+                        <div class="lp-avatar" style="background:linear-gradient(135deg,#10b981,#059669);">T</div>
+                        <div class="lp-avatar" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">M</div>
+                        <div class="lp-avatar" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);">N</div>
+                        <div class="lp-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">H</div>
+                        <div class="lp-avatar" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div>
                     </div>
-                    <h1 class="lp-hero-anim-2" style="font-size:clamp(40px,7vw,76px);font-weight:900;line-height:1.05;margin-bottom:24px;letter-spacing:-0.03em;">
-                        Học y khoa<br>
-                        <span style="background:linear-gradient(135deg,#10b981,#34d399,#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">thông minh hơn</span>
-                    </h1>
-                    <p class="lp-hero-anim-3" style="font-size:18px;color:#94a3b8;max-width:520px;margin:0 auto 40px;line-height:1.7;">
-                        Flashcard, điền khuyết, trắc nghiệm — mọi thứ bạn cần để thi đậu. Theo dõi tiến độ, ôn lại câu sai, chinh phục từng môn.
-                    </p>
-                    <div class="lp-hero-anim-4" style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;">
-                        <button class="lp-btn-primary" onclick="landingEnterApp()">
-                            🚀 Bắt đầu học ngay
-                        </button>
-                        <button class="lp-btn-ghost" onclick="landingShowLogin()">
-                            Đã có tài khoản →
-                        </button>
-                    </div>
-                    <div style="margin-top:20px;font-size:13px;color:#475569">
-                        ✓ Miễn phí 100% &nbsp;·&nbsp; ✓ Không cần thẻ tín dụng &nbsp;·&nbsp; ✓ Bắt đầu ngay
-                    </div>
+                    <span style="font-size:13px;color:#475569;"><strong style="color:#94a3b8;">500+</strong> sinh viên đang học mỗi ngày</span>
+                    <span style="color:#f59e0b;font-size:13px;">★★★★★</span>
                 </div>
 
                 <!-- Mockup -->
-                <div class="lp-hero-anim-4 lp-float" style="max-width:680px;margin:60px auto 0;position:relative;">
-                    <div class="lp-mockup">
-                        <!-- Fake browser bar -->
-                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.06)">
-                            <div style="width:10px;height:10px;border-radius:50%;background:#ef4444;opacity:0.7"></div>
-                            <div style="width:10px;height:10px;border-radius:50%;background:#f59e0b;opacity:0.7"></div>
-                            <div style="width:10px;height:10px;border-radius:50%;background:#10b981;opacity:0.7"></div>
-                            <div style="flex:1;height:24px;border-radius:6px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:11px;color:#475569;margin:0 8px">nhmtontap.dpdns.org</div>
-                        </div>
-                        <!-- Fake app UI -->
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
-                            <div style="background:linear-gradient(135deg,#10b981,#059669);border-radius:12px;padding:14px;color:white;font-weight:700;font-size:13px;text-align:center">🚀 Bắt đầu học</div>
-                            <div style="background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:12px;padding:14px;color:white;font-weight:700;font-size:13px;text-align:center">⚠️ Ôn câu sai</div>
-                            <div style="background:linear-gradient(135deg,#06b6d4,#0284c7);border-radius:12px;padding:14px;color:white;font-weight:700;font-size:13px;text-align:center">💬 Flashcard</div>
-                        </div>
-                        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:16px">
-                            <div style="display:flex;justify-content:space-between;margin-bottom:10px">
-                                <span style="font-size:13px;color:#94a3b8;font-weight:600">Tiến độ học tập</span>
-                                <span style="font-size:13px;color:#10b981;font-weight:700">68%</span>
-                            </div>
-                            <div class="lp-progress-bar"><div class="lp-progress-fill" style="width:68%"></div></div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;text-align:center">
-                                <div><div style="font-size:18px;font-weight:800;color:#10b981">219</div><div style="font-size:11px;color:#64748b">Đã làm</div></div>
-                                <div><div style="font-size:18px;font-weight:800;color:#10b981">180</div><div style="font-size:11px;color:#64748b">Đúng</div></div>
-                                <div><div style="font-size:18px;font-weight:800;color:#10b981">82%</div><div style="font-size:11px;color:#64748b">Chính xác</div></div>
+                <div class="lp-float lp-anim-5" style="max-width:720px;margin:64px auto 0;position:relative;">
+                    <!-- Glow behind mockup -->
+                    <div style="position:absolute;inset:-40px;background:radial-gradient(ellipse,rgba(16,185,129,0.1),transparent 70%);border-radius:50%;pointer-events:none;"></div>
+                    <div style="position:relative;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:20px;box-shadow:0 40px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.04),inset 0 1px 0 rgba(255,255,255,0.07);">
+                        <!-- Browser chrome -->
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.06);">
+                            <div style="width:10px;height:10px;border-radius:50%;background:#ef4444;opacity:0.8;"></div>
+                            <div style="width:10px;height:10px;border-radius:50%;background:#f59e0b;opacity:0.8;"></div>
+                            <div style="width:10px;height:10px;border-radius:50%;background:#10b981;opacity:0.8;"></div>
+                            <div style="flex:1;height:26px;border-radius:7px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;padding:0 12px;margin:0 10px;">
+                                <span style="font-size:11px;color:#334155;">🔒 nhmtontap.dpdns.org</span>
                             </div>
                         </div>
+                        <!-- App UI preview -->
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+                            <div style="background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(5,150,105,0.1));border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:16px;text-align:center;">
+                                <div style="font-size:22px;margin-bottom:6px;">📝</div>
+                                <div style="font-size:12px;font-weight:700;color:#10b981;">Điền Khuyết</div>
+                            </div>
+                            <div style="background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(29,78,216,0.08));border:1px solid rgba(59,130,246,0.2);border-radius:14px;padding:16px;text-align:center;">
+                                <div style="font-size:22px;margin-bottom:6px;">💬</div>
+                                <div style="font-size:12px;font-weight:700;color:#60a5fa;">Flashcard</div>
+                            </div>
+                            <div style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(217,119,6,0.08));border:1px solid rgba(245,158,11,0.2);border-radius:14px;padding:16px;text-align:center;">
+                                <div style="font-size:22px;margin-bottom:6px;">📋</div>
+                                <div style="font-size:12px;font-weight:700;color:#fbbf24;">Trắc Nghiệm</div>
+                            </div>
+                        </div>
+                        <!-- Progress card -->
+                        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                                <span style="font-size:12px;font-weight:700;color:#475569;">Tiến độ hôm nay</span>
+                                <span style="font-size:12px;color:#10b981;font-weight:800;">82% ✓</span>
+                            </div>
+                            <div style="height:6px;border-radius:100px;background:rgba(255,255,255,0.06);overflow:hidden;margin-bottom:12px;">
+                                <div style="width:82%;height:100%;background:linear-gradient(90deg,#10b981,#34d399);border-radius:100px;"></div>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
+                                <div><div style="font-size:18px;font-weight:900;color:white;">219</div><div style="font-size:10px;color:#334155;margin-top:2px;">Đã làm</div></div>
+                                <div><div style="font-size:18px;font-weight:900;color:#10b981;">180</div><div style="font-size:10px;color:#334155;margin-top:2px;">Đúng</div></div>
+                                <div><div style="font-size:18px;font-weight:900;color:#f59e0b;">🔥 7</div><div style="font-size:10px;color:#334155;margin-top:2px;">Ngày streak</div></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Stats -->
-            <div style="border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);padding:40px 24px;">
-                <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px">
-                    <div class="lp-stat-card">
-                        <div style="font-size:36px;font-weight:900;color:#10b981;line-height:1">3,500+</div>
-                        <div style="font-size:13px;color:#64748b;margin-top:6px">Câu hỏi</div>
+            <!-- ── MARQUEE ── -->
+            <div class="lp-marquee-wrap lp-reveal">
+                <div class="lp-marquee-track">
+                    <span class="lp-marquee-item"><span>📝</span> Điền Khuyết</span>
+                    <span class="lp-marquee-item"><span>💬</span> Flashcard</span>
+                    <span class="lp-marquee-item"><span>📋</span> Trắc Nghiệm A/B/C/D</span>
+                    <span class="lp-marquee-item"><span>⚠️</span> Ôn Câu Sai</span>
+                    <span class="lp-marquee-item"><span>🏅</span> Bảng Xếp Hạng</span>
+                    <span class="lp-marquee-item"><span>☀️</span> Daily 5</span>
+                    <span class="lp-marquee-item"><span>🔥</span> Streak Ngày</span>
+                    <span class="lp-marquee-item"><span>📊</span> Thống Kê Chi Tiết</span>
+                    <span class="lp-marquee-item"><span>🎯</span> 13 Môn Học</span>
+                    <span class="lp-marquee-item"><span>⏱️</span> Thi Có Đếm Giờ</span>
+                    <!-- duplicate for loop -->
+                    <span class="lp-marquee-item"><span>📝</span> Điền Khuyết</span>
+                    <span class="lp-marquee-item"><span>💬</span> Flashcard</span>
+                    <span class="lp-marquee-item"><span>📋</span> Trắc Nghiệm A/B/C/D</span>
+                    <span class="lp-marquee-item"><span>⚠️</span> Ôn Câu Sai</span>
+                    <span class="lp-marquee-item"><span>🏅</span> Bảng Xếp Hạng</span>
+                    <span class="lp-marquee-item"><span>☀️</span> Daily 5</span>
+                    <span class="lp-marquee-item"><span>🔥</span> Streak Ngày</span>
+                    <span class="lp-marquee-item"><span>📊</span> Thống Kê Chi Tiết</span>
+                    <span class="lp-marquee-item"><span>🎯</span> 13 Môn Học</span>
+                    <span class="lp-marquee-item"><span>⏱️</span> Thi Có Đếm Giờ</span>
+                </div>
+            </div>
+
+            <!-- ── STATS (animated counter) ── -->
+            <div style="position:relative;z-index:2;padding:80px 24px;">
+                <div class="lp-stats-section lp-reveal" id="lp-stats">
+                    <div class="lp-stat-item">
+                        <div class="lp-stat-num" data-target="3500" id="lp-cnt-1">0</div>
+                        <div class="lp-stat-label">Câu hỏi</div>
                     </div>
-                    <div class="lp-stat-card">
-                        <div style="font-size:36px;font-weight:900;color:#10b981;line-height:1">13</div>
-                        <div style="font-size:13px;color:#64748b;margin-top:6px">Môn học</div>
+                    <div class="lp-stat-item">
+                        <div class="lp-stat-num" data-target="13" id="lp-cnt-2">0</div>
+                        <div class="lp-stat-label">Môn học</div>
                     </div>
-                    <div class="lp-stat-card">
-                        <div style="font-size:36px;font-weight:900;color:#10b981;line-height:1">100%</div>
-                        <div style="font-size:13px;color:#64748b;margin-top:6px">Miễn phí</div>
+                    <div class="lp-stat-item">
+                        <div class="lp-stat-num" data-target="500" id="lp-cnt-3">0</div>
+                        <div class="lp-stat-label">Sinh viên</div>
                     </div>
-                    <div class="lp-stat-card">
-                        <div style="font-size:36px;font-weight:900;color:#10b981;line-height:1">5⭐</div>
-                        <div style="font-size:13px;color:#64748b;margin-top:6px">Đánh giá</div>
+                    <div class="lp-stat-item">
+                        <div class="lp-stat-num" id="lp-cnt-4" style="-webkit-text-fill-color:white;">100%</div>
+                        <div class="lp-stat-label">Miễn phí</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Features -->
-            <div class="lp-section">
-                <div style="text-align:center;margin-bottom:56px">
-                    <span class="lp-badge" style="margin-bottom:16px;display:inline-flex">✦ TÍNH NĂNG</span>
-                    <h2 style="font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-0.02em;margin-top:12px">Mọi thứ bạn cần để thi đậu</h2>
+            <!-- ── BENTO FEATURES ── -->
+            <div class="lp-bento" id="lp-features">
+                <div class="lp-section-label lp-reveal">
+                    <span class="lp-badge">✦ TÍNH NĂNG</span>
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
-                    <div class="lp-feature-card">
-                        <div style="font-size:36px;margin-bottom:16px">📝</div>
-                        <h3 style="font-size:18px;font-weight:800;margin-bottom:10px;color:white">Điền Khuyết</h3>
-                        <p style="color:#64748b;font-size:14px;line-height:1.7">Luyện tập điền từ vào chỗ trống, theo dõi tiến độ từng câu. Đúng thì ghi điểm, sai thì ôn lại.</p>
+                <h2 class="lp-section-h2 lp-reveal lp-reveal-delay-1">Mọi thứ để thi đậu</h2>
+                <p class="lp-section-sub lp-reveal lp-reveal-delay-2">Được thiết kế cho sinh viên y khoa, tối ưu cho việc ghi nhớ và luyện tập thực tế.</p>
+
+                <div class="lp-bento-grid" style="margin-top:52px;">
+                    <!-- Big card: Điền khuyết -->
+                    <div class="lp-bento-card lp-bento-wide lp-reveal" style="background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(5,150,105,0.03));">
+                        <div class="lp-bento-icon" style="background:rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.3);">📝</div>
+                        <h3>Điền Khuyết Thông Minh</h3>
+                        <p>Gõ từ vào đúng chỗ, hệ thống tự chấm ngay lập tức. Câu sai → lưu lại để ôn. Luyện cơ chế nhớ chủ động thay vì đọc thụ động.</p>
+                        <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap;">
+                            <span style="padding:5px 12px;border-radius:100px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);font-size:12px;color:#34d399;font-weight:600;">Chấm tự động</span>
+                            <span style="padding:5px 12px;border-radius:100px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);font-size:12px;color:#34d399;font-weight:600;">Lưu câu sai</span>
+                        </div>
                     </div>
-                    <div class="lp-feature-card">
-                        <div style="font-size:36px;margin-bottom:16px">💬</div>
-                        <h3 style="font-size:18px;font-weight:800;margin-bottom:10px;color:white">Flashcard</h3>
-                        <p style="color:#64748b;font-size:14px;line-height:1.7">Lật thẻ, đánh giá độ nhớ, hệ thống tự sắp xếp câu khó lên trước. Học nhanh, nhớ lâu hơn.</p>
+
+                    <!-- Flashcard -->
+                    <div class="lp-bento-card lp-reveal lp-reveal-delay-1">
+                        <div class="lp-bento-icon" style="background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.25);">💬</div>
+                        <h3>Flashcard</h3>
+                        <p>Lật thẻ, đánh giá độ nhớ. Câu khó tự nổi lên đầu. Học nhanh, nhớ lâu.</p>
                     </div>
-                    <div class="lp-feature-card">
-                        <div style="font-size:36px;margin-bottom:16px">📋</div>
-                        <h3 style="font-size:18px;font-weight:800;margin-bottom:10px;color:white">Trắc Nghiệm A/B/C/D</h3>
-                        <p style="color:#64748b;font-size:14px;line-height:1.7">30 câu, 20 phút, đếm ngược. Mô phỏng đúng format thi thật để bạn quen áp lực.</p>
+
+                    <!-- Trắc nghiệm -->
+                    <div class="lp-bento-card lp-reveal lp-reveal-delay-1" style="background:linear-gradient(135deg,rgba(245,158,11,0.06),transparent);">
+                        <div class="lp-bento-icon" style="background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.25);">⏱️</div>
+                        <h3>Trắc Nghiệm Thi Thật</h3>
+                        <p>30 câu · 20 phút · đếm ngược. Mô phỏng đúng áp lực phòng thi.</p>
                     </div>
-                    <div class="lp-feature-card">
-                        <div style="font-size:36px;margin-bottom:16px">⚠️</div>
-                        <h3 style="font-size:18px;font-weight:800;margin-bottom:10px;color:white">Ôn Câu Sai</h3>
-                        <p style="color:#64748b;font-size:14px;line-height:1.7">Câu sai tự động được lưu lại. Ôn đi ôn lại đến khi thuộc lòng mới thôi.</p>
+
+                    <!-- Ôn câu sai -->
+                    <div class="lp-bento-card lp-reveal lp-reveal-delay-2">
+                        <div class="lp-bento-icon" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.2);">⚠️</div>
+                        <h3>Ôn Câu Sai</h3>
+                        <p>Tự động ghi nhớ mọi câu bạn làm sai. Ôn đến khi thuộc.</p>
                     </div>
-                    <div class="lp-feature-card">
-                        <div style="font-size:36px;margin-bottom:16px">🏅</div>
-                        <h3 style="font-size:18px;font-weight:800;margin-bottom:10px;color:white">Xếp Hạng & Thành Tích</h3>
-                        <p style="color:#64748b;font-size:14px;line-height:1.7">Cạnh tranh với bạn bè, mở khoá huy hiệu, duy trì streak mỗi ngày để giữ phong độ.</p>
-                    </div>
-                    <div class="lp-feature-card">
-                        <div style="font-size:36px;margin-bottom:16px">☀️</div>
-                        <h3 style="font-size:18px;font-weight:800;margin-bottom:10px;color:white">Daily 5</h3>
-                        <p style="color:#64748b;font-size:14px;line-height:1.7">Mỗi ngày 5 câu hỏi mới. Học đều đặn, không cần nhồi nhét. Nhỏ giọt, thấm sâu.</p>
+
+                    <!-- Streak + gamification -->
+                    <div class="lp-bento-card lp-bento-wide lp-reveal lp-reveal-delay-2" style="background:linear-gradient(135deg,rgba(139,92,246,0.06),transparent);">
+                        <div class="lp-bento-icon" style="background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.25);">🏅</div>
+                        <h3>Gamification · Streak · Bảng Xếp Hạng</h3>
+                        <p>Mỗi ngày học duy trì streak 🔥, mở khoá huy hiệu, leo bảng xếp hạng với bạn bè. Daily 5 câu mỗi ngày — nhỏ giọt, thấm sâu.</p>
+                        <div style="margin-top:20px;display:flex;align-items:center;gap:16px;">
+                            <div style="text-align:center;"><div style="font-size:26px;font-weight:900;color:white;">🔥 7</div><div style="font-size:11px;color:#475569;">Ngày streak</div></div>
+                            <div style="width:1px;height:36px;background:rgba(255,255,255,0.07);"></div>
+                            <div style="text-align:center;"><div style="font-size:26px;font-weight:900;color:#8b5cf6;">🥇</div><div style="font-size:11px;color:#475569;">Top 10</div></div>
+                            <div style="width:1px;height:36px;background:rgba(255,255,255,0.07);"></div>
+                            <div style="text-align:center;"><div style="font-size:26px;font-weight:900;color:#f59e0b;">⭐ 12</div><div style="font-size:11px;color:#475569;">Huy hiệu</div></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- CTA -->
-            <div style="padding:80px 24px;text-align:center;position:relative;overflow:hidden">
-                <div class="lp-glow" style="width:500px;height:300px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(ellipse,rgba(16,185,129,0.12),transparent 70%)"></div>
-                <div style="position:relative;max-width:560px;margin:0 auto">
-                    <h2 style="font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-0.02em;margin-bottom:16px">
-                        Sẵn sàng chinh phục<br><span style="color:#10b981">kỳ thi chưa?</span>
+            <!-- ── TESTIMONIALS ── -->
+            <div class="lp-testimonials" id="lp-testimonials">
+                <div class="lp-section-label lp-reveal">
+                    <span class="lp-badge">✦ ĐÁNH GIÁ</span>
+                </div>
+                <h2 class="lp-section-h2 lp-reveal lp-reveal-delay-1">Sinh viên nói gì về<br>Y Khoa MT?</h2>
+
+                <div class="lp-testi-grid">
+                    <div class="lp-testi-card lp-reveal">
+                        <div class="lp-testi-stars">★★★★★</div>
+                        <p class="lp-testi-text">"Từ ngày dùng Y Khoa MT, mình ôn thi hiệu quả hơn hẳn. Phần điền khuyết giúp mình nhớ lâu hơn hẳn so với chỉ đọc lý thuyết."</p>
+                        <div class="lp-testi-author">
+                            <div class="lp-testi-avatar" style="background:linear-gradient(135deg,#10b981,#059669);">T</div>
+                            <div><div class="lp-testi-name">Trần Minh Tú</div><div class="lp-testi-role">Y5 · ĐH Y Dược TP.HCM</div></div>
+                        </div>
+                    </div>
+                    <div class="lp-testi-card lp-reveal lp-reveal-delay-1">
+                        <div class="lp-testi-stars">★★★★★</div>
+                        <p class="lp-testi-text">"Tính năng ôn câu sai cực kỳ hữu ích. Mình chỉ cần học 20 phút mỗi tối là đủ. Giao diện đẹp, không quảng cáo, miễn phí nữa!"</p>
+                        <div class="lp-testi-author">
+                            <div class="lp-testi-avatar" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">M</div>
+                            <div><div class="lp-testi-name">Nguyễn Mai Hương</div><div class="lp-testi-role">Y4 · ĐH Y Hà Nội</div></div>
+                        </div>
+                    </div>
+                    <div class="lp-testi-card lp-reveal lp-reveal-delay-2">
+                        <div class="lp-testi-stars">★★★★★</div>
+                        <p class="lp-testi-text">"Bộ flashcard môn Lao rất đầy đủ. Streak ngày giúp mình không bỏ học. Trang này xứng đáng 10/10 cho sinh viên y khoa."</p>
+                        <div class="lp-testi-author">
+                            <div class="lp-testi-avatar" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);">N</div>
+                            <div><div class="lp-testi-name">Lê Quang Nam</div><div class="lp-testi-role">Y6 · ĐH Y Cần Thơ</div></div>
+                        </div>
+                    </div>
+                    <div class="lp-testi-card lp-reveal lp-reveal-delay-1">
+                        <div class="lp-testi-stars">★★★★★</div>
+                        <p class="lp-testi-text">"Trắc nghiệm có đếm ngược giúp mình quen với áp lực thi thật. Điểm thi vừa rồi cao hơn kỳ trước hẳn nhờ luyện ở đây."</p>
+                        <div class="lp-testi-author">
+                            <div class="lp-testi-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">H</div>
+                            <div><div class="lp-testi-name">Phạm Thị Hà</div><div class="lp-testi-role">Y3 · ĐH Y Dược Huế</div></div>
+                        </div>
+                    </div>
+                    <div class="lp-testi-card lp-reveal lp-reveal-delay-2">
+                        <div class="lp-testi-stars">★★★★★</div>
+                        <p class="lp-testi-text">"Môn Ung Thư Đại Cương trước giờ mình sợ lắm, nhờ Y Khoa MT ôn lại flashcard mỗi ngày mà giờ tự tin hơn nhiều."</p>
+                        <div class="lp-testi-author">
+                            <div class="lp-testi-avatar" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div>
+                            <div><div class="lp-testi-name">Võ Thị Lan</div><div class="lp-testi-role">Y5 · ĐH Y Dược Cần Thơ</div></div>
+                        </div>
+                    </div>
+                    <div class="lp-testi-card lp-reveal lp-reveal-delay-3">
+                        <div class="lp-testi-stars">★★★★★</div>
+                        <p class="lp-testi-text">"Mình giới thiệu cho cả nhóm dùng. Cạnh tranh bảng xếp hạng với nhau vui lắm, vừa học vừa cười. Cảm ơn tác giả nhiều!"</p>
+                        <div class="lp-testi-author">
+                            <div class="lp-testi-avatar" style="background:linear-gradient(135deg,#06b6d4,#0284c7);">K</div>
+                            <div><div class="lp-testi-name">Đinh Văn Khoa</div><div class="lp-testi-role">Y4 · ĐH Y Dược TP.HCM</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── COMPARISON ── -->
+            <div class="lp-compare" id="lp-compare">
+                <div class="lp-section-label lp-reveal">
+                    <span class="lp-badge">✦ SO SÁNH</span>
+                </div>
+                <h2 class="lp-section-h2 lp-reveal lp-reveal-delay-1">Tại sao chọn Y Khoa MT?</h2>
+                <p class="lp-section-sub lp-reveal lp-reveal-delay-2" style="margin-bottom:48px;">So với các cách học khác.</p>
+
+                <div class="lp-compare-table lp-reveal">
+                    <div class="lp-compare-header">
+                        <div class="lp-compare-col" style="text-align:left;font-size:13px;color:#475569;font-weight:600;">Tính năng</div>
+                        <div class="lp-compare-col" style="font-size:14px;font-weight:800;color:#475569;">Học Truyền Thống</div>
+                        <div class="lp-compare-col lp-compare-ours">
+                            <div style="font-size:14px;font-weight:800;color:#10b981;">Y Khoa MT</div>
+                            <div style="font-size:11px;color:#059669;margin-top:2px;">Miễn phí</div>
+                        </div>
+                    </div>
+                    <div class="lp-compare-row">
+                        <div class="lp-compare-cell lp-compare-feature">Luyện câu hỏi có phản hồi ngay</div>
+                        <div class="lp-compare-cell"><span class="lp-cross">✕</span></div>
+                        <div class="lp-compare-cell lp-compare-ours"><span class="lp-check">✓</span></div>
+                    </div>
+                    <div class="lp-compare-row">
+                        <div class="lp-compare-cell lp-compare-feature">Tự động lưu câu sai để ôn lại</div>
+                        <div class="lp-compare-cell"><span class="lp-cross">✕</span></div>
+                        <div class="lp-compare-cell lp-compare-ours"><span class="lp-check">✓</span></div>
+                    </div>
+                    <div class="lp-compare-row">
+                        <div class="lp-compare-cell lp-compare-feature">Theo dõi tiến độ chi tiết</div>
+                        <div class="lp-compare-cell"><span class="lp-cross">✕</span></div>
+                        <div class="lp-compare-cell lp-compare-ours"><span class="lp-check">✓</span></div>
+                    </div>
+                    <div class="lp-compare-row">
+                        <div class="lp-compare-cell lp-compare-feature">Thi thử đếm ngược sát thực tế</div>
+                        <div class="lp-compare-cell"><span class="lp-cross">✕</span></div>
+                        <div class="lp-compare-cell lp-compare-ours"><span class="lp-check">✓</span></div>
+                    </div>
+                    <div class="lp-compare-row">
+                        <div class="lp-compare-cell lp-compare-feature">Streak & bảng xếp hạng</div>
+                        <div class="lp-compare-cell"><span class="lp-cross">✕</span></div>
+                        <div class="lp-compare-cell lp-compare-ours"><span class="lp-check">✓</span></div>
+                    </div>
+                    <div class="lp-compare-row">
+                        <div class="lp-compare-cell lp-compare-feature">Hoàn toàn miễn phí</div>
+                        <div class="lp-compare-cell" style="font-size:12px;color:#475569;">Mua giáo trình</div>
+                        <div class="lp-compare-cell lp-compare-ours"><span class="lp-check">✓</span></div>
+                    </div>
+                    <div class="lp-compare-row">
+                        <div class="lp-compare-cell lp-compare-feature">Không quảng cáo</div>
+                        <div class="lp-compare-cell"><span class="lp-cross">✕</span></div>
+                        <div class="lp-compare-cell lp-compare-ours"><span class="lp-check">✓</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── CTA FINAL ── -->
+            <div class="lp-cta-final">
+                <div class="lp-cta-glow"></div>
+                <div style="position:relative;max-width:640px;margin:0 auto;">
+                    <div class="lp-reveal" style="margin-bottom:20px;"><span class="lp-badge">✦ BẮT ĐẦU NGAY</span></div>
+                    <h2 class="lp-reveal lp-reveal-delay-1" style="font-size:clamp(36px,5vw,60px);font-weight:900;letter-spacing:-0.03em;line-height:1.05;margin-bottom:20px;color:white;">
+                        Sẵn sàng thi đậu<br><span style="background:linear-gradient(135deg,#10b981,#34d399,#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">kỳ thi tới chưa?</span>
                     </h2>
-                    <p style="color:#64748b;font-size:16px;margin-bottom:36px">Hàng nghìn sinh viên y khoa đang học mỗi ngày. Tham gia miễn phí ngay hôm nay.</p>
-                    <button class="lp-btn-primary" onclick="landingEnterApp()" style="font-size:18px;padding:18px 44px">
-                        🚀 Bắt đầu học miễn phí
-                    </button>
+                    <p class="lp-reveal lp-reveal-delay-2" style="font-size:17px;color:#475569;margin-bottom:44px;line-height:1.7;">
+                        Tham gia cùng hàng trăm sinh viên y khoa đang học mỗi ngày.<br>Miễn phí 100%, không cần thẻ tín dụng.
+                    </p>
+                    <div class="lp-reveal lp-reveal-delay-3" style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
+                        <button class="lp-btn-primary lp-btn-lg" onclick="landingEnterApp()" style="font-size:17px;padding:18px 44px;">
+                            🚀 Bắt đầu miễn phí
+                        </button>
+                        <button class="lp-btn-ghost" onclick="landingShowRegister()" style="padding:18px 28px;font-size:16px;">
+                            Tạo tài khoản →
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Footer -->
-            <div style="border-top:1px solid rgba(255,255,255,0.06);padding:24px;text-align:center;color:#334155;font-size:13px">
-                © 2026 Y Khoa MT · Made with ❤️ by NHMT &nbsp;·&nbsp;
-                <a href="/about" style="color:#334155;text-decoration:none">Về tôi</a> &nbsp;·&nbsp;
-                <a href="/privacy-policy" style="color:#334155;text-decoration:none">Chính sách</a> &nbsp;·&nbsp;
-                <a href="/terms" style="color:#334155;text-decoration:none">Điều khoản</a>
+            <!-- ── FOOTER ── -->
+            <div class="lp-footer">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <img src="data:image/png;base64,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" style="width:24px;height:24px;border-radius:6px;object-fit:cover;" alt="">
+                    <span>© 2026 Y Khoa MT · Made with ❤️ by NHMT</span>
+                </div>
+                <div style="display:flex;gap:20px;">
+                    <a href="/about">Về tôi</a>
+                    <a href="/privacy-policy">Chính sách</a>
+                    <a href="/terms">Điều khoản</a>
+                    <a href="/delete-data">Xoá dữ liệu</a>
+                </div>
             </div>
+
+            <script>
+            (function() {
+                // ── Scroll reveal ──
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(e) {
+                        if (e.isIntersecting) { e.target.classList.add('lp-visible'); }
+                    });
+                }, { threshold: 0.12 });
+                document.querySelectorAll('#landing-page .lp-reveal').forEach(function(el) {
+                    observer.observe(el);
+                });
+
+                // ── Animated counters ──
+                var counted = false;
+                var statsObs = new IntersectionObserver(function(entries) {
+                    if (entries[0].isIntersecting && !counted) {
+                        counted = true;
+                        animateCounter('lp-cnt-1', 3500, 1600, '+');
+                        animateCounter('lp-cnt-2', 13, 800, '');
+                        animateCounter('lp-cnt-3', 500, 1200, '+');
+                    }
+                }, { threshold: 0.3 });
+                var statsEl = document.getElementById('lp-stats');
+                if (statsEl) statsObs.observe(statsEl);
+
+                function animateCounter(id, target, duration, suffix) {
+                    var el = document.getElementById(id);
+                    if (!el) return;
+                    var start = 0, startTime = null;
+                    function step(ts) {
+                        if (!startTime) startTime = ts;
+                        var prog = Math.min((ts - startTime) / duration, 1);
+                        var ease = 1 - Math.pow(1 - prog, 3);
+                        var val = Math.floor(ease * target);
+                        el.textContent = val.toLocaleString('vi-VN') + suffix;
+                        if (prog < 1) requestAnimationFrame(step);
+                        else el.textContent = target.toLocaleString('vi-VN') + suffix;
+                    }
+                    requestAnimationFrame(step);
+                }
+            })();
+            </script>
         </section>
         <!-- ══ END LANDING PAGE ══ -->
 
@@ -6504,16 +7023,25 @@ function loadProfile() {
             document.getElementById('yk-sidebar')?.classList.add('hidden');
             document.getElementById('main-nav')?.classList.add('hidden');
             document.getElementById('back-to-subjects')?.classList.add('hidden');
-            document.querySelector('.main-topbar')?.style && (document.querySelector('.main-topbar').style.display = 'none');
+            document.querySelector('header')?.classList.add('hidden');
+            document.getElementById('swm-widget')?.classList.add('hidden');
+            // Reset padding-top khi header ẩn
+            const main = document.querySelector('main');
+            if (main) main.style.paddingTop = '0px';
         }
         function hideLandingPage() {
             const lp = document.getElementById('landing-page');
             if (lp) lp.classList.add('hidden');
-            document.querySelector('.main-topbar')?.style && (document.querySelector('.main-topbar').style.display = '');
+            document.querySelector('header')?.classList.remove('hidden');
+            document.getElementById('swm-widget')?.classList.remove('hidden');
+            // Tính lại padding-top sau khi header hiện lại
+            setTimeout(function() { if (typeof adjustMainPadding === 'function') adjustMainPadding(); }, 50);
         }
         window.landingEnterApp = function() {
             hideLandingPage();
-            // Hiện subject-select
+            loadSavedCosmetics();
+            history.replaceState(null, "", "/app");
+            document.title = "Y Khoa MT";
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             document.getElementById('subject-select')?.classList.remove('hidden');
         };
@@ -8480,7 +9008,19 @@ async function resetSubjectProgress() {
             toggleNote, saveNote, openShareFromQuestion, closeShareModal, downloadShareCard, copyShareText,
         });
 
-        // Khởi tạo
+        // Khởi tạo - apply theme mặc định ngay lập tức để tránh flash xanh dương
+        (function() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('swm_theme') || 'null');
+                if (saved && saved.c1) {
+                    document.documentElement.style.setProperty('--p', saved.c1);
+                    document.documentElement.style.setProperty('--pd', saved.c2);
+                } else {
+                    document.documentElement.style.setProperty('--p', '#10b981');
+                    document.documentElement.style.setProperty('--pd', '#059669');
+                }
+            } catch(e) {}
+        })();
         updateUI();
         loadSavedCosmetics();
 
@@ -9212,15 +9752,14 @@ async function resetSubjectProgress() {
 
         let _routerBusy = false;
 
-        function pushHash(subject, section) {
-            let hash = "";
-            if (subject && section && section !== "home") hash = "#" + subject + "/" + section;
-            else if (subject) hash = "#" + subject;
-            else if (section && section !== "subject-select") hash = "#" + section;
-            else hash = "#";
-            if (window.location.hash !== hash) {
+        function pushRoute(subject, section) {
+            let path = "/app";
+            if (subject && section && section !== "home") path = "/" + subject + "/" + section;
+            else if (subject) path = "/" + subject;
+            else if (section && section !== "subject-select") path = "/" + section;
+            if (window.location.pathname !== path) {
                 _routerBusy = true;
-                history.pushState(null, "", hash.length > 1 ? hash : window.location.pathname);
+                history.pushState(null, "", path);
                 _routerBusy = false;
             }
             // Cập nhật <title>
@@ -9237,31 +9776,45 @@ async function resetSubjectProgress() {
         const _origShowSection = showSection;
         showSection = window.showSection = function(id) {
             _origShowSection(id);
-            if (!_routerBusy) pushHash(currentSubject, id);
+            if (!_routerBusy) pushRoute(currentSubject, id);
         };
 
         // Patch selectSubject
         const _origSelectSubject = selectSubject;
         selectSubject = window.selectSubject = async function(subjectKey) {
             await _origSelectSubject(subjectKey);
-            if (!_routerBusy) pushHash(subjectKey, "home");
+            if (!_routerBusy) pushRoute(subjectKey, "home");
         };
 
         // Patch backToSubjectSelect
         const _origBack = backToSubjectSelect;
         backToSubjectSelect = window.backToSubjectSelect = function() {
             _origBack();
-            if (!_routerBusy) pushHash(null, null);
+            if (!_routerBusy) {
+                _routerBusy = true;
+                history.pushState(null, "", "/app");
+                document.title = "Y Khoa MT";
+                _routerBusy = false;
+            }
         };
 
-        // Khôi phục từ hash (reload / share link)
-        async function restoreFromHash() {
-            const hash = window.location.hash.replace("#", "").trim();
-            if (!hash || hash === "/") return;
-            const parts = hash.split("/");
+        // Khôi phục từ path (reload / share link)
+        async function restoreFromPath() {
+            const path = window.location.pathname.replace(/^\//, "").trim();
+            if (!path || path === "/") return; // "/" = landing, Firebase sẽ handle
+            // "/app" → vào subject-select
+            if (path === "app") {
+                if (typeof hideLandingPage === 'function') hideLandingPage();
+                if (typeof loadSavedCosmetics === 'function') loadSavedCosmetics();
+                setTimeout(function() { _routerBusy = true; _origShowSection('subject-select'); _routerBusy = false; }, 200);
+                return;
+            }
+            const parts = path.split("/");
             const first = parts[0];
             const second = parts[1] || "home";
             if (VALID_SUBJECTS.includes(first)) {
+                if (typeof hideLandingPage === 'function') hideLandingPage();
+                if (typeof loadSavedCosmetics === 'function') loadSavedCosmetics();
                 _routerBusy = true;
                 await _origSelectSubject(first);
                 _routerBusy = false;
@@ -9269,15 +9822,18 @@ async function resetSubjectProgress() {
                     setTimeout(function() { _routerBusy = true; _origShowSection(second); _routerBusy = false; }, 200);
                 }
             } else if (STANDALONE_SECTIONS.includes(first)) {
+                if (typeof hideLandingPage === 'function') hideLandingPage();
+                if (typeof loadSavedCosmetics === 'function') loadSavedCosmetics();
                 setTimeout(function() { _routerBusy = true; _origShowSection(first); _routerBusy = false; }, 100);
             }
         }
 
-        window.addEventListener("popstate", restoreFromHash);
+        window.addEventListener("popstate", restoreFromPath);
 
         window.addEventListener("load", function() {
-            if (window.location.hash && window.location.hash.length > 1) {
-                setTimeout(restoreFromHash, 900);
+            const path = window.location.pathname;
+            if (path && path !== "/") {
+                setTimeout(restoreFromPath, 900);
             }
         });
 
