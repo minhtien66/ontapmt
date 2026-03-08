@@ -1275,7 +1275,8 @@ body.sb-active #main-nav {
                     letter-spacing: -0.04em; margin-bottom: 24px;
                     color: white;
                 }
-                .lp-hero h1 .lp-gradient-text {
+                .lp-hero h1 .lp-gradient-text,
+                .lp-hero-left h1 .lp-gradient-text {
                     background: linear-gradient(135deg, #10b981 0%, #34d399 40%, #6ee7b7 70%, #a7f3d0 100%);
                     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
                     background-clip: text;
@@ -1542,8 +1543,14 @@ body.sb-active #main-nav {
                 }
 
                 /* HERO */
-                html:not(.dark) .lp-hero h1 { color: #0f172a !important; }
-                html:not(.dark) .lp-hero p { color: #4b5563 !important; }
+                html:not(.dark) .lp-hero-left h1 { color: #0f172a !important; }
+                html:not(.dark) .lp-hero-left h1 .lp-gradient-text {
+                    background: linear-gradient(135deg, #10b981 0%, #34d399 40%, #6ee7b7 70%, #a7f3d0 100%) !important;
+                    -webkit-background-clip: text !important;
+                    -webkit-text-fill-color: transparent !important;
+                    background-clip: text !important;
+                }
+                html:not(.dark) .lp-hero-left p { color: #4b5563 !important; }
 
                 /* AVATAR border */
                 html:not(.dark) .lp-avatar { border-color: #f0fdf9 !important; }
@@ -1662,95 +1669,392 @@ body.sb-active #main-nav {
             </nav>
 
             <!-- ── HERO ── -->
-            <div class="lp-hero">
-                <div class="lp-anim-1" style="margin-bottom:28px;">
-                    <span class="lp-badge"><span class="lp-badge-dot"></span> Hoàn toàn miễn phí · Không quảng cáo</span>
-                </div>
-                <h1 class="lp-anim-2">
-                    Ôn thi y khoa<br>
-                    <span class="lp-gradient-text">chưa bao giờ dễ vậy</span>
-                </h1>
-                <p class="lp-anim-3">
-                    Flashcard, điền khuyết, trắc nghiệm có đếm giờ — mọi thứ cần để thi đậu trong một nơi. Theo dõi tiến độ, ôn câu sai, xem bảng xếp hạng.
-                </p>
-                <div class="lp-anim-4" style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:28px;">
-                    <button class="lp-btn-primary lp-btn-lg" onclick="landingEnterApp()">
-                        Bắt đầu học ngay &nbsp;→
-                    </button>
-                    <button class="lp-btn-ghost" onclick="landingShowLogin()" style="padding:16px 28px;font-size:16px;">
-                        Đã có tài khoản
-                    </button>
-                </div>
-                <div class="lp-anim-5" style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;font-size:13px;color:#334155;">
-                    <span>✓ Miễn phí 100%</span>
-                    <span style="color:#1e293b;">·</span>
-                    <span>✓ Không cần thẻ</span>
-                    <span style="color:#1e293b;">·</span>
-                    <span>✓ 3,500+ câu hỏi</span>
-                    <span style="color:#1e293b;">·</span>
-                    <span>✓ 13 môn học</span>
-                </div>
+            <style>
+                .lp-hero-wrap {
+                    position: relative; z-index: 2;
+                    max-width: 1200px; margin: 0 auto;
+                    padding: 100px 32px 60px;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 60px;
+                    align-items: center;
+                }
+                @media(max-width:900px) {
+                    .lp-hero-wrap { grid-template-columns:1fr; padding:80px 20px 40px; text-align:center; }
+                    .lp-hero-left .lp-anim-4 { justify-content:center !important; }
+                    .lp-hero-left .lp-anim-5 { justify-content:center !important; }
+                    .lp-hero-right { display:none; }
+                }
+                .lp-hero-left h1 {
+                    font-size: clamp(36px, 5vw, 62px);
+                    font-weight: 900; line-height: 1.05;
+                    letter-spacing: -0.04em; margin-bottom: 20px;
+                    color: white; text-align: left;
+                }
+                @media(max-width:900px) { .lp-hero-left h1 { text-align:center; } }
+                .lp-hero-left p {
+                    font-size: 16px; color: #64748b;
+                    margin-bottom: 36px; line-height: 1.75; text-align:left;
+                }
+                @media(max-width:900px) { .lp-hero-left p { text-align:center; } }
 
-                <!-- Social proof -->
-                <div class="lp-anim-5" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:24px;">
-                    <div class="lp-avatars">
-                        <div class="lp-avatar" style="background:linear-gradient(135deg,#10b981,#059669);">T</div>
-                        <div class="lp-avatar" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">M</div>
-                        <div class="lp-avatar" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);">N</div>
-                        <div class="lp-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">H</div>
-                        <div class="lp-avatar" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div>
+                /* ── MacBook Air style ── */
+                .lp-macbook-wrap {
+                    position: relative;
+                    animation: lp-slide-in 0.9s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+                    perspective: 1600px;
+                }
+                @keyframes lp-slide-in {
+                    from { opacity:0; transform: translateX(80px); }
+                    to   { opacity:1; transform: translateX(0); }
+                }
+                .lp-macbook-inner {
+                    transition: transform 0.18s ease-out;
+                    transform-style: preserve-3d;
+                    will-change: transform;
+                }
+
+                /* Glow behind */
+                .lp-macbook-glow {
+                    position: absolute;
+                    inset: -60px; z-index: -1;
+                    background: radial-gradient(ellipse 70% 50% at 50% 60%, rgba(16,185,129,0.2), transparent 70%);
+                    animation: lp-glow-pulse 4s ease-in-out infinite alternate;
+                    pointer-events: none;
+                    filter: blur(30px);
+                }
+                @keyframes lp-glow-pulse {
+                    from { opacity:0.4; transform:scale(0.95); }
+                    to   { opacity:0.85; transform:scale(1.05); }
+                }
+                html:not(.dark) .lp-macbook-glow {
+                    background: radial-gradient(ellipse 70% 50% at 50% 60%, rgba(16,185,129,0.15), transparent 70%);
+                }
+
+                /* Float animation */
+                .lp-macbook {
+                    position: relative;
+                    animation: lp-float-hero 5s ease-in-out infinite;
+                    filter: drop-shadow(0 50px 40px rgba(0,0,0,0.35)) drop-shadow(0 20px 20px rgba(0,0,0,0.2));
+                }
+                html:not(.dark) .lp-macbook {
+                    filter: drop-shadow(0 40px 40px rgba(0,0,0,0.15)) drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+                }
+                @keyframes lp-float-hero {
+                    0%,100% { transform: translateY(0px); }
+                    50%     { transform: translateY(-12px); }
+                }
+
+                /* ── LID ── */
+                .lp-mb-lid {
+                    background: linear-gradient(180deg, #1e1e20 0%, #141416 100%);
+                    border-radius: 14px 14px 0 0;
+                    padding: 10px 10px 0;
+                    border: 1.5px solid #3a3a3c;
+                    border-bottom: none;
+                    position: relative;
+                }
+                html:not(.dark) .lp-mb-lid {
+                    background: linear-gradient(180deg, #c0c0c2 0%, #b4b4b6 100%);
+                    border-color: #a0a0a2;
+                }
+
+                /* Camera */
+                .lp-mb-camera {
+                    width: 6px; height: 6px; border-radius: 50%;
+                    background: #0d0d0d; margin: 0 auto 7px;
+                    box-shadow: 0 0 0 1.5px rgba(255,255,255,0.06);
+                }
+                html:not(.dark) .lp-mb-camera { background: #888; box-shadow: 0 0 0 1.5px rgba(0,0,0,0.15); }
+
+                /* Screen — 16:9 */
+                .lp-mb-screen {
+                    background: #000;
+                    border-radius: 4px 4px 0 0;
+                    overflow: hidden;
+                    aspect-ratio: 16 / 9.5;
+                    position: relative;
+                }
+                html:not(.dark) .lp-mb-screen { background: #111; }
+
+                /* Browser */
+                .lp-mb-browser { background: #0f1623; height: 100%; display:flex; flex-direction:column; }
+                html:not(.dark) .lp-mb-browser { background: #f0f2f5; }
+
+                .lp-mb-toolbar {
+                    display: flex; align-items: center; gap: 5px;
+                    padding: 6px 10px;
+                    background: #18202e;
+                    border-bottom: 1px solid rgba(255,255,255,0.05);
+                    flex-shrink: 0;
+                }
+                html:not(.dark) .lp-mb-toolbar { background: #e8eaed; border-bottom-color: rgba(0,0,0,0.08); }
+
+                .lp-mb-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+                .lp-mb-urlbar {
+                    flex:1; height:18px; border-radius:100px;
+                    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.08);
+                    display:flex; align-items:center; padding:0 10px; margin:0 8px;
+                }
+                html:not(.dark) .lp-mb-urlbar { background:rgba(255,255,255,0.9); border-color:rgba(0,0,0,0.1); }
+                .lp-mb-content { padding: 10px; flex:1; overflow:hidden; }
+
+                /* ── CHIN ── */
+                .lp-mb-chin {
+                    height: 10px;
+                    background: linear-gradient(180deg, #1a1a1c, #111113);
+                    border-left: 1.5px solid #3a3a3c;
+                    border-right: 1.5px solid #3a3a3c;
+                }
+                html:not(.dark) .lp-mb-chin { background: linear-gradient(180deg, #b0b0b2, #a8a8aa); border-color:#a0a0a2; }
+
+                /* ── HINGE ── */
+                .lp-mb-hinge {
+                    height: 4px;
+                    background: linear-gradient(180deg, #080808, #030303);
+                    margin: 0 -12px; /* slightly wider than lid */
+                    border-radius: 0 0 2px 2px;
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+                }
+                html:not(.dark) .lp-mb-hinge {
+                    background: linear-gradient(180deg, #707072, #606062);
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                }
+
+                /* ── BASE: trapezoid — wider than screen ── */
+                .lp-mb-base {
+                    background: linear-gradient(180deg, #3a3a3c 0%, #2e2e30 40%, #242426 100%);
+                    border-radius: 0 0 12px 12px;
+                    border: 1.5px solid #4a4a4c;
+                    border-top: 1px solid #606062;
+                    height: 22px;
+                    position: relative;
+                    display: flex; align-items: center; justify-content: center;
+                    margin: 0 -28px;
+                    box-shadow: 0 6px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+                }
+                html:not(.dark) .lp-mb-base {
+                    background: linear-gradient(180deg, #d8d8da 0%, #c8c8ca 40%, #b8b8ba 100%);
+                    border-color: #a8a8aa;
+                    border-top-color: #e8e8ea;
+                    box-shadow: 0 5px 16px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.5);
+                }
+                .lp-mb-base::after { content: ''; }
+
+                /* ── SHADOW LINE ── */
+                .lp-mb-bottom {
+                    height: 5px;
+                    background: linear-gradient(180deg, rgba(0,0,0,0.35), transparent);
+                    border-radius: 0 0 12px 12px;
+                    margin: 0 -24px;
+                }
+                html:not(.dark) .lp-mb-bottom {
+                    background: linear-gradient(180deg, rgba(0,0,0,0.1), transparent);
+                }
+
+                /* Floating badges */
+                .lp-badge-float {
+                    position:absolute;
+                    background:rgba(17,24,39,0.9);
+                    backdrop-filter:blur(12px);
+                    border:1px solid rgba(255,255,255,0.1);
+                    border-radius:12px;
+                    padding:8px 14px;
+                    font-size:12px; font-weight:700;
+                    box-shadow:0 8px 32px rgba(0,0,0,0.4);
+                    white-space:nowrap;
+                    z-index:10;
+                }
+                html:not(.dark) .lp-badge-float {
+                    background:rgba(255,255,255,0.95);
+                    border-color:rgba(16,185,129,0.2);
+                    box-shadow:0 8px 24px rgba(16,185,129,0.12);
+                    color:#0f172a;
+                }
+                .lp-badge-float-1 {
+                    top: -18px; right: -20px;
+                    animation: lp-badge-float1 4s 0.5s ease-in-out infinite;
+                    color:#10b981;
+                }
+                .lp-badge-float-2 {
+                    bottom: 30px; left: -24px;
+                    animation: lp-badge-float2 4.5s 1s ease-in-out infinite;
+                    color:#f59e0b;
+                }
+                .lp-badge-float-3 {
+                    top: 40%; right: -30px;
+                    animation: lp-badge-float3 5s 0.2s ease-in-out infinite;
+                    color:#8b5cf6;
+                }
+                @keyframes lp-badge-float1 { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-8px) rotate(1deg)} }
+                @keyframes lp-badge-float2 { 0%,100%{transform:translateY(0) rotate(2deg)} 50%{transform:translateY(-10px) rotate(-1deg)} }
+                @keyframes lp-badge-float3 { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-6px) rotate(2deg)} }
+            </style>
+
+            <div class="lp-hero-wrap">
+                <!-- LEFT: Text -->
+                <div class="lp-hero-left">
+                    <div class="lp-anim-1" style="margin-bottom:20px;">
+                        <span class="lp-badge"><span class="lp-badge-dot"></span> Hoàn toàn miễn phí · Không quảng cáo</span>
                     </div>
-                    <span style="font-size:13px;color:#475569;"><strong style="color:#94a3b8;">500+</strong> sinh viên đang học mỗi ngày</span>
-                    <span style="color:#f59e0b;font-size:13px;">★★★★★</span>
+                    <h1 class="lp-anim-2">
+                        Ôn thi y khoa<br>
+                        <span class="lp-gradient-text">chưa bao giờ dễ vậy</span>
+                    </h1>
+                    <p class="lp-anim-3">
+                        Flashcard, điền khuyết, trắc nghiệm có đếm giờ — mọi thứ cần để thi đậu trong một nơi. Theo dõi tiến độ, ôn câu sai, xem bảng xếp hạng.
+                    </p>
+                    <div class="lp-anim-4" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:24px;">
+                        <button class="lp-btn-primary lp-btn-lg" onclick="landingEnterApp()">
+                            Bắt đầu học ngay &nbsp;→
+                        </button>
+                        <button class="lp-btn-ghost" onclick="landingShowLogin()" style="padding:16px 24px;font-size:15px;">
+                            Đăng nhập
+                        </button>
+                    </div>
+                    <div class="lp-anim-5" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px;color:#334155;margin-bottom:20px;">
+                        <span>✓ Miễn phí 100%</span>
+                        <span>·</span>
+                        <span>✓ 3,500+ câu hỏi</span>
+                        <span>·</span>
+                        <span>✓ 13 môn học</span>
+                    </div>
+                    <!-- Social proof -->
+                    <div class="lp-anim-5" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                        <div class="lp-avatars">
+                            <div class="lp-avatar" style="background:linear-gradient(135deg,#10b981,#059669);">T</div>
+                            <div class="lp-avatar" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">M</div>
+                            <div class="lp-avatar" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);">N</div>
+                            <div class="lp-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">H</div>
+                            <div class="lp-avatar" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div>
+                        </div>
+                        <span style="font-size:13px;color:#475569;"><strong style="color:#94a3b8;">500+</strong> sinh viên đang học</span>
+                        <span style="color:#f59e0b;font-size:13px;">★★★★★</span>
+                    </div>
                 </div>
 
-                <!-- Mockup -->
-                <div class="lp-float lp-anim-5" style="max-width:720px;margin:64px auto 0;position:relative;">
-                    <!-- Glow behind mockup -->
-                    <div style="position:absolute;inset:-40px;background:radial-gradient(ellipse,rgba(16,185,129,0.1),transparent 70%);border-radius:50%;pointer-events:none;"></div>
-                    <div style="position:relative;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:20px;box-shadow:0 40px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.04),inset 0 1px 0 rgba(255,255,255,0.07);">
-                        <!-- Browser chrome -->
-                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.06);">
-                            <div style="width:10px;height:10px;border-radius:50%;background:#ef4444;opacity:0.8;"></div>
-                            <div style="width:10px;height:10px;border-radius:50%;background:#f59e0b;opacity:0.8;"></div>
-                            <div style="width:10px;height:10px;border-radius:50%;background:#10b981;opacity:0.8;"></div>
-                            <div style="flex:1;height:26px;border-radius:7px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;padding:0 12px;margin:0 10px;">
-                                <span style="font-size:11px;color:#334155;">🔒 nhmtontap.dpdns.org</span>
-                            </div>
-                        </div>
-                        <!-- App UI preview -->
-                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
-                            <div style="background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(5,150,105,0.1));border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:16px;text-align:center;">
-                                <div style="font-size:22px;margin-bottom:6px;">📝</div>
-                                <div style="font-size:12px;font-weight:700;color:#10b981;">Điền Khuyết</div>
-                            </div>
-                            <div style="background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(29,78,216,0.08));border:1px solid rgba(59,130,246,0.2);border-radius:14px;padding:16px;text-align:center;">
-                                <div style="font-size:22px;margin-bottom:6px;">💬</div>
-                                <div style="font-size:12px;font-weight:700;color:#60a5fa;">Flashcard</div>
-                            </div>
-                            <div style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(217,119,6,0.08));border:1px solid rgba(245,158,11,0.2);border-radius:14px;padding:16px;text-align:center;">
-                                <div style="font-size:22px;margin-bottom:6px;">📋</div>
-                                <div style="font-size:12px;font-weight:700;color:#fbbf24;">Trắc Nghiệm</div>
-                            </div>
-                        </div>
-                        <!-- Progress card -->
-                        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                                <span style="font-size:12px;font-weight:700;color:#475569;">Tiến độ hôm nay</span>
-                                <span style="font-size:12px;color:#10b981;font-weight:800;">82% ✓</span>
-                            </div>
-                            <div style="height:6px;border-radius:100px;background:rgba(255,255,255,0.06);overflow:hidden;margin-bottom:12px;">
-                                <div style="width:82%;height:100%;background:linear-gradient(90deg,#10b981,#34d399);border-radius:100px;"></div>
-                            </div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-                                <div><div style="font-size:18px;font-weight:900;color:white;">219</div><div style="font-size:10px;color:#334155;margin-top:2px;">Đã làm</div></div>
-                                <div><div style="font-size:18px;font-weight:900;color:#10b981;">180</div><div style="font-size:10px;color:#334155;margin-top:2px;">Đúng</div></div>
-                                <div><div style="font-size:18px;font-weight:900;color:#f59e0b;">🔥 7</div><div style="font-size:10px;color:#334155;margin-top:2px;">Ngày streak</div></div>
+                <!-- RIGHT: MacBook mockup -->
+                <div class="lp-hero-right">
+                    <div class="lp-macbook-wrap" id="lp-macbook-wrap">
+                        <div class="lp-macbook-glow"></div>
+                        <div class="lp-macbook-inner" id="lp-macbook-inner">
+                            <div class="lp-macbook">
+                                <!-- Floating badges -->
+                                <div class="lp-badge-float lp-badge-float-1">✅ 82% đúng hôm nay</div>
+                                <div class="lp-badge-float lp-badge-float-2">🔥 7 ngày streak!</div>
+                                <div class="lp-badge-float lp-badge-float-3">🏅 Top 12 tuần này</div>
+
+                                <!-- LID (screen) -->
+                                <div class="lp-mb-lid">
+                                    <div class="lp-mb-camera"></div>
+                                    <div class="lp-mb-screen">
+                                        <div class="lp-mb-browser">
+                                            <div class="lp-mb-toolbar">
+                                                <div class="lp-mb-dot" style="background:#ff5f57;"></div>
+                                                <div class="lp-mb-dot" style="background:#febc2e;"></div>
+                                                <div class="lp-mb-dot" style="background:#28c840;"></div>
+                                                <div class="lp-mb-urlbar">
+                                                    <span style="font-size:10px;color:#6b7280;">🔒 nhmtontap.dpdns.org</span>
+                                                </div>
+                                            </div>
+                                            <div class="lp-mb-content">
+                                                <!-- Nav mini -->
+                                                <div style="display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;">
+                                                    <div style="padding:4px 10px;border-radius:7px;background:linear-gradient(135deg,#10b981,#059669);font-size:9px;font-weight:700;color:white;">🏠 Home</div>
+                                                    <div style="padding:4px 10px;border-radius:7px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);font-size:9px;color:#64748b;">✏️ Điền Khuyết</div>
+                                                    <div style="padding:4px 10px;border-radius:7px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);font-size:9px;color:#64748b;">🃏 Flashcard</div>
+                                                    <div style="padding:4px 10px;border-radius:7px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);font-size:9px;color:#64748b;">📋 Trắc Nghiệm</div>
+                                                </div>
+                                                <!-- Feature cards -->
+                                                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:9px;">
+                                                    <div style="background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(5,150,105,0.08));border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:11px;text-align:center;">
+                                                        <div style="font-size:18px;">📝</div>
+                                                        <div style="font-size:9px;font-weight:700;color:#10b981;margin-top:4px;">Điền Khuyết</div>
+                                                        <div style="font-size:8px;color:#475569;margin-top:2px;">1,200+ câu</div>
+                                                    </div>
+                                                    <div style="background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(29,78,216,0.06));border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:11px;text-align:center;">
+                                                        <div style="font-size:18px;">🃏</div>
+                                                        <div style="font-size:9px;font-weight:700;color:#60a5fa;margin-top:4px;">Flashcard</div>
+                                                        <div style="font-size:8px;color:#475569;margin-top:2px;">800+ thẻ</div>
+                                                    </div>
+                                                    <div style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(217,119,6,0.06));border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:11px;text-align:center;">
+                                                        <div style="font-size:18px;">⏱️</div>
+                                                        <div style="font-size:9px;font-weight:700;color:#fbbf24;margin-top:4px;">Thi Giờ</div>
+                                                        <div style="font-size:8px;color:#475569;margin-top:2px;">13 môn</div>
+                                                    </div>
+                                                </div>
+                                                <!-- Progress card -->
+                                                <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:11px;margin-bottom:9px;">
+                                                    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                                                        <span style="font-size:9px;font-weight:700;color:#6b7280;">Tiến độ hôm nay</span>
+                                                        <span style="font-size:9px;color:#10b981;font-weight:800;">82% ✓</span>
+                                                    </div>
+                                                    <div style="height:5px;border-radius:100px;background:rgba(255,255,255,0.07);overflow:hidden;margin-bottom:8px;">
+                                                        <div style="width:82%;height:100%;background:linear-gradient(90deg,#10b981,#34d399);border-radius:100px;"></div>
+                                                    </div>
+                                                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;">
+                                                        <div><div style="font-size:14px;font-weight:900;color:white;">219</div><div style="font-size:8px;color:#475569;">Đã làm</div></div>
+                                                        <div><div style="font-size:14px;font-weight:900;color:#10b981;">180</div><div style="font-size:8px;color:#475569;">Đúng</div></div>
+                                                        <div><div style="font-size:14px;font-weight:900;color:#f59e0b;">🔥 7</div><div style="font-size:8px;color:#475569;">Streak</div></div>
+                                                    </div>
+                                                </div>
+                                                <!-- Recent questions -->
+                                                <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px;">
+                                                    <div style="font-size:9px;font-weight:700;color:#6b7280;margin-bottom:7px;">📚 Câu hỏi gần đây</div>
+                                                    <div style="display:flex;flex-direction:column;gap:5px;">
+                                                        <div style="display:flex;align-items:center;gap:7px;padding:5px 7px;background:rgba(16,185,129,0.06);border-radius:6px;border:1px solid rgba(16,185,129,0.1);">
+                                                            <span style="font-size:10px;">✅</span>
+                                                            <span style="font-size:8.5px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Cơ chế tác dụng của Metformin trong điều trị...</span>
+                                                        </div>
+                                                        <div style="display:flex;align-items:center;gap:7px;padding:5px 7px;background:rgba(239,68,68,0.05);border-radius:6px;border:1px solid rgba(239,68,68,0.1);">
+                                                            <span style="font-size:10px;">❌</span>
+                                                            <span style="font-size:8.5px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Triệu chứng đặc trưng của viêm màng não mủ...</span>
+                                                        </div>
+                                                        <div style="display:flex;align-items:center;gap:7px;padding:5px 7px;background:rgba(16,185,129,0.06);border-radius:6px;border:1px solid rgba(16,185,129,0.1);">
+                                                            <span style="font-size:10px;">✅</span>
+                                                            <span style="font-size:8.5px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Liều dùng Amoxicillin trong viêm họng liên cầu...</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CHIN (bottom bezel of lid) -->
+                                <div class="lp-mb-chin"></div>
+
+                                <!-- HINGE -->
+                                <div class="lp-mb-hinge"></div>
+
+                                <!-- BASE -->
+                                <div class="lp-mb-base"></div>
+
+                                <!-- SHADOW -->
+                                <div class="lp-mb-bottom"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <script>
+            // 3D tilt on mousemove
+            (function(){
+                var wrap = document.getElementById('lp-macbook-wrap');
+                var inner = document.getElementById('lp-macbook-inner');
+                if (!wrap || !inner) return;
+                wrap.addEventListener('mousemove', function(e) {
+                    var rect = wrap.getBoundingClientRect();
+                    var x = (e.clientX - rect.left) / rect.width  - 0.5;
+                    var y = (e.clientY - rect.top)  / rect.height - 0.5;
+                    inner.style.transform = 'rotateY(' + (x * 16) + 'deg) rotateX(' + (-y * 10) + 'deg) scale(1.02)';
+                });
+                wrap.addEventListener('mouseleave', function() {
+                    inner.style.transform = 'rotateY(0deg) rotateX(0deg) scale(1)';
+                });
+            })();
+            </script>
 
             <!-- ── MARQUEE ── -->
             <div class="lp-marquee-wrap lp-reveal">
