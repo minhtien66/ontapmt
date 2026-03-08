@@ -7399,14 +7399,33 @@ async function resetSubjectProgress() {
         let wrongAnswers = [];   // {subjectKey, question, answer}
         let wrIndex = 0;
 
+        // Lấy danh sách câu sai theo môn hiện tại (nếu có)
+        function getFilteredWrongAnswers() {
+            if (currentSubject) {
+                return wrongAnswers.filter(w => w.subjectKey === currentSubject);
+            }
+            return wrongAnswers;
+        }
+
         function loadWrongReview() {
             const empty = document.getElementById('wr-empty');
             const container = document.getElementById('wr-container');
-            // Update sidebar badge
-            if (typeof sbUpdateWrongBadge === 'function') sbUpdateWrongBadge(wrongAnswers.length);
-            if (wrongAnswers.length === 0) {
+            const filtered = getFilteredWrongAnswers();
+            // Update sidebar badge - luôn hiện tổng câu sai của môn hiện tại
+            if (typeof sbUpdateWrongBadge === 'function') sbUpdateWrongBadge(filtered.length);
+            // Cập nhật tiêu đề section nếu đang ở trong môn cụ thể
+            const subTitle = document.querySelector('#wrong-review > div > div > p');
+            if (subTitle) {
+                if (currentSubject) {
+                    subTitle.textContent = `Câu sai môn: ${(window.subjectNameMap && window.subjectNameMap[currentSubject]) || currentSubject.toUpperCase()}`;
+                } else {
+                    subTitle.textContent = 'Câu bạn từng trả lời sai sẽ xuất hiện ở đây';
+                }
+            }
+            if (filtered.length === 0) {
                 empty.classList.remove('hidden');
                 container.classList.add('hidden');
+                renderWRSidebar(); // Xóa sidebar khi không có câu sai
             } else {
                 empty.classList.add('hidden');
                 container.classList.remove('hidden');
@@ -7416,24 +7435,26 @@ async function resetSubjectProgress() {
         }
 
         function renderWrongQuestion() {
-            if (wrongAnswers.length === 0) { loadWrongReview(); return; }
-            const item = wrongAnswers[wrIndex];
+            const filtered = getFilteredWrongAnswers();
+            if (filtered.length === 0) { loadWrongReview(); return; }
+            const item = filtered[wrIndex];
             document.getElementById('wr-question').innerHTML = item.text.replace(/______/g, '<span class="border-b-2 border-red-400 px-3">_____</span>');
             document.getElementById('wr-answer-input').value = '';
             document.getElementById('wr-result').textContent = '';
             document.getElementById('wr-result').className = '';
-            document.getElementById('wr-progress').textContent = `Câu ${wrIndex + 1} / ${wrongAnswers.length}`;
-            document.getElementById('wr-count-badge').textContent = `${wrongAnswers.length} câu sai`;
+            document.getElementById('wr-progress').textContent = `Câu ${wrIndex + 1} / ${filtered.length}`;
+            document.getElementById('wr-count-badge').textContent = `${filtered.length} câu sai`;
             renderWRSidebar();
         }
 
         function renderWRSidebar() {
             const list = document.getElementById('wr-sidebar-list');
             const header = document.getElementById('wr-list-header');
+            const filtered = getFilteredWrongAnswers();
             if (!list) return;
-            if (header) header.textContent = `${wrongAnswers.length} câu sai`;
+            if (header) header.textContent = `${filtered.length} câu sai`;
             list.innerHTML = '';
-            wrongAnswers.forEach((q, i) => {
+            filtered.forEach((q, i) => {
                 const li = document.createElement('li');
                 const isCur = i === wrIndex;
                 li.className = `px-3 py-2 text-sm cursor-pointer flex items-start gap-2 transition ${isCur ? 'active-question font-semibold text-red-600' : 'hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}`;
@@ -7449,7 +7470,8 @@ async function resetSubjectProgress() {
         function checkWrongAnswer() {
             const input = document.getElementById('wr-answer-input');
             const resultEl = document.getElementById('wr-result');
-            const item = wrongAnswers[wrIndex];
+            const filtered = getFilteredWrongAnswers();
+            const item = filtered[wrIndex];
             const userAns = input.value.trim().toLowerCase();
             const correct = userAns === item.answer.toLowerCase();
             resultEl.textContent = correct ? '✓ Đúng rồi!' : `✗ Sai! Đáp án: ${item.answer}`;
@@ -7457,13 +7479,14 @@ async function resetSubjectProgress() {
                 ? 'text-base font-bold text-green-600 result-correct'
                 : 'text-base font-bold text-red-600 result-wrong';
             if (correct) {
-                // Remove from wrong list after answering correctly
+                // Xóa khỏi wrongAnswers gốc (toàn bộ danh sách)
                 setTimeout(() => {
-                    wrongAnswers.splice(wrIndex, 1);
+                    wrongAnswers = wrongAnswers.filter(w => !(w.text === item.text && w.subjectKey === item.subjectKey));
                     saveWrongAnswers();
-                    if (wrIndex >= wrongAnswers.length) wrIndex = Math.max(0, wrongAnswers.length - 1);
+                    const newFiltered = getFilteredWrongAnswers();
+                    if (wrIndex >= newFiltered.length) wrIndex = Math.max(0, newFiltered.length - 1);
                     renderWrongQuestion();
-                    if (wrongAnswers.length === 0) loadWrongReview();
+                    if (newFiltered.length === 0) loadWrongReview();
                     showToast('✓ Câu này đã được xoá khỏi danh sách sai!', 'success');
                     checkBadges();
                 }, 900);
@@ -7471,13 +7494,14 @@ async function resetSubjectProgress() {
         }
 
         function showWrongAnswer() {
-            const item = wrongAnswers[wrIndex];
+            const filtered = getFilteredWrongAnswers();
+            const item = filtered[wrIndex];
             const resultEl = document.getElementById('wr-result');
             if (item) { resultEl.textContent = `Đáp án: ${item.answer}`; resultEl.className = 'text-base font-bold text-gray-600'; }
         }
 
         function prevWrong() { if (wrIndex > 0) { wrIndex--; renderWrongQuestion(); } }
-        function nextWrong() { if (wrIndex < wrongAnswers.length - 1) { wrIndex++; renderWrongQuestion(); } }
+        function nextWrong() { const filtered = getFilteredWrongAnswers(); if (wrIndex < filtered.length - 1) { wrIndex++; renderWrongQuestion(); } }
 
         function addWrongAnswer(question) {
             const exists = wrongAnswers.some(w => w.text === question.text && w.subjectKey === currentSubject);
@@ -7499,8 +7523,14 @@ async function resetSubjectProgress() {
         }
 
         async function clearWrongAnswers() {
-            if (!(await showConfirm('🗑️ Xóa câu sai', 'Xóa toàn bộ danh sách câu sai?', 'Xóa tất cả', 'Hủy', true))) return;
-            wrongAnswers = [];
+            if (currentSubject) {
+                const subName = (window.subjectNameMap && window.subjectNameMap[currentSubject]) || currentSubject.toUpperCase();
+                if (!(await showConfirm('🗑️ Xóa câu sai', `Xóa toàn bộ câu sai môn <b>${subName}</b>?`, 'Xóa tất cả', 'Hủy', true))) return;
+                wrongAnswers = wrongAnswers.filter(w => w.subjectKey !== currentSubject);
+            } else {
+                if (!(await showConfirm('🗑️ Xóa câu sai', 'Xóa toàn bộ danh sách câu sai?', 'Xóa tất cả', 'Hủy', true))) return;
+                wrongAnswers = [];
+            }
             saveWrongAnswers();
             loadWrongReview();
             showToast('🗑 Đã xóa danh sách câu sai', 'info');
@@ -8247,7 +8277,8 @@ async function resetSubjectProgress() {
             if(el('dash-streak')) el('dash-streak').textContent = streak + '🔥';
             if(el('dash-coins')) el('dash-coins').textContent = brainCoins.toLocaleString();
             if(el('dash-accuracy')) el('dash-accuracy').textContent = acc + '%';
-            if(el('dash-wrong-badge')) el('dash-wrong-badge').textContent = wrongAnswers.length || '';
+            const wrongCount = currentSubject ? wrongAnswers.filter(w => w.subjectKey === currentSubject).length : wrongAnswers.length;
+            if(el('dash-wrong-badge')) el('dash-wrong-badge').textContent = wrongCount || '';
             // Greeting
             const h = new Date().getHours();
             const greet = h < 12 ? 'Chào buổi sáng ☀️' : h < 18 ? 'Chào buổi chiều 👋' : 'Chào buổi tối 🌙';
@@ -8857,6 +8888,101 @@ async function resetSubjectProgress() {
         window.swmMusicToggle        = swmMusicToggle;
         window.swmMusicNext          = swmMusicNext;
         window.swmMusicPrev          = swmMusicPrev;
+
+        // ══════════════════════════════════════
+        // 🔗 HASH-BASED ROUTER
+        // Format: /#subject/section  hoặc /#subject  hoặc /#section
+        // Ví dụ: /#lao/flashcard  /#mat/home  /#leaderboard  /#profile
+        // ══════════════════════════════════════
+
+        const STANDALONE_SECTIONS = ["leaderboard","profile","badges","shop","daily"];
+        const VALID_SUBJECTS = ["lao","tt-lao","ung-thu-dai-cuong","rang-ham-mat","mat",
+            "ctytqg","tai-mui-hong","ppnckh","tt-mat","tt-rang-ham-mat","tt-da-lieu","ttcd2","ttnk2"];
+        const SECTION_TITLES = {
+            "home": "Dashboard", "fill-blank": "Điền Khuyết", "flashcard": "Flashcard",
+            "wrong-review": "Ôn Câu Sai", "mcq-test": "Trắc Nghiệm", "mock-test": "Thi Điền",
+            "test-sets": "Bộ Đề", "leaderboard": "Xếp Hạng", "profile": "Hồ Sơ",
+            "badges": "Thành Tích", "shop": "Cửa Hàng", "daily": "Daily 5",
+        };
+        const SUBJECT_TITLES = {
+            "lao":"Lao", "tt-lao":"TT. Lao", "ung-thu-dai-cuong":"Ung Thư ĐC",
+            "rang-ham-mat":"Răng Hàm Mặt", "mat":"Mắt", "ctytqg":"CT Y Tế QG",
+            "tai-mui-hong":"Tai Mũi Họng", "ppnckh":"PP NCKH", "tt-mat":"TT. Mắt",
+            "tt-rang-ham-mat":"TT. Răng HM", "tt-da-lieu":"TT. Da Liễu",
+            "ttcd2":"TT. Cộng Đồng 2", "ttnk2":"TT. Nhi Khoa 2",
+        };
+
+        let _routerBusy = false;
+
+        function pushHash(subject, section) {
+            let hash = "";
+            if (subject && section && section !== "home") hash = "#" + subject + "/" + section;
+            else if (subject) hash = "#" + subject;
+            else if (section && section !== "subject-select") hash = "#" + section;
+            else hash = "#";
+            if (window.location.hash !== hash) {
+                _routerBusy = true;
+                history.pushState(null, "", hash.length > 1 ? hash : window.location.pathname);
+                _routerBusy = false;
+            }
+            // Cập nhật <title>
+            const subjLabel = subject ? (SUBJECT_TITLES[subject] || subject.toUpperCase()) : "";
+            const sectLabel = SECTION_TITLES[section] || "";
+            let title = "Y Khoa MT";
+            if (subjLabel && sectLabel && section !== "home") title = sectLabel + " – " + subjLabel + " | Y Khoa MT";
+            else if (subjLabel) title = subjLabel + " | Y Khoa MT";
+            else if (sectLabel) title = sectLabel + " | Y Khoa MT";
+            document.title = title;
+        }
+
+        // Patch showSection
+        const _origShowSection = showSection;
+        showSection = window.showSection = function(id) {
+            _origShowSection(id);
+            if (!_routerBusy) pushHash(currentSubject, id);
+        };
+
+        // Patch selectSubject
+        const _origSelectSubject = selectSubject;
+        selectSubject = window.selectSubject = async function(subjectKey) {
+            await _origSelectSubject(subjectKey);
+            if (!_routerBusy) pushHash(subjectKey, "home");
+        };
+
+        // Patch backToSubjectSelect
+        const _origBack = backToSubjectSelect;
+        backToSubjectSelect = window.backToSubjectSelect = function() {
+            _origBack();
+            if (!_routerBusy) pushHash(null, null);
+        };
+
+        // Khôi phục từ hash (reload / share link)
+        async function restoreFromHash() {
+            const hash = window.location.hash.replace("#", "").trim();
+            if (!hash || hash === "/") return;
+            const parts = hash.split("/");
+            const first = parts[0];
+            const second = parts[1] || "home";
+            if (VALID_SUBJECTS.includes(first)) {
+                _routerBusy = true;
+                await _origSelectSubject(first);
+                _routerBusy = false;
+                if (second !== "home") {
+                    setTimeout(function() { _routerBusy = true; _origShowSection(second); _routerBusy = false; }, 200);
+                }
+            } else if (STANDALONE_SECTIONS.includes(first)) {
+                setTimeout(function() { _routerBusy = true; _origShowSection(first); _routerBusy = false; }, 100);
+            }
+        }
+
+        window.addEventListener("popstate", restoreFromHash);
+
+        window.addEventListener("load", function() {
+            if (window.location.hash && window.location.hash.length > 1) {
+                setTimeout(restoreFromHash, 900);
+            }
+        });
+
     </script>
 
 <!-- ── STUDY WITH ME FLOATING WIDGET ── -->
@@ -9112,6 +9238,3 @@ async function resetSubjectProgress() {
 
 </body>
 </html>
-
-
-
