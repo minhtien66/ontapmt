@@ -8890,9 +8890,9 @@ async function resetSubjectProgress() {
         window.swmMusicPrev          = swmMusicPrev;
 
         // ══════════════════════════════════════
-        // 🔗 HASH-BASED ROUTER
-        // Format: /#subject/section  hoặc /#subject  hoặc /#section
-        // Ví dụ: /#lao/flashcard  /#mat/home  /#leaderboard  /#profile
+        // 🔗 CLEAN URL ROUTER (Cloudflare Pages)
+        // Format: /subject/section  hoặc /subject  hoặc /section
+        // Ví dụ: /lao/flashcard  /mat/home  /leaderboard  /profile
         // ══════════════════════════════════════
 
         const STANDALONE_SECTIONS = ["leaderboard","profile","badges","shop","daily"];
@@ -8914,15 +8914,15 @@ async function resetSubjectProgress() {
 
         let _routerBusy = false;
 
-        function pushHash(subject, section) {
-            let hash = "";
-            if (subject && section && section !== "home") hash = "#" + subject + "/" + section;
-            else if (subject) hash = "#" + subject;
-            else if (section && section !== "subject-select") hash = "#" + section;
-            else hash = "#";
-            if (window.location.hash !== hash) {
+        function pushRoute(subject, section) {
+            let path = "/";
+            if (subject && section && section !== "home") path = "/" + subject + "/" + section;
+            else if (subject) path = "/" + subject;
+            else if (section && section !== "subject-select") path = "/" + section;
+
+            if (window.location.pathname !== path) {
                 _routerBusy = true;
-                history.pushState(null, "", hash.length > 1 ? hash : window.location.pathname);
+                history.pushState(null, "", path);
                 _routerBusy = false;
             }
             // Cập nhật <title>
@@ -8939,47 +8939,48 @@ async function resetSubjectProgress() {
         const _origShowSection = showSection;
         showSection = window.showSection = function(id) {
             _origShowSection(id);
-            if (!_routerBusy) pushHash(currentSubject, id);
+            if (!_routerBusy) pushRoute(currentSubject, id);
         };
 
         // Patch selectSubject
         const _origSelectSubject = selectSubject;
         selectSubject = window.selectSubject = async function(subjectKey) {
             await _origSelectSubject(subjectKey);
-            if (!_routerBusy) pushHash(subjectKey, "home");
+            if (!_routerBusy) pushRoute(subjectKey, "home");
         };
 
         // Patch backToSubjectSelect
         const _origBack = backToSubjectSelect;
         backToSubjectSelect = window.backToSubjectSelect = function() {
             _origBack();
-            if (!_routerBusy) pushHash(null, null);
+            if (!_routerBusy) pushRoute(null, null);
         };
 
-        // Khôi phục từ hash (reload / share link)
-        async function restoreFromHash() {
-            const hash = window.location.hash.replace("#", "").trim();
-            if (!hash || hash === "/") return;
-            const parts = hash.split("/");
+        // Khôi phục từ URL path (reload / share link)
+        async function restoreFromPath() {
+            const path = window.location.pathname.replace(/^\//, "").trim();
+            if (!path) return;
+            const parts = path.split("/").filter(Boolean);
             const first = parts[0];
             const second = parts[1] || "home";
-            if (VALID_SUBJECTS.includes(first)) {
+            if (first && VALID_SUBJECTS.includes(first)) {
                 _routerBusy = true;
                 await _origSelectSubject(first);
                 _routerBusy = false;
                 if (second !== "home") {
                     setTimeout(function() { _routerBusy = true; _origShowSection(second); _routerBusy = false; }, 200);
                 }
-            } else if (STANDALONE_SECTIONS.includes(first)) {
+            } else if (first && STANDALONE_SECTIONS.includes(first)) {
                 setTimeout(function() { _routerBusy = true; _origShowSection(first); _routerBusy = false; }, 100);
             }
         }
 
-        window.addEventListener("popstate", restoreFromHash);
+        window.addEventListener("popstate", restoreFromPath);
 
         window.addEventListener("load", function() {
-            if (window.location.hash && window.location.hash.length > 1) {
-                setTimeout(restoreFromHash, 900);
+            const path = window.location.pathname;
+            if (path && path !== "/") {
+                setTimeout(restoreFromPath, 900);
             }
         });
 
