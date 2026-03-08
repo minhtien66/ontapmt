@@ -47,6 +47,12 @@
                 document.documentElement.style.setProperty('--p', _t.c1);
                 document.documentElement.style.setProperty('--pd', _t.c2 || _t.c1);
             }
+            // Apply dark/light mode: default is LIGHT (no dark class)
+            var _savedTheme = localStorage.getItem('theme');
+            if (_savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+            // If no saved preference → stay light (ignore system preference)
         } catch(e) {}
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1139,11 +1145,12 @@ body.sb-active #main-nav {
         <!-- ══════════════════════════════════════════ -->
         <!-- 🏠 LANDING PAGE                            -->
         <!-- ══════════════════════════════════════════ -->
-        <section id="landing-page" class="hidden fixed inset-0 z-50 overflow-y-auto" style="background:#030712;">
+        <section id="landing-page" class="hidden fixed inset-0 z-50 overflow-y-auto" style="transition:background 0.3s;">
             <style>
                 #landing-page {
                     font-family: 'Be Vietnam Pro', sans-serif;
                     color: #e2e8f0;
+                    background: #030712;
                     --lp-green: #10b981;
                     --lp-green-2: #34d399;
                     --lp-green-3: #6ee7b7;
@@ -1492,6 +1499,143 @@ body.sb-active #main-nav {
                     .lp-compare-header, .lp-compare-row { grid-template-columns:1.2fr 1fr 1fr; }
                     .lp-footer { justify-content:center; text-align:center; }
                 }
+
+                /* ══════════════════════════════════════
+                   LIGHT MODE — full override
+                   ══════════════════════════════════════ */
+                html:not(.dark) #landing-page {
+                    background: #f0fdf9 !important;
+                    color: #0f172a !important;
+                }
+                /* BG layers */
+                html:not(.dark) #lp-aurora::before {
+                    background: radial-gradient(ellipse, rgba(16,185,129,0.12) 0%, transparent 70%);
+                }
+                html:not(.dark) #lp-aurora::after {
+                    background: radial-gradient(ellipse, rgba(139,92,246,0.07) 0%, transparent 70%);
+                }
+                html:not(.dark) #lp-grid {
+                    background-image:
+                        linear-gradient(rgba(16,185,129,0.06) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(16,185,129,0.06) 1px, transparent 1px);
+                }
+                html:not(.dark) #lp-noise { opacity: 0.012; }
+
+                /* NAV */
+                html:not(.dark) .lp-nav {
+                    background: rgba(240,253,249,0.88) !important;
+                    border-bottom: 1px solid rgba(16,185,129,0.18) !important;
+                }
+                html:not(.dark) .lp-nav-logo span { color: #0f172a !important; }
+                html:not(.dark) .lp-nav-link { color: #4b5563 !important; }
+                html:not(.dark) .lp-nav-link:hover { color: #059669 !important; background: rgba(16,185,129,0.08) !important; }
+                html:not(.dark) .lp-btn-ghost {
+                    background: rgba(255,255,255,0.7) !important;
+                    border-color: rgba(0,0,0,0.14) !important;
+                    color: #374151 !important;
+                }
+                html:not(.dark) .lp-btn-ghost:hover { background: #fff !important; border-color: #10b981 !important; color: #065f46 !important; }
+                html:not(.dark) #lp-dark-toggle {
+                    border-color: rgba(16,185,129,0.35) !important;
+                    background: rgba(16,185,129,0.07) !important;
+                    color: #065f46 !important;
+                }
+
+                /* HERO */
+                html:not(.dark) .lp-hero h1 { color: #0f172a !important; }
+                html:not(.dark) .lp-hero p { color: #4b5563 !important; }
+
+                /* AVATAR border */
+                html:not(.dark) .lp-avatar { border-color: #f0fdf9 !important; }
+
+                /* MARQUEE */
+                html:not(.dark) .lp-marquee-wrap {
+                    background: rgba(255,255,255,0.4) !important;
+                    border-top-color: rgba(16,185,129,0.12) !important;
+                    border-bottom-color: rgba(16,185,129,0.12) !important;
+                }
+                html:not(.dark) .lp-marquee-wrap::before { background: linear-gradient(90deg, #f0fdf9, transparent) !important; }
+                html:not(.dark) .lp-marquee-wrap::after  { background: linear-gradient(-90deg, #f0fdf9, transparent) !important; }
+                html:not(.dark) .lp-marquee-item { color: #374151 !important; }
+
+                /* STATS */
+                html:not(.dark) .lp-stats-section {
+                    background: rgba(255,255,255,0.6) !important;
+                    border-color: rgba(16,185,129,0.18) !important;
+                }
+                html:not(.dark) .lp-stat-item {
+                    background: rgba(255,255,255,0.85) !important;
+                }
+                html:not(.dark) .lp-stat-item:hover { background: rgba(16,185,129,0.06) !important; }
+                html:not(.dark) .lp-stat-num {
+                    background: linear-gradient(135deg, #065f46, #059669) !important;
+                    -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important;
+                    background-clip: text !important;
+                }
+                html:not(.dark) .lp-stat-label { color: #4b5563 !important; }
+
+                /* SECTION HEADERS */
+                html:not(.dark) .lp-section-h2 { color: #0f172a !important; }
+                html:not(.dark) .lp-section-sub { color: #4b5563 !important; }
+
+                /* BENTO CARDS */
+                html:not(.dark) .lp-bento-card {
+                    background: rgba(255,255,255,0.85) !important;
+                    border-color: rgba(16,185,129,0.15) !important;
+                    box-shadow: 0 2px 16px rgba(16,185,129,0.06);
+                }
+                html:not(.dark) .lp-bento-card:hover { border-color: rgba(16,185,129,0.35) !important; }
+                html:not(.dark) .lp-bento-card h3 { color: #0f172a !important; }
+                html:not(.dark) .lp-bento-card p { color: #4b5563 !important; }
+                html:not(.dark) .lp-bento-card span { color: #374151; }
+
+                /* TESTIMONIAL CARDS */
+                html:not(.dark) .lp-testi-card {
+                    background: rgba(255,255,255,0.85) !important;
+                    border-color: rgba(16,185,129,0.12) !important;
+                    box-shadow: 0 2px 12px rgba(16,185,129,0.05);
+                }
+                html:not(.dark) .lp-testi-card:hover { border-color: rgba(16,185,129,0.3) !important; }
+                html:not(.dark) .lp-testi-text { color: #374151 !important; }
+                html:not(.dark) .lp-testi-name { color: #0f172a !important; }
+                html:not(.dark) .lp-testi-role { color: #6b7280 !important; }
+
+                /* COMPARE TABLE */
+                html:not(.dark) .lp-compare-table {
+                    border-color: rgba(16,185,129,0.15) !important;
+                }
+                html:not(.dark) .lp-compare-header {
+                    background: rgba(255,255,255,0.6) !important;
+                    border-bottom-color: rgba(0,0,0,0.07) !important;
+                }
+                html:not(.dark) .lp-compare-col { color: #0f172a !important; }
+                html:not(.dark) .lp-compare-col.lp-compare-ours {
+                    background: rgba(16,185,129,0.07) !important;
+                    border-color: rgba(16,185,129,0.25) !important;
+                }
+                html:not(.dark) .lp-compare-row {
+                    border-bottom-color: rgba(0,0,0,0.06) !important;
+                }
+                html:not(.dark) .lp-compare-row:hover { background: rgba(16,185,129,0.03) !important; }
+                html:not(.dark) .lp-compare-cell { color: #4b5563 !important; }
+                html:not(.dark) .lp-compare-cell.lp-compare-feature { color: #1f2937 !important; }
+                html:not(.dark) .lp-compare-cell.lp-compare-ours {
+                    background: rgba(16,185,129,0.04) !important;
+                    border-color: rgba(16,185,129,0.12) !important;
+                }
+                html:not(.dark) .lp-cross { color: #d1d5db !important; }
+
+                /* CTA */
+                html:not(.dark) .lp-section-h2,
+                html:not(.dark) .lp-cta-final h2 { color: #0f172a !important; }
+
+                /* FOOTER */
+                html:not(.dark) .lp-footer {
+                    border-top-color: rgba(0,0,0,0.08) !important;
+                    color: #6b7280 !important;
+                }
+                html:not(.dark) .lp-footer a { color: #6b7280 !important; }
+                html:not(.dark) .lp-footer a:hover { color: #10b981 !important; }
             </style>
 
             <!-- BG layers -->
@@ -1511,6 +1655,7 @@ body.sb-active #main-nav {
                     <a class="lp-nav-link" onclick="document.getElementById('lp-compare').scrollIntoView({behavior:'smooth'})">So sánh</a>
                 </div>
                 <div class="lp-nav-actions">
+                    <button id="lp-dark-toggle" onclick="(function(){document.documentElement.classList.toggle('dark');var d=document.documentElement.classList.contains('dark');localStorage.setItem('theme',d?'dark':'light');document.getElementById('lp-dark-toggle').textContent=d?'☀️ Sáng':'🌙 Tối';var icon=document.getElementById('theme-icon');if(icon)icon.textContent=d?'☀️':'🌙';})()" style="padding:8px 16px;font-size:13px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.1);color:white;cursor:pointer;font-weight:600;backdrop-filter:blur(8px);transition:all 0.2s;">🌙 Tối</button>
                     <button class="lp-btn-ghost" onclick="landingShowLogin()" style="padding:8px 18px;font-size:13px;">Đăng nhập</button>
                     <button class="lp-btn-primary" onclick="landingShowRegister()" style="padding:8px 18px;font-size:13px;">Bắt đầu miễn phí</button>
                 </div>
@@ -7028,6 +7173,9 @@ function loadProfile() {
             // Reset padding-top khi header ẩn
             const main = document.querySelector('main');
             if (main) main.style.paddingTop = '0px';
+            // Sync LP dark toggle button text
+            const lpBtn = document.getElementById('lp-dark-toggle');
+            if (lpBtn) lpBtn.textContent = document.documentElement.classList.contains('dark') ? '☀️ Sáng' : '🌙 Tối';
         }
         function hideLandingPage() {
             const lp = document.getElementById('landing-page');
@@ -7160,15 +7308,23 @@ function loadProfile() {
 
 
         // Dark Mode
+        function applyThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            if (icon) icon.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+            const lpBtn = document.getElementById('lp-dark-toggle');
+            if (lpBtn) lpBtn.textContent = document.documentElement.classList.contains('dark') ? '☀️ Sáng' : '🌙 Tối';
+        }
         document.getElementById('dark-toggle').onclick = () => {
             document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+            applyThemeIcon();
         };
 
-        if (localStorage.getItem('theme') === 'dark' || 
-            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        // Default: light mode. Only go dark if explicitly saved.
+        if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.classList.add('dark');
         }
+        applyThemeIcon();
 
         // Các hàm logic chính (giữ nguyên như cũ, chỉ thêm showSection fix profile)
         async function selectSubject(subjectKey) {
