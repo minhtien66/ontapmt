@@ -2276,6 +2276,302 @@ body.sb-active #main-nav {
                 </div>
             </div>
 
+            <!-- ── WORLD MAP ── -->
+            <div class="lp-reveal" style="position:relative;z-index:2;padding:80px 24px 60px;overflow:hidden;">
+                <style>
+                    .lp-map-section { max-width:1100px; margin:0 auto; text-align:center; }
+                    .lp-map-container { position:relative; margin:48px auto 0; max-width:960px; }
+                    .lp-map-glow-bg {
+                        position:absolute; inset:-60px; z-index:0;
+                        background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(16,185,129,0.13), transparent 70%);
+                        pointer-events:none; filter:blur(30px);
+                        animation: lp-glow-pulse 5s ease-in-out infinite alternate;
+                    }
+                    .lp-map-svg-wrap {
+                        position:relative; z-index:1;
+                        border-radius:24px; overflow:hidden;
+                        background: rgba(16,185,129,0.03);
+                        border:1px solid rgba(16,185,129,0.12);
+                        padding:0;
+                    }
+                    html:not(.dark) .lp-map-svg-wrap {
+                        background:rgba(255,255,255,0.5);
+                        border-color:rgba(16,185,129,0.15);
+                    }
+                    #lp-world-map {
+                        width:100%; height:420px; display:block;
+                    }
+                    #lp-world-map .country {
+                        fill: rgba(16,185,129,0.18);
+                        stroke: rgba(16,185,129,0.35);
+                        stroke-width: 0.4;
+                        transition: fill 0.3s;
+                    }
+                    #lp-world-map .country:hover { fill: rgba(16,185,129,0.35); }
+                    html:not(.dark) #lp-world-map .country {
+                        fill: rgba(16,185,129,0.14);
+                        stroke: rgba(16,185,129,0.28);
+                    }
+                    /* Graticule grid lines */
+                    #lp-world-map .graticule {
+                        fill: none;
+                        stroke: rgba(16,185,129,0.06);
+                        stroke-width: 0.4;
+                    }
+                    /* Sphere background */
+                    #lp-world-map .sphere {
+                        fill: transparent;
+                    }
+
+                    /* Ping dots */
+                    .lp-ping-dot { cursor:pointer; }
+                    .lp-ping-core {
+                        transition: r 0.2s;
+                    }
+                    .lp-ping-dot:hover .lp-ping-core { r: 7; }
+
+                    /* Popup */
+                    .lp-map-popup {
+                        position:absolute;
+                        background: rgba(15,23,42,0.95);
+                        backdrop-filter: blur(16px);
+                        border:1px solid rgba(16,185,129,0.3);
+                        border-radius:12px;
+                        padding:9px 14px;
+                        font-size:12px; font-weight:500;
+                        white-space:nowrap; color:white;
+                        pointer-events:none; z-index:30;
+                        box-shadow:0 8px 32px rgba(0,0,0,0.4);
+                        opacity:0;
+                        transition:opacity 0.4s, transform 0.4s;
+                        transform:translateX(-50%) translateY(0px);
+                    }
+                    html:not(.dark) .lp-map-popup {
+                        background:rgba(255,255,255,0.97);
+                        color:#0f172a; border-color:rgba(16,185,129,0.25);
+                        box-shadow:0 8px 24px rgba(16,185,129,0.18);
+                    }
+                    .lp-map-popup.show { opacity:1; transform:translateX(-50%) translateY(-6px); }
+                    .lp-map-popup::after {
+                        content:''; position:absolute; top:100%; left:50%;
+                        transform:translateX(-50%);
+                        border:5px solid transparent;
+                        border-top-color:rgba(16,185,129,0.3);
+                    }
+                    .lp-pop-name { font-weight:800; color:#10b981; margin:0 3px; }
+                    html:not(.dark) .lp-pop-name { color:#059669; }
+
+                    /* Live bar */
+                    .lp-map-live-bar {
+                        display:flex; align-items:center; justify-content:center;
+                        gap:32px; flex-wrap:wrap;
+                        margin-top:28px; padding:20px 32px;
+                        background:rgba(16,185,129,0.05);
+                        border:1px solid rgba(16,185,129,0.12);
+                        border-radius:16px;
+                    }
+                    html:not(.dark) .lp-map-live-bar {
+                        background:rgba(255,255,255,0.7);
+                        border-color:rgba(16,185,129,0.15);
+                    }
+                    .lp-live-dot {
+                        width:8px;height:8px;border-radius:50%;
+                        background:#10b981; box-shadow:0 0 6px rgba(16,185,129,0.8);
+                        animation:lp-live-blink 1.5s ease-in-out infinite; flex-shrink:0;
+                    }
+                    @keyframes lp-live-blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+                    @keyframes lp-ping {
+                        0%   { transform:scale(1); opacity:0.8; }
+                        100% { transform:scale(4); opacity:0; }
+                    }
+                    .lp-map-live-num {
+                        font-size:26px; font-weight:900;
+                        background:linear-gradient(135deg,#10b981,#34d399);
+                        -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+                    }
+                    .lp-map-live-label { font-size:12px; color:#64748b; margin-top:2px; }
+                    .lp-map-divider { width:1px; height:44px; background:rgba(16,185,129,0.15); }
+                </style>
+
+                <div class="lp-map-section">
+                    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:100px;padding:6px 16px;margin-bottom:20px;">
+                        <span class="lp-live-dot"></span>
+                        <span style="font-size:13px;font-weight:700;color:#10b981;">ĐANG DIỄN RA TRỰC TIẾP</span>
+                    </div>
+                    <h2 class="lp-section-h2" style="margin-bottom:12px;">
+                        Kết nối sinh viên y khoa<br>
+                        <span class="lp-gradient-text">khắp nơi trên thế giới</span>
+                    </h2>
+                    <p class="lp-section-sub" style="max-width:520px;margin:0 auto;">
+                        Hàng trăm sinh viên y khoa đang cùng nhau ôn tập ngay lúc này — từ Hà Nội, TP.HCM đến những nơi xa hơn.
+                    </p>
+
+                    <div class="lp-map-container">
+                        <div class="lp-map-glow-bg"></div>
+                        <div class="lp-map-svg-wrap">
+                            <!-- Popups (positioned by JS) -->
+                            <div id="lp-popups" style="position:absolute;inset:0;pointer-events:none;z-index:20;"></div>
+                            <!-- D3 map renders here -->
+                            <svg id="lp-world-map"></svg>
+                        </div>
+
+                        <div class="lp-map-live-bar">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div class="lp-live-dot"></div>
+                                <div>
+                                    <div class="lp-map-live-num" id="lp-live-count">247</div>
+                                    <div class="lp-map-live-label">đang online ngay lúc này</div>
+                                </div>
+                            </div>
+                            <div class="lp-map-divider"></div>
+                            <div>
+                                <div class="lp-map-live-num">12</div>
+                                <div class="lp-map-live-label">quốc gia & vùng lãnh thổ</div>
+                            </div>
+                            <div class="lp-map-divider"></div>
+                            <div>
+                                <div class="lp-map-live-num">1,840</div>
+                                <div class="lp-map-live-label">câu hỏi làm hôm nay</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            // Load D3 + TopoJSON then render proper world map
+            (function(){
+                function loadScript(src, cb) {
+                    var s = document.createElement('script');
+                    s.src = src; s.onload = cb;
+                    document.head.appendChild(s);
+                }
+
+                var USERS = [
+                    { name:'Minh', flag:'🇻🇳', lon:105.8, lat:21.0,  color:'#10b981', msg:'vừa đúng 9/10 câu Nội Khoa' },
+                    { name:'Linh', flag:'🇻🇳', lon:106.7, lat:10.8,  color:'#34d399', msg:'đang làm Flashcard Nhi Khoa' },
+                    { name:'Huy',  flag:'🇺🇸', lon:-95.7, lat:37.1,  color:'#6366f1', msg:'vừa đạt streak 15 ngày 🔥' },
+                    { name:'Trang',flag:'🇰🇷', lon:127.0, lat:37.5,  color:'#f59e0b', msg:'đang ôn Dược Lý' },
+                    { name:'Nam',  flag:'🇦🇺', lon:133.8, lat:-25.3, color:'#8b5cf6', msg:'vừa lên hạng #8 BXH' },
+                    { name:'Thảo', flag:'🇩🇪', lon:10.4,  lat:51.2,  color:'#ec4899', msg:'hoàn thành bộ Sinh Lý' },
+                    { name:'Khoa', flag:'🇯🇵', lon:138.3, lat:36.2,  color:'#ef4444', msg:'đạt 95% Giải Phẫu 🎉' },
+                ];
+
+                function initMap() {
+                    var svg = d3.select('#lp-world-map');
+                    var wrapper = document.querySelector('.lp-map-svg-wrap');
+                    var W = wrapper.clientWidth || 960;
+                    var H = 420;
+                    svg.attr('viewBox','0 0 '+W+' '+H);
+
+                    var proj = d3.geoNaturalEarth1()
+                        .scale(W/6.2)
+                        .translate([W/2, H/2]);
+                    var path = d3.geoPath().projection(proj);
+
+                    // Sphere background
+                    svg.append('path').datum({type:'Sphere'})
+                        .attr('class','sphere').attr('d', path);
+
+                    // Graticule
+                    svg.append('path')
+                        .datum(d3.geoGraticule()())
+                        .attr('class','graticule').attr('d', path);
+
+                    // Load world topojson
+                    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(function(world){
+                        var countries = topojson.feature(world, world.objects.countries);
+                        svg.selectAll('.country')
+                            .data(countries.features)
+                            .enter().append('path')
+                            .attr('class','country')
+                            .attr('d', path);
+
+                        // Draw ping dots
+                        var popContainer = document.getElementById('lp-popups');
+                        USERS.forEach(function(u, i){
+                            var pt = proj([u.lon, u.lat]);
+                            if (!pt) return;
+
+                            // Ripple group
+                            var g = svg.append('g')
+                                .attr('class','lp-ping-dot')
+                                .attr('transform','translate('+pt[0]+','+pt[1]+')');
+
+                            // Rings
+                            [0, 600].forEach(function(delay){
+                                g.append('circle')
+                                    .attr('r', i===0||i===1 ? 6 : 5)
+                                    .attr('fill','none')
+                                    .attr('stroke', u.color)
+                                    .attr('stroke-width','1.5')
+                                    .attr('opacity','0.7')
+                                    .style('animation','lp-ping '+(2+Math.random())+'s '+delay+'ms ease-out infinite');
+                            });
+
+                            // Core dot
+                            g.append('circle')
+                                .attr('class','lp-ping-core')
+                                .attr('r', i===0||i===1 ? 6 : 4.5)
+                                .attr('fill', u.color)
+                                .attr('filter','url(#glow-'+i+')')
+                                .style('cursor','pointer');
+
+                            // Glow filter
+                            var defs = svg.select('defs');
+                            if (defs.empty()) defs = svg.append('defs');
+                            var filter = defs.append('filter').attr('id','glow-'+i).attr('x','-50%').attr('y','-50%').attr('width','200%').attr('height','200%');
+                            filter.append('feGaussianBlur').attr('stdDeviation','2').attr('result','blur');
+                            var merge = filter.append('feMerge');
+                            merge.append('feMergeNode').attr('in','blur');
+                            merge.append('feMergeNode').attr('in','SourceGraphic');
+
+                            // Popup — random show/hide, only 1-2 visible at a time
+                            var pop = document.createElement('div');
+                            pop.className = 'lp-map-popup';
+                            pop.innerHTML = u.flag+' <span class="lp-pop-name">'+u.name+'</span> '+u.msg;
+                            pop.style.left = (pt[0]/W*100)+'%';
+                            pop.style.bottom = (H-pt[1]+16)/H*100+'%';
+                            popContainer.appendChild(pop);
+
+                            function randomShow(){
+                                // Random delay between 3s and 14s before next appearance
+                                var wait = 3000 + Math.random() * 11000;
+                                setTimeout(function(){
+                                    pop.classList.add('show');
+                                    // Show for 2.5-4s then hide
+                                    var showDur = 2500 + Math.random() * 1500;
+                                    setTimeout(function(){
+                                        pop.classList.remove('show');
+                                        randomShow();
+                                    }, showDur);
+                                }, wait);
+                            }
+                            // Stagger initial appearance so they don't all start at once
+                            setTimeout(randomShow, i * 800 + Math.random() * 2000);
+                        });
+                    });
+
+                    // Fluctuate live counter
+                    var el = document.getElementById('lp-live-count');
+                    if (el) {
+                        setInterval(function(){
+                            var cur = parseInt(el.textContent);
+                            el.textContent = Math.max(238, Math.min(263, cur + Math.floor(Math.random()*5)-2));
+                        }, 3000);
+                    }
+                }
+
+                loadScript('https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js', function(){
+                    loadScript('https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js', function(){
+                        // Wait for section to be visible
+                        if (document.readyState === 'complete') { initMap(); }
+                        else { window.addEventListener('load', initMap); }
+                    });
+                });
+            })();
+            </script>
+
             <!-- ── CTA FINAL ── -->
             <div class="lp-cta-final">
                 <div class="lp-cta-glow"></div>
