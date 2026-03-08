@@ -7,17 +7,3 @@
     <priority>1.0</priority>
   </url>
 </urlset>
-```
-
-→ Nhấn **"Commit changes"**
-
----
-
-**Bước 2 — Tạo file `robots.txt`** (nếu chưa có)
-
-Tương tự, tạo file `robots.txt` với nội dung:
-```
-User-agent: *
-Allow: /
-
-Sitemap: https://nhmtontap.dpdns.org/sitemap.xml
